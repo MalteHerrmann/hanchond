@@ -4,6 +4,7 @@ import (
 	"os"
 )
 
+// TODO: rename to make more general
 func GetAllEvmosdVersions() ([]string, error) {
 	files, err := os.Open(GetBuildsDir())
 	if err != nil {

@@ -10,6 +10,7 @@ import (
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/gaia"
+	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
 )
@@ -45,8 +46,11 @@ var startChainCmd = &cobra.Command{
 			case strings.Contains(version, "evmos"):
 				d := evmos.NewEvmos(v.Moniker, v.BinaryVersion, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName, v.Denom)
 				pID, err = d.Start()
+			case strings.Contains(version, "sagaos"):
+				d := sagaos.NewSagaOS(v.Moniker, v.BinaryVersion, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName, v.Denom)
+				pID, err = d.Start()
 			default:
-				fmt.Println("incorrect binary name")
+				fmt.Printf("binary %s not configured\n", version)
 				os.Exit(1)
 			}
 

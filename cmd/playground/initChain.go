@@ -12,6 +12,7 @@ import (
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/gaia"
+	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
 
 	"github.com/spf13/cobra"
@@ -94,6 +95,27 @@ var initChainCmd = &cobra.Command{
 					chainID,
 					fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
 					"icsstake",
+				).Daemon
+			}
+		case "sagaos":
+			if chainID == "" {
+				chainID = fmt.Sprintf("sagaos_1234-%d", chainNumber)
+			}
+
+			for k := range nodes {
+				if filesmanager.IsNodeHomeFolderInitialized(int64(chainNumber), int64(k)) {
+					fmt.Printf("the home folder already exists: %d-%d\n", chainNumber, k)
+					os.Exit(1)
+				}
+
+				path := filesmanager.GetNodeHomeFolder(int64(chainNumber), int64(k))
+				nodes[k] = sagaos.NewSagaOS(
+					fmt.Sprintf("moniker-%d-%d", chainNumber, k),
+					version,
+					path,
+					chainID,
+					fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
+					"psaga",
 				).Daemon
 			}
 		default:

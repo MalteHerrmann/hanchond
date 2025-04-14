@@ -82,6 +82,11 @@ func GetEvmosdPath(version string) string {
 	return GetBuildsDir() + "/evmosd" + version
 }
 
+// TODO: refactor this to all use the same function instead of GetEvmosdPath, GetSagaosdPath, GetDaemondPath, etc.
+func GetSagaosdPath(version string) string {
+	return GetBuildsDir() + "/sagaosd" + version
+}
+
 func GetDaemondPath(binaryName string) string {
 	return GetBuildsDir() + "/" + binaryName
 }

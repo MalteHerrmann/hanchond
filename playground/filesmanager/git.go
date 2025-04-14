@@ -12,6 +12,11 @@ func GitCloneHermesBranch(version string) error {
 	return GitCloneBranch(version, GetBranchFolder(version), "https://github.com/informalsystems/hermes")
 }
 
+// TODO: refactor here to just use GetBinaryInfo and return the github link.
+func GitCloneSagaOSBranch(version string) error {
+	return GitCloneBranch(version, GetBranchFolder(version), "https://github.com/sagaxyz/sagaos")
+}
+
 func GitCloneBranch(version string, dstFolder string, repoURL string) error {
 	cmd := exec.Command("git", "clone", "--depth", "1", "--branch", version, repoURL, dstFolder)
 	_, err := cmd.Output()

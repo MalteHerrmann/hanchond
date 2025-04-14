@@ -33,6 +33,12 @@ func SaveEvmosBuiltVersion(version string) error {
 	return MoveFile(GetBranchFolder(version)+"/build/evmosd", GetEvmosdPath(version))
 }
 
+// TODO: this stuff should be refactored together with SaveEvmosBuiltVersion and ideally served by a shared interface that's reimplemented per chain.
+func SaveSagaOSBuiltVersion(version string) error {
+	_ = CreateBuildsDir()
+	return MoveFile(GetBranchFolder(version)+"/build/sagaosd", GetSagaosdPath(version))
+}
+
 func MoveFile(origin string, destination string) error {
 	return os.Rename(origin, destination)
 }

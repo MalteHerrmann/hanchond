@@ -21,7 +21,7 @@ var removeDataCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 
 		// Stop all nodes
-		fmt.Println("Stoping all the running nodes...")
+		fmt.Println("Stopping all the running nodes...")
 		stopping := false
 		if nodes, err := queries.GetAllNodes(context.Background()); err == nil {
 			// Database is initialized
@@ -38,7 +38,7 @@ var removeDataCmd = &cobra.Command{
 		}
 
 		// Stop the relayer
-		fmt.Println("Stoping the relayer...")
+		fmt.Println("Stopping the relayer...")
 		if relayer, err := queries.GetRelayer(context.Background()); err == nil {
 			// The relayer is runnning
 			if relayer.IsRunning == 1 {

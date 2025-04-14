@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const LocalVesrsion = "local"
+const LocalVersion = "local"
 
 // buildEvmosCmd represents the buildEvmos command
 var buildEvmosCmd = &cobra.Command{
@@ -27,7 +27,7 @@ var buildEvmosCmd = &cobra.Command{
 		path, err := cmd.Flags().GetString("path")
 		// Local build
 		if err == nil && path != "" {
-			version := LocalVesrsion
+			version := LocalVersion
 			if path[len(path)-1] == '/' {
 				path = path[0 : len(path)-2]
 			}

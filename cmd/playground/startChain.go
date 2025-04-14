@@ -10,11 +10,15 @@ import (
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/gaia"
+	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
 )
 
 // startChainCmd represents the startChainCmd
+//
+// TODO: refactor all of the available commands to more layers for easier contextualization.
+// e.g. use `h p chain start` and `h p node info` instead of `h p start-chain` and `h p get-node`
 var startChainCmd = &cobra.Command{
 	Use:   "start-chain [chain_id]",
 	Args:  cobra.ExactArgs(1),
@@ -45,8 +49,11 @@ var startChainCmd = &cobra.Command{
 			case strings.Contains(version, "evmos"):
 				d := evmos.NewEvmos(v.Moniker, v.BinaryVersion, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName, v.Denom)
 				pID, err = d.Start()
+			case strings.Contains(version, "sagaos"):
+				d := sagaos.NewSagaOS(v.Moniker, v.BinaryVersion, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName, v.Denom)
+				pID, err = d.Start()
 			default:
-				fmt.Println("incorrect binary name")
+				fmt.Printf("binary %s not configured\n", version)
 				os.Exit(1)
 			}
 

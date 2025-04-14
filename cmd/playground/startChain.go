@@ -16,6 +16,9 @@ import (
 )
 
 // startChainCmd represents the startChainCmd
+//
+// TODO: refactor all of the available commands to more layers for easier contextualization.
+// e.g. use `h p chain start` and `h p node info` instead of `h p start-chain` and `h p get-node`
 var startChainCmd = &cobra.Command{
 	Use:   "start-chain [chain_id]",
 	Args:  cobra.ExactArgs(1),

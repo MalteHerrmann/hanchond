@@ -5,15 +5,16 @@ import (
 	"fmt"
 
 	"github.com/hanchon/hanchond/playground/database"
+	"github.com/hanchon/hanchond/playground/filesmanager"
 )
 
 func (d *Daemon) SaveChainToDB(queries *database.Queries) (database.Chain, error) {
 	return queries.InsertChain(context.Background(), database.InsertChainParams{
 		Name:          fmt.Sprintf("chain-%s", d.ChainID),
 		ChainID:       d.ChainID,
-		BinaryVersion: d.BinaryName,
-		Denom:         d.BaseDenom,
-		Prefix:        d.Prefix,
+		BinaryVersion: filesmanager.GetVersionedBinaryName(d.chainInfo, d.Version),
+		Denom:         d.chainInfo.GetDenom(),
+		Prefix:        d.chainInfo.GetAccountPrefix(),
 	})
 }
 
@@ -25,7 +26,7 @@ func (d *Daemon) SaveNodeToDB(chain database.Chain, queries *database.Queries) (
 		ValidatorKey:     d.ValMnemonic,
 		ValidatorKeyName: d.ValKeyName,
 		ValidatorWallet:  d.ValWallet,
-		KeyType:          string(d.KeyType),
+		KeyType:          string(d.chainInfo.GetKeyAlgo()),
 		BinaryVersion:    d.BinaryName,
 
 		ProcessID:   0,

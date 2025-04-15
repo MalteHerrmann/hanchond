@@ -6,7 +6,7 @@ import "fmt"
 func (s *SagaOS) Start() (int, error) {
 	logFile := s.HomeDir + "/run.log"
 	cmd := fmt.Sprintf("%s start --chain-id %s --home %s --json-rpc.api eth,txpool,personal,net,debug,web3 --api.enable --grpc.enable >> %s 2>&1",
-		s.BinaryPath,
+		s.GetVersionedBinaryPath(),
 		s.ChainID,
 		s.HomeDir,
 		logFile,

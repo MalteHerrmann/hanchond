@@ -44,13 +44,13 @@ var startChainCmd = &cobra.Command{
 			var err error
 			switch {
 			case strings.Contains(version, "gaia"):
-				d := gaia.NewGaia(v.Moniker, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName, v.Denom)
+				d := gaia.NewGaia(v.Moniker, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
 				pID, err = d.Start()
 			case strings.Contains(version, "evmos"):
-				d := evmos.NewEvmos(v.Moniker, v.BinaryVersion, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName, v.Denom)
+				d := evmos.NewEvmos(v.Moniker, v.BinaryVersion, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
 				pID, err = d.Start()
 			case strings.Contains(version, "sagaos"):
-				d := sagaos.NewSagaOS(v.Moniker, v.BinaryVersion, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName, v.Denom)
+				d := sagaos.NewSagaOS(v.Moniker, v.BinaryVersion, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
 				pID, err = d.Start()
 			default:
 				fmt.Printf("binary %s not configured\n", version)

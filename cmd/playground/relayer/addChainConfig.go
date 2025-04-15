@@ -85,7 +85,7 @@ var addChainConfigCmd = &cobra.Command{
 			}
 		case true:
 			fmt.Println("Adding a EVM chain")
-			if err := h.AddEvmosChain(
+			if err := h.AddEVMChain(
 				chainID,
 				p26657,
 				p9090,

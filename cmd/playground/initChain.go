@@ -3,6 +3,7 @@ package playground
 import (
 	"context"
 	dbsql "database/sql"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -14,6 +15,7 @@ import (
 	"github.com/hanchon/hanchond/playground/gaia"
 	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
+	"github.com/hanchon/hanchond/playground/types"
 
 	"github.com/spf13/cobra"
 )
@@ -53,74 +55,69 @@ var initChainCmd = &cobra.Command{
 		chainNumber := 1
 		if err == nil {
 			chainNumber = int(latestChain.ID) + 1
-		} else if err != dbsql.ErrNoRows {
+		} else if errors.Is(err, dbsql.ErrNoRows) {
 			fmt.Println("could not get the chains info from db")
 			os.Exit(1)
 		}
 
+		var (
+			chainInfo        types.ChainInfo
+			createDaemonFunc func(path string, k int) *cosmosdaemon.Daemon
+		)
+
 		nodes := make([]*cosmosdaemon.Daemon, amountOfValidators)
 		switch strings.ToLower(strings.TrimSpace(client)) {
 		case "evmos":
-			if chainID == "" {
-				chainID = fmt.Sprintf("evmos_9001-%d", chainNumber)
-			}
-			for k := range nodes {
-				if filesmanager.IsNodeHomeFolderInitialized(int64(chainNumber), int64(k)) {
-					fmt.Printf("the home folder already exists: %d-%d\n", chainNumber, k)
-					os.Exit(1)
-				}
-				path := filesmanager.GetNodeHomeFolder(int64(chainNumber), int64(k))
-				nodes[k] = evmos.NewEvmos(
+			chainInfo = evmos.ChainInfo
+
+			createDaemonFunc = func(path string, k int) *cosmosdaemon.Daemon {
+				return evmos.NewEvmos(
 					fmt.Sprintf("moniker-%d-%d", chainNumber, k),
 					version,
 					path,
 					chainID,
 					fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
-					"aevmos",
 				).Daemon
 			}
 		case "gaia":
-			if chainID == "" {
-				chainID = fmt.Sprintf("cosmoshub-%d", chainNumber)
-			}
-			for k := range nodes {
-				if filesmanager.IsNodeHomeFolderInitialized(int64(chainNumber), int64(k)) {
-					fmt.Printf("the home folder already exists: %d-%d\n", chainNumber, k)
-					os.Exit(1)
-				}
-				path := filesmanager.GetNodeHomeFolder(int64(chainNumber), int64(k))
-				nodes[k] = gaia.NewGaia(
+			chainInfo = gaia.ChainInfo
+
+			createDaemonFunc = func(path string, k int) *cosmosdaemon.Daemon {
+				return gaia.NewGaia(
 					fmt.Sprintf("moniker-%d-%d", chainNumber, k),
 					path,
 					chainID,
 					fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
-					"icsstake",
 				).Daemon
 			}
 		case "sagaos":
-			if chainID == "" {
-				chainID = fmt.Sprintf("sagaos_1234-%d", chainNumber)
-			}
+			chainInfo = sagaos.ChainInfo
 
-			for k := range nodes {
-				if filesmanager.IsNodeHomeFolderInitialized(int64(chainNumber), int64(k)) {
-					fmt.Printf("the home folder already exists: %d-%d\n", chainNumber, k)
-					os.Exit(1)
-				}
-
-				path := filesmanager.GetNodeHomeFolder(int64(chainNumber), int64(k))
-				nodes[k] = sagaos.NewSagaOS(
+			createDaemonFunc = func(path string, k int) *cosmosdaemon.Daemon {
+				return sagaos.NewSagaOS(
 					fmt.Sprintf("moniker-%d-%d", chainNumber, k),
 					version,
 					path,
 					chainID,
 					fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
-					"psaga",
 				).Daemon
 			}
 		default:
-			fmt.Println("invalid client")
-			os.Exit(1)
+			panic("invalid client flag: " + client)
+		}
+
+		if chainID == "" {
+			chainID = fmt.Sprintf("%s%d", chainInfo.GetChainIDBase(), chainNumber)
+		}
+
+		for k := range nodes {
+			if filesmanager.IsNodeHomeFolderInitialized(int64(chainNumber), int64(k)) {
+				fmt.Printf("the home folder already exists: %d-%d\n", chainNumber, k)
+				os.Exit(1)
+			}
+
+			path := filesmanager.GetNodeHomeFolder(int64(chainNumber), int64(k))
+			nodes[k] = createDaemonFunc(path, k)
 		}
 
 		dbID, err := cosmosdaemon.InitMultiNodeChain(nodes, queries)

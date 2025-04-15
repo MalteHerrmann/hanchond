@@ -1,10 +1,11 @@
+-- TODO: update this to include the daemon info like chain info etc. -> chain info probably needs to go into the chain schema
 CREATE TABLE IF NOT EXISTS chain(
+    -- TODO: should this even be moved to a separate table? not really necessary I guess..
+    chain_info TEXT NOT NULL,
     id INTEGER NOT NULL PRIMARY KEY,
     name TEXT NOT NULL,
     chain_id TEXT NOT NULL,
-    binary_version TEXT NOT NULL,
-    denom TEXT NOT NULL,
-    prefix TEXT NOT NULL
+    version TEXT NOT NULL,
 );
 
 CREATE TABLE IF NOT EXISTS node(
@@ -16,6 +17,7 @@ CREATE TABLE IF NOT EXISTS node(
     validator_key_name TEXT NOT NULL,
     validator_wallet TEXT NOT NULL,
     key_type TEXT NOT NULL,
+    -- TODO: remove this? Not sure if storing the version is required both for chain and node here.
     binary_version TEXT NOT NULL,
 
     process_id INTEGER NOT NULL,

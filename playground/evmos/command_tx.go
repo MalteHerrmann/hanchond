@@ -7,7 +7,7 @@ import (
 
 func (e *Evmos) GetTransaction(txhash string) (string, error) {
 	command := exec.Command( //nolint:gosec
-		e.BinaryPath,
+		e.GetVersionedBinaryPath(),
 		"q",
 		"tx",
 		"--type=hash",

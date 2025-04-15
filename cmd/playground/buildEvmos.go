@@ -1,80 +1,27 @@
 package playground
 
 import (
-	"fmt"
-	"os"
+	"errors"
 
-	"github.com/hanchon/hanchond/playground/filesmanager"
+	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/spf13/cobra"
 )
-
-const LocalVersion = "local"
 
 // buildEvmosCmd represents the buildEvmos command
 var buildEvmosCmd = &cobra.Command{
 	Use:   "build-evmos",
 	Short: "Build an specific version of Evmos (hanchond playground build-evmos v18.0.0), it also supports local repositories (hanchond playground build-evmos --path /home/hanchon/evmos)",
 	Long:  `It downloads, builds and clean up temp files for any Evmos tag. Using the --path flag will build you local repo`,
-	Run: func(cmd *cobra.Command, args []string) {
-		_ = filesmanager.SetHomeFolderFromCobraFlags(cmd)
-
-		// Create build folder if needed
-		if err := filesmanager.CreateBuildsDir(); err != nil {
-			fmt.Println("could not create build folder:" + err.Error())
-			os.Exit(1)
-		}
-
-		path, err := cmd.Flags().GetString("path")
-		// Local build
-		if err == nil && path != "" {
-			version := LocalVersion
-			if path[len(path)-1] == '/' {
-				path = path[0 : len(path)-2]
-			}
-			fmt.Println("Building evmos...")
-			if err := filesmanager.BuildEvmos(path); err != nil {
-				fmt.Println("error building evmos:", err.Error())
-				os.Exit(1)
-			}
-			fmt.Println("Moving built binary...")
-			if err := filesmanager.MoveFile(path+"/build/evmosd", filesmanager.GetEvmosdPath(version)); err != nil {
-				fmt.Println("could not move the built binary:", err.Error())
-				os.Exit(1)
-			}
-			os.Exit(0)
-		}
-
+	RunE: func(cmd *cobra.Command, args []string) error {
 		// Clone from github
 		if len(args) == 0 {
-			fmt.Println("version is missing. Usage: hanchond playground build-evmosd v18.1.0")
-			os.Exit(1)
+			return errors.New("version is missing. Usage: hanchond playground build-evmosd v18.1.0")
 		}
+
 		version := args[0]
-		if err := filesmanager.CreateTempFolder(version); err != nil {
-			fmt.Println("could not create temp folder:" + err.Error())
-			os.Exit(1)
-		}
-		fmt.Println("Cloning evmos version:", version)
-		if err := filesmanager.GitCloneEvmosBranch(version); err != nil {
-			fmt.Println("could not clone the evmos version: ", err)
-			os.Exit(1)
-		}
-		fmt.Println("Building evmos...")
-		if err := filesmanager.BuildEvmosVersion(version); err != nil {
-			fmt.Println("error building evmos:", err)
-			os.Exit(1)
-		}
-		fmt.Println("Moving built binary...")
-		if err := filesmanager.SaveEvmosBuiltVersion(version); err != nil {
-			fmt.Println("could not move the built binary:", err.Error())
-			os.Exit(1)
-		}
-		fmt.Println("Cleaning up...")
-		if err := filesmanager.CleanUpTempFolder(); err != nil {
-			fmt.Println("could not remove temp folder", err.Error())
-			os.Exit(1)
-		}
-		os.Exit(0)
+		chainInfo := evmos.ChainInfo
+
+		return RunBuildEVMChainCmd(cmd, chainInfo, version)
 	},
 }
 

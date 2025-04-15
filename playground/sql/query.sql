@@ -1,4 +1,5 @@
 -- name: InsertChain :one
+-- TODO: remove the denom and prefix being passed here and rather store chain_info as a string
 INSERT INTO chain(
     name, chain_id, binary_version, denom, prefix
 ) VALUES (

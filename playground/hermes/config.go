@@ -64,7 +64,7 @@ trust_threshold = { numerator = '1', denominator = '3' }
 	return nil
 }
 
-func (h *Hermes) AddEvmosChain(chainID string, p26657 string, p9090 string, keyname string, mnemonic string, prefix string, denom string) error {
+func (h *Hermes) AddEVMChain(chainID string, p26657 string, p9090 string, keyname string, mnemonic string, prefix string, denom string) error {
 	values := fmt.Sprintf(`
 [[chains]]
 id = '%s'

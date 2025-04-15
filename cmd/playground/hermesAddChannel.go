@@ -74,7 +74,7 @@ var hermesAddChannelCmd = &cobra.Command{
 				}
 			case strings.Contains(v.BinaryVersion, "evmos"):
 				fmt.Println("Adding evmos chain")
-				if err := h.AddEvmosChain(
+				if err := h.AddEVMChain(
 					v.ChainID_2,
 					hermes.LocalEndpoint(v.P26657),
 					hermes.LocalEndpoint(v.P9090),

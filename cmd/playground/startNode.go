@@ -10,6 +10,7 @@ import (
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/gaia"
+	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
 )
@@ -19,7 +20,7 @@ var startNodeCmd = &cobra.Command{
 	Use:   "start-node [node_id]",
 	Args:  cobra.ExactArgs(1),
 	Short: "Starts a node with the given ID",
-	Long:  `It will run the node in a subprocess, saving the pid in the database in case it needs to be stoped in the future`,
+	Long:  `It will run the node in a subprocess, saving the pid in the database in case it needs to be stopped in the future`,
 	Run: func(cmd *cobra.Command, args []string) {
 		queries := sql.InitDBFromCmd(cmd)
 
@@ -51,7 +52,6 @@ var startNodeCmd = &cobra.Command{
 				node.ConfigFolder,
 				chain.ChainID,
 				node.ValidatorKeyName,
-				chain.Denom,
 			)
 			pID, err = d.Start()
 		case strings.Contains(node.BinaryVersion, "gaia"):
@@ -60,9 +60,19 @@ var startNodeCmd = &cobra.Command{
 				node.ConfigFolder,
 				chain.ChainID,
 				node.ValidatorKeyName,
+			)
+			pID, err = d.Start()
+		case strings.Contains(node.BinaryVersion, "sagaosd"):
+			d := sagaos.NewSagaOS(
+				node.Moniker,
+				node.BinaryVersion,
+				node.ConfigFolder,
+				chain.ChainID,
 				node.ValidatorKeyName,
 			)
 			pID, err = d.Start()
+		default:
+			panic("invalid node version: " + node.BinaryVersion)
 		}
 		if err != nil {
 			fmt.Println("could not start the node:", err.Error())

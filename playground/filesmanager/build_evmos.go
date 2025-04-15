@@ -4,14 +4,18 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+
+	"github.com/hanchon/hanchond/playground/types"
 )
 
+// BuildEVMChainVersion builds the downloaded binary of a Cosmos EVM based chain.
+//
 // NOTE: This requires that the version was already cloned
-func BuildEvmosVersion(version string) error {
-	return BuildEvmos(GetBranchFolder(version))
+func BuildEVMChainVersion(version string) error {
+	return BuildEVMBinary(GetBranchFolder(version))
 }
 
-func BuildEvmos(path string) error {
+func BuildEVMBinary(path string) error {
 	if err := os.Chdir(path); err != nil {
 		return err
 	}
@@ -27,16 +31,12 @@ func BuildEvmos(path string) error {
 	return err
 }
 
-func SaveEvmosBuiltVersion(version string) error {
-	// Ensure the path exists
-	_ = CreateBuildsDir()
-	return MoveFile(GetBranchFolder(version)+"/build/evmosd", GetEvmosdPath(version))
-}
-
-// TODO: this stuff should be refactored together with SaveEvmosBuiltVersion and ideally served by a shared interface that's reimplemented per chain.
-func SaveSagaOSBuiltVersion(version string) error {
-	_ = CreateBuildsDir()
-	return MoveFile(GetBranchFolder(version)+"/build/sagaosd", GetSagaosdPath(version))
+func SaveBuiltVersion(chainInfo types.ChainInfo, version string) error {
+	_ = CreateBuildsDir() // Make sure that the build dir exists
+	return MoveFile(
+		fmt.Sprintf("%s/build/%s", GetBranchFolder(version), chainInfo.GetBinaryName()),
+		GetDaemondPathWithVersion(chainInfo, version),
+	)
 }
 
 func MoveFile(origin string, destination string) error {

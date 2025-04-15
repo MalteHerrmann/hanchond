@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/hanchon/hanchond/playground/types"
 	"github.com/spf13/cobra"
 )
 
@@ -78,6 +79,7 @@ func GetBranchFolder(version string) string {
 	return GetTempDir() + "/" + version
 }
 
+// TODO: remove
 func GetEvmosdPath(version string) string {
 	return GetBuildsDir() + "/evmosd" + version
 }
@@ -87,10 +89,19 @@ func GetSagaosdPath(version string) string {
 	return GetBuildsDir() + "/sagaosd" + version
 }
 
-func GetDaemondPath(binaryName string) string {
-	return GetBuildsDir() + "/" + binaryName
+func GetVersionedBinaryName(ci types.ChainInfo, version string) string {
+	return ci.GetBinaryName() + version
 }
 
+func GetDaemondPathWithVersion(ci types.ChainInfo, version string) string {
+	return fmt.Sprintf("%s/%s", GetBuildsDir(), GetVersionedBinaryName(ci, version))
+}
+
+func GetDaemondPath(ci types.ChainInfo) string {
+	return GetDaemondPathWithVersion(ci, "")
+}
+
+// TODO: remove
 func GetGaiadPath() string {
 	return GetBuildsDir() + "/gaiad"
 }

@@ -1,36 +1,36 @@
 package evmos
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
-	"github.com/hanchon/hanchond/playground/filesmanager"
+	"github.com/hanchon/hanchond/playground/types"
+)
+
+var ChainInfo = types.NewChainInfo(
+	"evmos",
+	"evmosd",
+	"evmos_9000-1",
+	"evmosd",
+	"aevmos",
+	"https://github.com/evmos/evmos",
+	types.EthAlgo,
+	types.EvmosSDK,
 )
 
 type Evmos struct {
 	*cosmosdaemon.Daemon
 }
 
-func NewEvmos(moniker string, version string, homeDir string, chainID string, keyName string, denom string) *Evmos {
-	daemonName := version
-	if !strings.Contains(version, "evmosd") {
-		daemonName = fmt.Sprintf("evmosd%s", version)
-	}
+func NewEvmos(moniker, version, homeDir, chainID, keyName string) *Evmos {
 	e := &Evmos{
 		Daemon: cosmosdaemon.NewDameon(
+			ChainInfo,
 			moniker,
-			daemonName,
+			version,
 			homeDir,
 			chainID,
 			keyName,
-			cosmosdaemon.EthAlgo,
-			denom,
-			"evmos",
-			cosmosdaemon.EvmosSDK,
 		),
 	}
-	e.SetBinaryPath(filesmanager.GetDaemondPath(daemonName))
 	e.SetCustomConfig(e.UpdateAppFile)
 	return e
 }

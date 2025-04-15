@@ -13,11 +13,11 @@ func (d *Daemon) AddValidatorKey() error {
 func (d *Daemon) KeyAdd(name string, mnemonic string) error {
 	cmd := fmt.Sprintf("echo \"%s\" | %s keys add %s --recover --keyring-backend %s --home %s --key-type %s",
 		mnemonic,
-		d.BinaryPath,
+		d.GetVersionedBinaryPath(),
 		name,
 		d.KeyringBackend,
 		d.HomeDir,
-		d.KeyType,
+		d.chainInfo.GetKeyAlgo(),
 	)
 	command := exec.Command("bash", "-c", cmd)
 	o, err := command.CombinedOutput()

@@ -34,17 +34,17 @@ func BuildLocalEVMBinary(chainInfo types.ChainInfo, path string) error {
 func BuildEVMBinaryFromGitHub(chainInfo types.ChainInfo, version string) error {
 	// Clone from github
 	if err := filesmanager.CreateTempFolder(version); err != nil {
-		return fmt.Errorf("could not create temp folder: %w\n", err)
+		return fmt.Errorf("could not create temp folder: %w", err)
 	}
 
 	fmt.Printf("Cloning %s version: %s\n", chainInfo.GetBinaryName(), version)
 	if err := filesmanager.GitCloneGitHubBranch(chainInfo, version); err != nil {
-		return fmt.Errorf("could not clone the %s version: %s\n", chainInfo.GetBinaryName(), err)
+		return fmt.Errorf("could not clone the %s version: %s", chainInfo.GetBinaryName(), err)
 	}
 
 	fmt.Printf("Building %s...\n", chainInfo.GetBinaryName())
 	if err := filesmanager.BuildEVMChainVersion(version); err != nil {
-		return fmt.Errorf("error building %s: %w\n", chainInfo.GetBinaryName(), err)
+		return fmt.Errorf("error building %s: %w", chainInfo.GetBinaryName(), err)
 	}
 
 	fmt.Println("Moving built binary...")

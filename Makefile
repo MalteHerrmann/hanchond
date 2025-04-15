@@ -1,13 +1,16 @@
-.phony: build docs
+.phony: format install docs-dev docs-build generate generate-explorer install-deps lint release-dry release
+
+format:
+	@gofumpt -l -w .
 
 install:
 	@go install
 
-dev-docs:
-	@source /opt/homebrew/opt/nvm/nvm.sh && nvm use && npm run docs:dev
+docs-dev:
+	@bun i && bun run docs:dev
 
-build-docs:
-	@source /opt/homebrew/opt/nvm/nvm.sh && nvm use && npm run docs:build
+docs-build:
+	@bun i && bun run docs:build
 
 generate:
 	@sqlc generate
@@ -19,11 +22,10 @@ install-deps:
 	@go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
 lint:
-	golangci-lint run --fix --out-format=line-number --issues-exit-code=0 --config .golangci.yml --color always ./...
+	@golangci-lint run --fix --out-format=line-number --issues-exit-code=0 --config .golangci.yml --color always ./...
 
 release-dry:
 	@goreleaser release --snapshot --clean
 
 release:
 	@goreleaser release --skip-validate --clean
-

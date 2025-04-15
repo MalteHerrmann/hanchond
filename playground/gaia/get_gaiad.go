@@ -22,7 +22,7 @@ func GetGaiadBinary(isDarwin bool, version string) error {
 
 	url := fmt.Sprintf("https://github.com/cosmos/gaia/releases/download/%s/gaiad-%s-%s-%s", version, version, systemOS, arch)
 
-	path := filesmanager.GetGaiadPath()
+	path := filesmanager.GetVersionedBinaryName(ChainInfo, version)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {

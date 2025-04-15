@@ -242,7 +242,7 @@ func (e *Evmos) CreateRateLimitProposal(params RateLimitParams) (string, error) 
 
 	path := "/tmp/metadata.json"
 	if filesmanager.DoesFileExist(path) {
-		os.RemoveAll(path)
+		_ = os.RemoveAll(path)
 	}
 
 	if err := filesmanager.SaveFile([]byte(metadata), path); err != nil {

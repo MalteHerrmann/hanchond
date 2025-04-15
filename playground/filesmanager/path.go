@@ -79,35 +79,12 @@ func GetBranchFolder(version string) string {
 	return GetTempDir() + "/" + version
 }
 
-// TODO: remove
-func GetEvmosdPath(version string) string {
-	return GetBuildsDir() + "/evmosd" + version
-}
-
-// TODO: refactor this to all use the same function instead of GetEvmosdPath, GetSagaosdPath, GetDaemondPath, etc.
-func GetSagaosdPath(version string) string {
-	return GetBuildsDir() + "/sagaosd" + version
-}
-
 func GetVersionedBinaryName(ci types.ChainInfo, version string) string {
 	return ci.GetBinaryName() + version
 }
 
 func GetDaemondPathWithVersion(ci types.ChainInfo, version string) string {
 	return fmt.Sprintf("%s/%s", GetBuildsDir(), GetVersionedBinaryName(ci, version))
-}
-
-func GetDaemondPath(ci types.ChainInfo) string {
-	return GetDaemondPathWithVersion(ci, "")
-}
-
-// TODO: remove
-func GetGaiadPath() string {
-	return GetBuildsDir() + "/gaiad"
-}
-
-func DoesEvmosdPathExist(version string) bool {
-	return DoesFileExist(GetBuildsDir() + "/evmosd" + version)
 }
 
 func GetHermesBinary() string {

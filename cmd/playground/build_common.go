@@ -23,7 +23,7 @@ func BuildLocalEVMBinary(chainInfo types.ChainInfo, path string) error {
 
 	fmt.Println("Moving built binary...")
 	buildPath := fmt.Sprintf("%s/build/%s", path, chainInfo.GetBinaryName())
-	if err := filesmanager.MoveFile(buildPath, filesmanager.GetSagaosdPath(version)); err != nil {
+	if err := filesmanager.MoveFile(buildPath, filesmanager.GetDaemondPathWithVersion(chainInfo, version)); err != nil {
 		fmt.Println("could not move the built binary:", err.Error())
 		return err
 	}

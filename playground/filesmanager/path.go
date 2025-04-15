@@ -79,14 +79,11 @@ func GetBranchFolder(version string) string {
 	return GetTempDir() + "/" + version
 }
 
-func GetVersionedBinaryName(ci types.ChainInfo, version string) string {
-	return ci.GetBinaryName() + version
-}
-
 func GetDaemondPathWithVersion(ci types.ChainInfo, version string) string {
-	return fmt.Sprintf("%s/%s", GetBuildsDir(), GetVersionedBinaryName(ci, version))
+	return fmt.Sprintf("%s/%s", GetBuildsDir(), ci.GetVersionedBinaryName(version))
 }
 
+// TODO: also remove and turn ChainInfo into BinaryInfo to also support hermes here
 func GetHermesBinary() string {
 	return GetBuildsDir() + "/hermes"
 }

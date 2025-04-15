@@ -39,21 +39,22 @@ var startChainCmd = &cobra.Command{
 		}
 
 		for _, v := range nodes {
-			version := strings.ToLower(strings.TrimSpace(v.BinaryVersion))
+			binaryName := v.MustParseChainInfo().GetBinaryName()
+
 			var pID int
 			var err error
-			switch {
-			case strings.Contains(version, "gaia"):
+			switch binaryName {
+			case gaia.ChainInfo.GetBinaryName():
 				d := gaia.NewGaia(v.Moniker, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
 				pID, err = d.Start()
-			case strings.Contains(version, "evmos"):
-				d := evmos.NewEvmos(v.Moniker, v.BinaryVersion, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
+			case evmos.ChainInfo.GetBinaryName():
+				d := evmos.NewEvmos(v.Moniker, v.Version, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
 				pID, err = d.Start()
-			case strings.Contains(version, "sagaos"):
-				d := sagaos.NewSagaOS(v.Moniker, v.BinaryVersion, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
+			case sagaos.ChainInfo.GetBinaryName():
+				d := sagaos.NewSagaOS(v.Moniker, v.Version, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
 				pID, err = d.Start()
 			default:
-				fmt.Printf("binary %s not configured\n", version)
+				fmt.Printf("binary %s not configured\n", binaryName)
 				os.Exit(1)
 			}
 

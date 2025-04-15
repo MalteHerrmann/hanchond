@@ -70,7 +70,7 @@ Ports:
     - 9090(grpc): %d
 `,
 			idNumber,
-			node.BinaryVersion,
+			chain.MustParseChainInfo().GetVersionedBinaryName(node.Version),
 			chain.ChainID,
 			node.IsRunning,
 			node.ProcessID,

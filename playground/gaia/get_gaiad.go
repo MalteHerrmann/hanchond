@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"os"
 	"runtime"
-
-	"github.com/hanchon/hanchond/playground/filesmanager"
 )
 
 func GetGaiadBinary(isDarwin bool, version string) error {
@@ -22,7 +20,7 @@ func GetGaiadBinary(isDarwin bool, version string) error {
 
 	url := fmt.Sprintf("https://github.com/cosmos/gaia/releases/download/%s/gaiad-%s-%s-%s", version, version, systemOS, arch)
 
-	path := filesmanager.GetVersionedBinaryName(ChainInfo, version)
+	path := ChainInfo.GetVersionedBinaryName(version)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {

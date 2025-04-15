@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/evmos"
@@ -43,18 +42,20 @@ var startNodeCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		ci := chain.MustParseChainInfo()
+
 		var pID int
-		switch {
-		case strings.Contains(node.BinaryVersion, "evmos"):
+		switch ci.GetBinaryName() {
+		case evmos.ChainInfo.GetBinaryName():
 			d := evmos.NewEvmos(
 				node.Moniker,
-				node.BinaryVersion,
+				node.Version,
 				node.ConfigFolder,
 				chain.ChainID,
 				node.ValidatorKeyName,
 			)
 			pID, err = d.Start()
-		case strings.Contains(node.BinaryVersion, "gaia"):
+		case gaia.ChainInfo.GetBinaryName():
 			d := gaia.NewGaia(
 				node.Moniker,
 				node.ConfigFolder,
@@ -62,17 +63,17 @@ var startNodeCmd = &cobra.Command{
 				node.ValidatorKeyName,
 			)
 			pID, err = d.Start()
-		case strings.Contains(node.BinaryVersion, "sagaosd"):
+		case sagaos.ChainInfo.GetBinaryName():
 			d := sagaos.NewSagaOS(
 				node.Moniker,
-				node.BinaryVersion,
+				node.Version,
 				node.ConfigFolder,
 				chain.ChainID,
 				node.ValidatorKeyName,
 			)
 			pID, err = d.Start()
 		default:
-			panic("invalid node version: " + node.BinaryVersion)
+			panic("invalid binary name: " + ci.GetBinaryName())
 		}
 		if err != nil {
 			fmt.Println("could not start the node:", err.Error())

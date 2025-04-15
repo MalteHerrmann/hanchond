@@ -5,12 +5,10 @@
 package database
 
 type Chain struct {
-	ID            int64
-	Name          string
-	ChainID       string
-	BinaryVersion string
-	Denom         string
-	Prefix        string
+	ID        int64
+	Name      string
+	ChainID   string
+	ChainInfo string
 }
 
 type Node struct {
@@ -22,7 +20,7 @@ type Node struct {
 	ValidatorKeyName string
 	ValidatorWallet  string
 	KeyType          string
-	BinaryVersion    string
+	Version          string
 	ProcessID        int64
 	IsValidator      int64
 	IsArchive        int64

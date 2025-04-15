@@ -1,9 +1,9 @@
 -- name: InsertChain :one
--- TODO: remove the denom and prefix being passed here and rather store chain_info as a string
+-- TODO: make sure that version is not required here? Maybe it's important to set here?
 INSERT INTO chain(
-    name, chain_id, binary_version, denom, prefix
+    name, chain_id, chain_info
 ) VALUES (
-    ?,?,?,?,?
+    ?,?,?
 )
 RETURNING *;
 
@@ -16,7 +16,7 @@ INSERT INTO node(
     validator_key_name,
     validator_wallet,
     key_type,
-    binary_version,
+    version,
     process_id,
     is_validator,
     is_archive,
@@ -53,16 +53,9 @@ WHERE (
     id = ?
 );
 
--- name: SetChainBinaryVersion :exec
-UPDATE chain SET
-    binary_version = ?
-WHERE (
-    id = ?
-);
-
--- name: SetBinaryVersion :exec
+-- name: SetNodeVersion :exec
 UPDATE node SET
-    binary_version = ?
+    version = ?
 WHERE (
     id = ?
 );

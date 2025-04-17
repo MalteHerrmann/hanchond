@@ -56,7 +56,8 @@ var hermesAddChannelCmd = &cobra.Command{
 
 		for i, v := range chains {
 			if v.IsRunning != 1 {
-				fmt.Println("the node is not running, chain id:", v.ChainID)
+				fmt.Printf("node %d of chain %d is not running; start first\n", v.NodeID, v.ChainID)
+				os.Exit(1)
 			}
 
 			chainInfo := v.MustParseChainInfo()
@@ -64,7 +65,7 @@ var hermesAddChannelCmd = &cobra.Command{
 
 			switch binaryName {
 			case gaia.ChainInfo.GetBinaryName():
-				fmt.Println("Adding gaia chain")
+				fmt.Printf("Adding %s chain\n", binaryName)
 				if err := h.AddCosmosChain(
 					chainInfo,
 					v.ChainID_2,
@@ -77,7 +78,7 @@ var hermesAddChannelCmd = &cobra.Command{
 					os.Exit(1)
 				}
 			case evmos.ChainInfo.GetBinaryName(), sagaos.ChainInfo.GetBinaryName():
-				fmt.Println("Adding evmos chain")
+				fmt.Printf("Adding %s chain\n", binaryName)
 				if err := h.AddEVMChain(
 					chainInfo,
 					v.ChainID_2,

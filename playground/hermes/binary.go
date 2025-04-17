@@ -2,7 +2,9 @@ package hermes
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
+	"strings"
 	"syscall"
 	"time"
 
@@ -16,8 +18,11 @@ func (h *Hermes) GetHermesBinary() string {
 func (h *Hermes) AddRelayerKey(chainID string, mnemonic string, isEthWallet bool) error {
 	hdPath := " "
 	if isEthWallet {
+		// TODO: check if SagaOS is using a different hd path for address generation?? why else would the account not be found?
 		hdPath = " --hd-path \"m/44'/60'/0'/0/0\" "
 	}
+
+	logsFile := filesmanager.GetHermesPath() + "/logs_keys_" + chainID
 	cmd := fmt.Sprintf(
 		"echo \"%s\" | %s --config %s keys add %s --mnemonic-file /dev/stdin --chain %s >> %s 2>&1",
 		mnemonic,
@@ -25,28 +30,52 @@ func (h *Hermes) AddRelayerKey(chainID string, mnemonic string, isEthWallet bool
 		h.GetConfigFile(),
 		hdPath,
 		chainID,
-		filesmanager.GetHermesPath()+"/logs_keys"+chainID,
+		logsFile,
 	)
 	command := exec.Command("bash", "-c", cmd)
 	_, err := command.CombinedOutput()
-	return err
+	if err != nil {
+		return fmt.Errorf("%w: logs written to %s; error from logs: %s", err, logsFile, getErrorFromHermesLogs(logsFile))
+	}
+
+	return nil
 }
 
 func (h *Hermes) CreateChannel(firstChainID, secondChainID string) error {
+	logsFile := fmt.Sprintf("%s/logs_channel_%s_%s", filesmanager.GetHermesPath(), firstChainID, secondChainID)
 	cmd := fmt.Sprintf(
 		"%s --config %s create channel --a-chain %s --b-chain %s --a-port transfer --b-port transfer --new-client-connection --yes >> %s 2>&1",
 		h.GetHermesBinary(),
 		h.GetConfigFile(),
 		firstChainID,
 		secondChainID,
-		filesmanager.GetHermesPath()+"/logs_channel"+firstChainID+secondChainID,
+		logsFile,
 	)
 	command := exec.Command("bash", "-c", cmd)
 	out, err := command.CombinedOutput()
 	if err != nil {
-		err = fmt.Errorf("error %s: %s", err.Error(), string(out))
+		errorFromLogs := getErrorFromHermesLogs(logsFile)
+		err = fmt.Errorf("error %s: %s; logs written to %s; error from logs: %s", err.Error(), string(out), logsFile, errorFromLogs)
 	}
 	return err
+}
+
+// TODO: move to logs.go file?
+func getErrorFromHermesLogs(logsFile string) string {
+	bz, err := os.ReadFile(logsFile)
+	if err != nil {
+		return ""
+	}
+
+	lines := strings.Split(string(bz), "\n")
+	foundErrors := make([]string, 0, len(lines)) // TODO: check if reallocating per new found error or pre-allocating to much space is worse for performance; doesn't really matter though
+	for _, line := range lines {
+		if strings.Contains(strings.ToLower(line), "error") {
+			foundErrors = append(foundErrors, line)
+		}
+	}
+
+	return strings.Join(foundErrors, "\n")
 }
 
 func (h *Hermes) Start() (int, error) {

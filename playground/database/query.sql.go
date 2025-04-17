@@ -307,6 +307,7 @@ type InsertChainParams struct {
 	ChainInfo string
 }
 
+// TODO: make sure that version is not required here? Maybe it's important to set here?
 func (q *Queries) InsertChain(ctx context.Context, arg InsertChainParams) (Chain, error) {
 	row := q.db.QueryRowContext(ctx, insertChain, arg.Name, arg.ChainID, arg.ChainInfo)
 	var i Chain

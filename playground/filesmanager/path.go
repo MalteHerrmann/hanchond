@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/hanchon/hanchond/playground/types"
 	"github.com/spf13/cobra"
 )
 
@@ -78,27 +79,11 @@ func GetBranchFolder(version string) string {
 	return GetTempDir() + "/" + version
 }
 
-func GetEvmosdPath(version string) string {
-	return GetBuildsDir() + "/evmosd" + version
+func GetDaemondPathWithVersion(ci types.ChainInfo, version string) string {
+	return fmt.Sprintf("%s/%s", GetBuildsDir(), ci.GetVersionedBinaryName(version))
 }
 
-// TODO: refactor this to all use the same function instead of GetEvmosdPath, GetSagaosdPath, GetDaemondPath, etc.
-func GetSagaosdPath(version string) string {
-	return GetBuildsDir() + "/sagaosd" + version
-}
-
-func GetDaemondPath(binaryName string) string {
-	return GetBuildsDir() + "/" + binaryName
-}
-
-func GetGaiadPath() string {
-	return GetBuildsDir() + "/gaiad"
-}
-
-func DoesEvmosdPathExist(version string) bool {
-	return DoesFileExist(GetBuildsDir() + "/evmosd" + version)
-}
-
+// TODO: also remove and turn ChainInfo into BinaryInfo to also support hermes here
 func GetHermesBinary() string {
 	return GetBuildsDir() + "/hermes"
 }

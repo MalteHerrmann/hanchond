@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/hanchon/hanchond/playground/filesmanager"
+	"github.com/hanchon/hanchond/playground/types"
 )
 
 func (d *Daemon) AddGenesisAccount(validatorAddr string) error {
@@ -20,12 +21,12 @@ func (d *Daemon) AddGenesisAccount(validatorAddr string) error {
 		"--home",
 		d.HomeDir,
 	}
-	if d.SDKVersion == GaiaSDK {
+	if d.chainInfo.GetSDKVersion() == types.GaiaSDK {
 		args = append([]string{"genesis"}, args...)
 	}
 
 	command := exec.Command( //nolint:gosec
-		d.BinaryPath,
+		d.GetVersionedBinaryPath(),
 		args...,
 	)
 
@@ -51,12 +52,12 @@ func (d *Daemon) ValidatorGenTx() error {
 		d.HomeDir,
 	}
 
-	if d.SDKVersion == GaiaSDK {
+	if d.chainInfo.GetSDKVersion() == types.GaiaSDK {
 		args = append([]string{"genesis"}, args...)
 	}
 
 	command := exec.Command( //nolint:gosec
-		d.BinaryPath,
+		d.GetVersionedBinaryPath(),
 		args...,
 	)
 	out, err := command.CombinedOutput()
@@ -73,11 +74,11 @@ func (d *Daemon) CollectGenTxs() error {
 		d.HomeDir,
 	}
 
-	if d.SDKVersion == GaiaSDK {
+	if d.chainInfo.GetSDKVersion() == types.GaiaSDK {
 		args = append([]string{"genesis"}, args...)
 	}
 	command := exec.Command( //nolint:gosec
-		d.BinaryPath,
+		d.GetVersionedBinaryPath(),
 		args...,
 	)
 	out, err := command.CombinedOutput()
@@ -93,11 +94,11 @@ func (d *Daemon) ValidateGenesis() error {
 		"--home",
 		d.HomeDir,
 	}
-	if d.SDKVersion == GaiaSDK {
+	if d.chainInfo.GetSDKVersion() == types.GaiaSDK {
 		args = append([]string{"genesis"}, args...)
 	}
 	command := exec.Command( //nolint:gosec
-		d.BinaryPath,
+		d.GetVersionedBinaryPath(),
 		args...,
 	)
 	out, err := command.CombinedOutput()
@@ -110,7 +111,7 @@ func (d *Daemon) ValidateGenesis() error {
 // Returns bech32 encoded validator addresss
 func (d *Daemon) GetValidatorAddress() (string, error) {
 	command := exec.Command( //nolint:gosec
-		d.BinaryPath,
+		d.GetVersionedBinaryPath(),
 		"keys",
 		"show",
 		"-a",
@@ -148,7 +149,7 @@ func (d *Daemon) Start(startCmd string) (int, error) {
 
 func (d *Daemon) GetNodeID() (string, error) {
 	command := exec.Command( //nolint:gosec
-		d.BinaryPath,
+		d.GetVersionedBinaryPath(),
 		"tendermint",
 		"show-node-id",
 		"--home",

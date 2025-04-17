@@ -7,7 +7,7 @@ import (
 
 func (e *Evmos) CheckBalance(wallet string) (string, error) {
 	command := exec.Command( //nolint:gosec
-		e.BinaryPath,
+		e.GetVersionedBinaryPath(),
 		"q",
 		"bank",
 		"balances",

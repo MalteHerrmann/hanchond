@@ -49,6 +49,7 @@ func (d *Daemon) CreateGenTx() error {
 	return nil
 }
 
+// TODO: remove if unused?
 func (d *Daemon) InitGenesis() error {
 	if err := d.setBank(); err != nil {
 		return err

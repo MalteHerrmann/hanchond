@@ -24,6 +24,7 @@ var balanceCmd = &cobra.Command{
 
 		wallet := args[0]
 
+		// TODO: this should also check the node type of the running node and then use the correct daemon
 		e := evmos.NewEvmosFromDB(queries, nodeID)
 		balance, err := e.CheckBalance(wallet)
 		if err != nil {

@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/gaia"
+	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
 )
@@ -19,7 +19,7 @@ var startNodeCmd = &cobra.Command{
 	Use:   "start-node [node_id]",
 	Args:  cobra.ExactArgs(1),
 	Short: "Starts a node with the given ID",
-	Long:  `It will run the node in a subprocess, saving the pid in the database in case it needs to be stoped in the future`,
+	Long:  `It will run the node in a subprocess, saving the pid in the database in case it needs to be stopped in the future`,
 	Run: func(cmd *cobra.Command, args []string) {
 		queries := sql.InitDBFromCmd(cmd)
 
@@ -42,27 +42,38 @@ var startNodeCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		ci := chain.MustParseChainInfo()
+
 		var pID int
-		switch {
-		case strings.Contains(node.BinaryVersion, "evmos"):
+		switch ci.GetBinaryName() {
+		case evmos.ChainInfo.GetBinaryName():
 			d := evmos.NewEvmos(
 				node.Moniker,
-				node.BinaryVersion,
+				node.Version,
 				node.ConfigFolder,
 				chain.ChainID,
 				node.ValidatorKeyName,
-				chain.Denom,
 			)
 			pID, err = d.Start()
-		case strings.Contains(node.BinaryVersion, "gaia"):
+		case gaia.ChainInfo.GetBinaryName():
 			d := gaia.NewGaia(
 				node.Moniker,
 				node.ConfigFolder,
 				chain.ChainID,
 				node.ValidatorKeyName,
+			)
+			pID, err = d.Start()
+		case sagaos.ChainInfo.GetBinaryName():
+			d := sagaos.NewSagaOS(
+				node.Moniker,
+				node.Version,
+				node.ConfigFolder,
+				chain.ChainID,
 				node.ValidatorKeyName,
 			)
 			pID, err = d.Start()
+		default:
+			panic("invalid binary name: " + ci.GetBinaryName())
 		}
 		if err != nil {
 			fmt.Println("could not start the node:", err.Error())

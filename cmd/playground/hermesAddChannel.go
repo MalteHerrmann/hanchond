@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/hanchon/hanchond/playground/database"
+	"github.com/hanchon/hanchond/playground/evmos"
+	"github.com/hanchon/hanchond/playground/gaia"
 	"github.com/hanchon/hanchond/playground/hermes"
+	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
 )
@@ -52,42 +54,43 @@ var hermesAddChannelCmd = &cobra.Command{
 		h := hermes.NewHermes()
 		fmt.Println("Relayer initialized")
 
-		for _, v := range chains {
+		for i, v := range chains {
 			if v.IsRunning != 1 {
 				fmt.Println("the node is not running, chain id:", v.ChainID)
 			}
 
-			switch {
-			case strings.Contains(v.BinaryVersion, "gaia"):
+			chainInfo := v.MustParseChainInfo()
+			binaryName := chainInfo.GetBinaryName()
+
+			switch binaryName {
+			case gaia.ChainInfo.GetBinaryName():
 				fmt.Println("Adding gaia chain")
 				if err := h.AddCosmosChain(
+					chainInfo,
 					v.ChainID_2,
 					hermes.LocalEndpoint(v.P26657),
 					hermes.LocalEndpoint(v.P9090),
 					v.ValidatorKeyName,
 					v.ValidatorKey,
-					v.Prefix,
-					v.Denom,
 				); err != nil {
-					fmt.Println("error adding first chain to the relayer:", err.Error())
+					fmt.Printf("error adding chain %d to the relayer: %s\n", i, err.Error())
 					os.Exit(1)
 				}
-			case strings.Contains(v.BinaryVersion, "evmos"):
+			case evmos.ChainInfo.GetBinaryName(), sagaos.ChainInfo.GetBinaryName():
 				fmt.Println("Adding evmos chain")
-				if err := h.AddEvmosChain(
+				if err := h.AddEVMChain(
+					chainInfo,
 					v.ChainID_2,
 					hermes.LocalEndpoint(v.P26657),
 					hermes.LocalEndpoint(v.P9090),
 					v.ValidatorKeyName,
 					v.ValidatorKey,
-					v.Prefix,
-					v.Denom,
 				); err != nil {
-					fmt.Println("error adding first chain to the relayer:", err.Error())
+					fmt.Printf("error adding chain %d to the relayer: %s\n", i, err.Error())
 					os.Exit(1)
 				}
 			default:
-				fmt.Println("incorrect binary name")
+				fmt.Println("incorrect binary name: ", binaryName)
 				os.Exit(1)
 			}
 

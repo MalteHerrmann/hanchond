@@ -10,7 +10,7 @@ import (
 )
 
 const getAllChainNodes = `-- name: GetAllChainNodes :many
-SELECT n.id, n.chain_id, config_folder, moniker, validator_key, validator_key_name, validator_wallet, key_type, n.binary_version, process_id, is_validator, is_archive, is_running, p.id, node_id, p1317, p8080, p9090, p9091, p8545, p8546, p6065, p26658, p26657, p6060, p26656, p26660, c.id, name, c.chain_id, c.binary_version, denom, prefix FROM node n join ports p on p.node_id == n.id join chain c on n.chain_id == c.id where n.chain_id = ?
+SELECT n.id, n.chain_id, config_folder, moniker, validator_key, validator_key_name, validator_wallet, key_type, version, process_id, is_validator, is_archive, is_running, p.id, node_id, p1317, p8080, p9090, p9091, p8545, p8546, p6065, p26658, p26657, p6060, p26656, p26660, c.id, name, c.chain_id, chain_info FROM node n join ports p on p.node_id == n.id join chain c on n.chain_id == c.id where n.chain_id = ?
 `
 
 type GetAllChainNodesRow struct {
@@ -22,7 +22,7 @@ type GetAllChainNodesRow struct {
 	ValidatorKeyName string
 	ValidatorWallet  string
 	KeyType          string
-	BinaryVersion    string
+	Version          string
 	ProcessID        int64
 	IsValidator      int64
 	IsArchive        int64
@@ -44,9 +44,7 @@ type GetAllChainNodesRow struct {
 	ID_3             int64
 	Name             string
 	ChainID_2        string
-	BinaryVersion_2  string
-	Denom            string
-	Prefix           string
+	ChainInfo        string
 }
 
 func (q *Queries) GetAllChainNodes(ctx context.Context, chainID int64) ([]GetAllChainNodesRow, error) {
@@ -67,7 +65,7 @@ func (q *Queries) GetAllChainNodes(ctx context.Context, chainID int64) ([]GetAll
 			&i.ValidatorKeyName,
 			&i.ValidatorWallet,
 			&i.KeyType,
-			&i.BinaryVersion,
+			&i.Version,
 			&i.ProcessID,
 			&i.IsValidator,
 			&i.IsArchive,
@@ -89,9 +87,7 @@ func (q *Queries) GetAllChainNodes(ctx context.Context, chainID int64) ([]GetAll
 			&i.ID_3,
 			&i.Name,
 			&i.ChainID_2,
-			&i.BinaryVersion_2,
-			&i.Denom,
-			&i.Prefix,
+			&i.ChainInfo,
 		); err != nil {
 			return nil, err
 		}
@@ -107,7 +103,7 @@ func (q *Queries) GetAllChainNodes(ctx context.Context, chainID int64) ([]GetAll
 }
 
 const getAllNodes = `-- name: GetAllNodes :many
-SELECT id, chain_id, config_folder, moniker, validator_key, validator_key_name, validator_wallet, key_type, binary_version, process_id, is_validator, is_archive, is_running FROM node
+SELECT id, chain_id, config_folder, moniker, validator_key, validator_key_name, validator_wallet, key_type, version, process_id, is_validator, is_archive, is_running FROM node
 `
 
 func (q *Queries) GetAllNodes(ctx context.Context) ([]Node, error) {
@@ -128,7 +124,7 @@ func (q *Queries) GetAllNodes(ctx context.Context) ([]Node, error) {
 			&i.ValidatorKeyName,
 			&i.ValidatorWallet,
 			&i.KeyType,
-			&i.BinaryVersion,
+			&i.Version,
 			&i.ProcessID,
 			&i.IsValidator,
 			&i.IsArchive,
@@ -190,7 +186,7 @@ func (q *Queries) GetAllPorts(ctx context.Context) ([]Port, error) {
 }
 
 const getChain = `-- name: GetChain :one
-SELECT id, name, chain_id, binary_version, denom, prefix FROM chain where id =? LIMIT 1
+SELECT id, name, chain_id, chain_info FROM chain where id =? LIMIT 1
 `
 
 func (q *Queries) GetChain(ctx context.Context, id int64) (Chain, error) {
@@ -200,15 +196,13 @@ func (q *Queries) GetChain(ctx context.Context, id int64) (Chain, error) {
 		&i.ID,
 		&i.Name,
 		&i.ChainID,
-		&i.BinaryVersion,
-		&i.Denom,
-		&i.Prefix,
+		&i.ChainInfo,
 	)
 	return i, err
 }
 
 const getLatestChain = `-- name: GetLatestChain :one
-SELECT id, name, chain_id, binary_version, denom, prefix FROM chain ORDER BY id DESC LIMIT 1
+SELECT id, name, chain_id, chain_info FROM chain ORDER BY id DESC LIMIT 1
 `
 
 func (q *Queries) GetLatestChain(ctx context.Context) (Chain, error) {
@@ -218,15 +212,13 @@ func (q *Queries) GetLatestChain(ctx context.Context) (Chain, error) {
 		&i.ID,
 		&i.Name,
 		&i.ChainID,
-		&i.BinaryVersion,
-		&i.Denom,
-		&i.Prefix,
+		&i.ChainInfo,
 	)
 	return i, err
 }
 
 const getNode = `-- name: GetNode :one
-SELECT id, chain_id, config_folder, moniker, validator_key, validator_key_name, validator_wallet, key_type, binary_version, process_id, is_validator, is_archive, is_running FROM node where id =? LIMIT 1
+SELECT id, chain_id, config_folder, moniker, validator_key, validator_key_name, validator_wallet, key_type, version, process_id, is_validator, is_archive, is_running FROM node where id =? LIMIT 1
 `
 
 func (q *Queries) GetNode(ctx context.Context, id int64) (Node, error) {
@@ -241,7 +233,7 @@ func (q *Queries) GetNode(ctx context.Context, id int64) (Node, error) {
 		&i.ValidatorKeyName,
 		&i.ValidatorWallet,
 		&i.KeyType,
-		&i.BinaryVersion,
+		&i.Version,
 		&i.ProcessID,
 		&i.IsValidator,
 		&i.IsArchive,
@@ -302,37 +294,27 @@ func (q *Queries) InitRelayer(ctx context.Context) error {
 
 const insertChain = `-- name: InsertChain :one
 INSERT INTO chain(
-    name, chain_id, binary_version, denom, prefix
+    name, chain_id, chain_info
 ) VALUES (
-    ?,?,?,?,?
+    ?,?,?
 )
-RETURNING id, name, chain_id, binary_version, denom, prefix
+RETURNING id, name, chain_id, chain_info
 `
 
 type InsertChainParams struct {
-	Name          string
-	ChainID       string
-	BinaryVersion string
-	Denom         string
-	Prefix        string
+	Name      string
+	ChainID   string
+	ChainInfo string
 }
 
 func (q *Queries) InsertChain(ctx context.Context, arg InsertChainParams) (Chain, error) {
-	row := q.db.QueryRowContext(ctx, insertChain,
-		arg.Name,
-		arg.ChainID,
-		arg.BinaryVersion,
-		arg.Denom,
-		arg.Prefix,
-	)
+	row := q.db.QueryRowContext(ctx, insertChain, arg.Name, arg.ChainID, arg.ChainInfo)
 	var i Chain
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
 		&i.ChainID,
-		&i.BinaryVersion,
-		&i.Denom,
-		&i.Prefix,
+		&i.ChainInfo,
 	)
 	return i, err
 }
@@ -346,7 +328,7 @@ INSERT INTO node(
     validator_key_name,
     validator_wallet,
     key_type,
-    binary_version,
+    version,
     process_id,
     is_validator,
     is_archive,
@@ -365,7 +347,7 @@ type InsertNodeParams struct {
 	ValidatorKeyName string
 	ValidatorWallet  string
 	KeyType          string
-	BinaryVersion    string
+	Version          string
 	ProcessID        int64
 	IsValidator      int64
 	IsArchive        int64
@@ -381,7 +363,7 @@ func (q *Queries) InsertNode(ctx context.Context, arg InsertNodeParams) (int64, 
 		arg.ValidatorKeyName,
 		arg.ValidatorWallet,
 		arg.KeyType,
-		arg.BinaryVersion,
+		arg.Version,
 		arg.ProcessID,
 		arg.IsValidator,
 		arg.IsArchive,
@@ -447,39 +429,21 @@ func (q *Queries) InsertPorts(ctx context.Context, arg InsertPortsParams) error 
 	return err
 }
 
-const setBinaryVersion = `-- name: SetBinaryVersion :exec
+const setNodeVersion = `-- name: SetNodeVersion :exec
 UPDATE node SET
-    binary_version = ?
+    version = ?
 WHERE (
     id = ?
 )
 `
 
-type SetBinaryVersionParams struct {
-	BinaryVersion string
-	ID            int64
+type SetNodeVersionParams struct {
+	Version string
+	ID      int64
 }
 
-func (q *Queries) SetBinaryVersion(ctx context.Context, arg SetBinaryVersionParams) error {
-	_, err := q.db.ExecContext(ctx, setBinaryVersion, arg.BinaryVersion, arg.ID)
-	return err
-}
-
-const setChainBinaryVersion = `-- name: SetChainBinaryVersion :exec
-UPDATE chain SET
-    binary_version = ?
-WHERE (
-    id = ?
-)
-`
-
-type SetChainBinaryVersionParams struct {
-	BinaryVersion string
-	ID            int64
-}
-
-func (q *Queries) SetChainBinaryVersion(ctx context.Context, arg SetChainBinaryVersionParams) error {
-	_, err := q.db.ExecContext(ctx, setChainBinaryVersion, arg.BinaryVersion, arg.ID)
+func (q *Queries) SetNodeVersion(ctx context.Context, arg SetNodeVersionParams) error {
+	_, err := q.db.ExecContext(ctx, setNodeVersion, arg.Version, arg.ID)
 	return err
 }
 

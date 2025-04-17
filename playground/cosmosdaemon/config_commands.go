@@ -7,7 +7,7 @@ import (
 
 func (d *Daemon) ConfigKeyring() error {
 	command := exec.Command( //nolint:gosec
-		d.BinaryPath,
+		d.GetVersionedBinaryPath(),
 		"config",
 		"keyring-backend",
 		d.KeyringBackend,
@@ -23,7 +23,7 @@ func (d *Daemon) ConfigKeyring() error {
 
 func (d *Daemon) ConfigChainID() error {
 	command := exec.Command( //nolint:gosec
-		d.BinaryPath,
+		d.GetVersionedBinaryPath(),
 		"config",
 		"chain-id",
 		d.ChainID,
@@ -39,7 +39,7 @@ func (d *Daemon) ConfigChainID() error {
 
 func (d *Daemon) NodeInit() error {
 	command := exec.Command( //nolint:gosec
-		d.BinaryPath,
+		d.GetVersionedBinaryPath(),
 		"init",
 		d.Moniker,
 		"--chain-id",

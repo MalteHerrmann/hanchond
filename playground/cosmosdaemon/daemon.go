@@ -6,34 +6,19 @@ import (
 	"github.com/hanchon/hanchond/lib/converter"
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/txbuilder"
-)
-
-type SignatureAlgo string
-
-const (
-	EthAlgo    SignatureAlgo = "eth_secp256k1"
-	CosmosAlgo SignatureAlgo = "secp256k1"
-)
-
-type SDKVersion string
-
-const (
-	// NOTE: there are some differences in the namespace while interacting with the CLI, like the genesis namespace
-	GaiaSDK  SDKVersion = "gaiaSDK"
-	EvmosSDK SDKVersion = "evmosSDK"
+	"github.com/hanchon/hanchond/playground/filesmanager"
+	"github.com/hanchon/hanchond/playground/types"
 )
 
 type Daemon struct {
+	chainInfo   types.ChainInfo
 	ValKeyName  string
 	ValMnemonic string
 	ValWallet   string
-	KeyType     SignatureAlgo
-	Prefix      string
+	Version     string
 
 	KeyringBackend string
 	HomeDir        string
-	BinaryName     string
-	SDKVersion     SDKVersion
 
 	ChainID string
 	Moniker string
@@ -46,49 +31,41 @@ type Daemon struct {
 
 	Ports *Ports
 
-	BinaryPath string
-
 	CustomConfig func() error
 }
 
 func NewDameon(
+	chainInfo types.ChainInfo,
 	moniker string,
-	binaryName string,
+	version string,
 	homeDir string,
 	chainID string,
 	keyName string,
-	algo SignatureAlgo,
-	denom string,
-	prefix string,
-	sdkVersion SDKVersion,
 ) *Daemon {
 	mnemonic, _ := txbuilder.NewMnemonic()
 	wallet := ""
-	switch algo {
-	case EthAlgo:
+	if chainInfo.IsEVMChain() {
 		_, temp, _ := txbuilder.WalletFromMnemonic(mnemonic)
-		wallet, _ = converter.HexToBech32(temp.Address.Hex(), prefix)
-	case CosmosAlgo:
-		wallet, _ = txbuilder.MnemonicToCosmosAddress(mnemonic, prefix)
+		wallet, _ = converter.HexToBech32(temp.Address.Hex(), chainInfo.GetAccountPrefix())
+	} else {
+		wallet, _ = txbuilder.MnemonicToCosmosAddress(mnemonic, chainInfo.GetAccountPrefix())
 	}
 
 	return &Daemon{
+		chainInfo:   chainInfo,
 		ValKeyName:  keyName,
 		ValMnemonic: mnemonic,
 		ValWallet:   wallet,
-		Prefix:      prefix,
-
-		KeyType: algo,
+		// TODO: add validity check for version?
+		Version: version,
 
 		KeyringBackend: "test",
 		HomeDir:        homeDir,
-		BinaryName:     binaryName,
-		SDKVersion:     sdkVersion,
 
 		ChainID: chainID,
 		Moniker: moniker,
 
-		BaseDenom: denom,
+		BaseDenom: chainInfo.GetDenom(),
 
 		ValidatorInitialSupply: "100000000000000000000000000",
 
@@ -100,8 +77,8 @@ func NewDameon(
 	}
 }
 
-func (d *Daemon) SetBinaryPath(path string) {
-	d.BinaryPath = path
+func (d *Daemon) GetVersionedBinaryPath() string {
+	return filesmanager.GetDaemondPathWithVersion(d.chainInfo, d.Version)
 }
 
 // This is used to change the config files that are specific to a client

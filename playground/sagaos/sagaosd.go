@@ -1,36 +1,37 @@
 package sagaos
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
-	"github.com/hanchon/hanchond/playground/filesmanager"
+	"github.com/hanchon/hanchond/playground/types"
+)
+
+var ChainInfo = types.NewChainInfo(
+	"saga",
+	"sagaosd",
+	"sagaos_1234-",
+	// TODO: is this even used? check
+	"sagaosd",
+	"saga",
+	"https://github.com/sagaxyz/sagaos",
+	types.EthAlgo,
+	types.EvmosSDK,
 )
 
 type SagaOS struct {
 	*cosmosdaemon.Daemon
 }
 
-func NewSagaOS(moniker string, version string, homeDir string, chainID string, keyName string, denom string) *SagaOS {
-	daemonName := version
-	if !strings.Contains(version, "sagaosd") {
-		daemonName = fmt.Sprintf("sagaosd%s", version)
-	}
+func NewSagaOS(moniker, version, homeDir, chainID, keyName string) *SagaOS {
 	s := &SagaOS{
 		Daemon: cosmosdaemon.NewDameon(
+			ChainInfo,
 			moniker,
-			daemonName,
+			version,
 			homeDir,
 			chainID,
 			keyName,
-			cosmosdaemon.EthAlgo,
-			denom,
-			"saga",
-			cosmosdaemon.EvmosSDK,
 		),
 	}
-	s.SetBinaryPath(filesmanager.GetDaemondPath(daemonName))
 	s.SetCustomConfig(s.UpdateAppFile)
 	return s
 }

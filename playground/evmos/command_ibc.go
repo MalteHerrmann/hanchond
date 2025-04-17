@@ -7,7 +7,7 @@ import (
 
 func (e *Evmos) SendIBC(port, channel, receiver, amount string) (string, error) {
 	command := exec.Command( //nolint:gosec
-		e.BinaryPath,
+		e.GetVersionedBinaryPath(),
 		"tx",
 		"ibc-transfer",
 		"transfer",

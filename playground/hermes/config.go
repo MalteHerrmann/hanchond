@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/hanchon/hanchond/playground/filesmanager"
+	"github.com/hanchon/hanchond/playground/types"
 )
 
 func LocalEndpoint(port int64) string {
@@ -17,7 +18,7 @@ func (h *Hermes) GetConfigFile() string {
 	return filesmanager.GetHermesPath() + "/config.toml"
 }
 
-func (h *Hermes) AddCosmosChain(chainID string, p26657 string, p9090 string, keyname string, mnemonic string, accountPrefix string, denom string) error {
+func (h *Hermes) AddCosmosChain(chainInfo types.ChainInfo, chainID, p26657, p9090, keyname, mnemonic string) error {
 	values := fmt.Sprintf(`
 [[chains]]
 id = '%s'
@@ -38,7 +39,7 @@ max_tx_size = 209715
 clock_drift = '20s'
 max_block_time = '10s'
 trust_threshold = { numerator = '1', denominator = '3' }
-`, chainID, p26657, p9090, accountPrefix, filesmanager.GetHermesPath()+"/keyring"+chainID, keyname, denom)
+`, chainID, p26657, p9090, chainInfo.GetAccountPrefix(), filesmanager.GetHermesPath()+"/keyring"+chainID, keyname, chainInfo.GetDenom())
 
 	configFile, err := filesmanager.ReadFile(h.GetConfigFile())
 	if err != nil {
@@ -64,7 +65,7 @@ trust_threshold = { numerator = '1', denominator = '3' }
 	return nil
 }
 
-func (h *Hermes) AddEvmosChain(chainID string, p26657 string, p9090 string, keyname string, mnemonic string, prefix string, denom string) error {
+func (h *Hermes) AddEVMChain(chainInfo types.ChainInfo, chainID, p26657, p9090, keyname, mnemonic string) error {
 	values := fmt.Sprintf(`
 [[chains]]
 id = '%s'
@@ -84,7 +85,7 @@ trust_threshold = { numerator = '1', denominator = '3' }
 account_prefix = '%s'
 gas_price = { price = 800000000, denom = '%s' }
 address_type = { derivation = 'ethermint', proto_type = { pk_type = '/ethermint.crypto.v1.ethsecp256k1.PubKey' } }
-`, chainID, p26657, p9090, keyname, filesmanager.GetHermesPath()+"/keyring"+chainID, prefix, denom)
+`, chainID, p26657, p9090, keyname, filesmanager.GetHermesPath()+"/keyring"+chainID, chainInfo.GetAccountPrefix(), chainInfo.GetDenom())
 
 	configFile, err := filesmanager.ReadFile(h.GetConfigFile())
 	if err != nil {

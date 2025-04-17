@@ -6,10 +6,13 @@ import (
 
 	"github.com/hanchon/hanchond/playground/hermes"
 	"github.com/hanchon/hanchond/playground/sql"
+	"github.com/hanchon/hanchond/playground/types"
 	"github.com/spf13/cobra"
 )
 
 // represents the addChainConfigCmd command
+//
+// TODO: this is probably broken but not high priority atm to fix this.
 var addChainConfigCmd = &cobra.Command{
 	Use:   "add-chain-config",
 	Args:  cobra.ExactArgs(0),
@@ -68,31 +71,44 @@ var addChainConfigCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		defaultChainInfo := types.NewChainInfo(
+			prefix,
+			"external",
+			chainID,
+			"external",
+			denom,
+			"external",
+			types.CosmosAlgo,
+			types.GaiaSDK,
+		)
+
 		switch isEvm {
 		case false:
 			fmt.Println("Adding a NOT EVM chain")
 			if err := h.AddCosmosChain(
+				defaultChainInfo,
 				chainID,
 				p26657,
 				p9090,
 				keyname,
 				keymnemonic,
-				prefix,
-				denom,
 			); err != nil {
 				fmt.Println("error adding first chain to the relayer:", err.Error())
 				os.Exit(1)
 			}
 		case true:
+			chainInfo := defaultChainInfo
+			chainInfo.KeyAlgo = types.EthAlgo
+			chainInfo.SdkVersion = types.EvmosSDK
+
 			fmt.Println("Adding a EVM chain")
-			if err := h.AddEvmosChain(
+			if err := h.AddEVMChain(
+				chainInfo,
 				chainID,
 				p26657,
 				p9090,
 				keyname,
 				keymnemonic,
-				prefix,
-				denom,
 			); err != nil {
 				fmt.Println("error adding first chain to the relayer:", err.Error())
 				os.Exit(1)

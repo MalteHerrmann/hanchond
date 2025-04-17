@@ -3,6 +3,7 @@ package playground
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"os"
 
@@ -20,7 +21,7 @@ var startHermesCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, _ []string) {
 		queries := localsql.InitDBFromCmd(cmd)
 		relayer, err := queries.GetRelayer(context.Background())
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			if err := queries.InitRelayer(context.Background()); err != nil {
 				fmt.Println("could not init the relayer's database:", err.Error())
 				os.Exit(1)

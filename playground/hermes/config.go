@@ -38,7 +38,6 @@ func (h *Hermes) AddCosmosChain(chainInfo types.ChainInfo, chainID, p26657, p909
 		return nil
 	}
 
-	// TODO: check if relayer key is already present
 	err = h.AddRelayerKeyIfMissing(chainID, mnemonic, chainInfo.GetHDPath())
 	if err != nil {
 		// NOTE: if we had a problem adding the relayer key we are overwriting the changes made to the relayer config
@@ -68,7 +67,6 @@ func (h *Hermes) AddEVMChain(chainInfo types.ChainInfo, chainID, p26657, p9090, 
 		}
 	}
 
-	// TODO: check if relayer key is already registered on chain - this would probably return an error?
 	err = h.AddRelayerKeyIfMissing(chainID, mnemonic, chainInfo.GetHDPath())
 	if err != nil {
 		// NOTE: if we had a problem adding the relayer key we are overwriting the changes made to the relayer config

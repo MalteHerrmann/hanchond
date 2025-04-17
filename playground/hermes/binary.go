@@ -2,7 +2,6 @@ package hermes
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
 	"strings"
 	"syscall"
@@ -56,24 +55,6 @@ func (h *Hermes) CreateChannel(firstChainID, secondChainID string) error {
 		err = fmt.Errorf("error %s: %s; logs written to %s; error from logs: %s", err.Error(), string(out), logsFile, errorFromLogs)
 	}
 	return err
-}
-
-// TODO: move to logs.go file?
-func getErrorFromHermesLogs(logsFile string) string {
-	bz, err := os.ReadFile(logsFile)
-	if err != nil {
-		return ""
-	}
-
-	lines := strings.Split(string(bz), "\n")
-	foundErrors := make([]string, 0, len(lines)) // TODO: check if reallocating per new found error or pre-allocating to much space is worse for performance; doesn't really matter though
-	for _, line := range lines {
-		if strings.Contains(strings.ToLower(line), "error") {
-			foundErrors = append(foundErrors, line)
-		}
-	}
-
-	return strings.Join(foundErrors, "\n")
 }
 
 func (h *Hermes) Start() (int, error) {

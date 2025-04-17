@@ -19,7 +19,6 @@ type Daemon struct {
 
 	KeyringBackend string
 	HomeDir        string
-	BinaryName     string
 
 	ChainID string
 	Moniker string
@@ -53,6 +52,7 @@ func NewDameon(
 	}
 
 	return &Daemon{
+		chainInfo:   chainInfo,
 		ValKeyName:  keyName,
 		ValMnemonic: mnemonic,
 		ValWallet:   wallet,
@@ -61,7 +61,6 @@ func NewDameon(
 
 		KeyringBackend: "test",
 		HomeDir:        homeDir,
-		BinaryName:     fmt.Sprintf("%s%s", chainInfo.GetBinaryName(), version),
 
 		ChainID: chainID,
 		Moniker: moniker,

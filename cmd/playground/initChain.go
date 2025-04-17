@@ -55,8 +55,8 @@ var initChainCmd = &cobra.Command{
 		chainNumber := 1
 		if err == nil {
 			chainNumber = int(latestChain.ID) + 1
-		} else if errors.Is(err, dbsql.ErrNoRows) {
-			fmt.Println("could not get the chains info from db")
+		} else if !errors.Is(err, dbsql.ErrNoRows) { // NOTE: no rows can be expected for an empty db
+			fmt.Println("could not get the chains info from db: ", err.Error())
 			os.Exit(1)
 		}
 

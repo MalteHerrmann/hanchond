@@ -8,7 +8,7 @@ import (
 var ChainInfo = types.NewChainInfo(
 	"evmos",
 	"evmosd",
-	"evmos_9000-1",
+	"evmos_9000-",
 	"evmosd",
 	"aevmos",
 	"https://github.com/evmos/evmos",

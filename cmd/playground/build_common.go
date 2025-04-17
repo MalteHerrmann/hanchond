@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/hanchon/hanchond/playground/filesmanager"
-	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/types"
 	"github.com/spf13/cobra"
 )
@@ -71,14 +70,14 @@ func RunBuildEVMChainCmd(cmd *cobra.Command, chainInfo types.ChainInfo, version 
 	path, err := cmd.Flags().GetString("path")
 	// Local build
 	if err == nil && path != "" {
-		if err = BuildLocalEVMBinary(sagaos.ChainInfo, path); err != nil {
+		if err = BuildLocalEVMBinary(chainInfo, path); err != nil {
 			return fmt.Errorf("could not build %s binary: %w", chainInfo.GetBinaryName(), err)
 		}
 
 		return nil
 	}
 
-	if err = BuildEVMBinaryFromGitHub(sagaos.ChainInfo, version); err != nil {
+	if err = BuildEVMBinaryFromGitHub(chainInfo, version); err != nil {
 		return fmt.Errorf("could not build %s binary: %w", chainInfo.GetBinaryName(), err)
 	}
 

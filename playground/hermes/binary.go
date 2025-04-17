@@ -15,11 +15,9 @@ func (h *Hermes) GetHermesBinary() string {
 	return filesmanager.GetHermesBinary()
 }
 
-func (h *Hermes) AddRelayerKey(chainID string, mnemonic string, isEthWallet bool) error {
-	hdPath := " "
-	if isEthWallet {
-		// TODO: check if SagaOS is using a different hd path for address generation?? why else would the account not be found?
-		hdPath = " --hd-path \"m/44'/60'/0'/0/0\" "
+func (h *Hermes) AddRelayerKeyIfMissing(chainID, mnemonic, hdPath string) error {
+	if strings.TrimSpace(hdPath) != "" {
+		hdPath = fmt.Sprintf(" --hd-path \"%s\" ", hdPath)
 	}
 
 	logsFile := filesmanager.GetHermesPath() + "/logs_keys_" + chainID
@@ -34,7 +32,7 @@ func (h *Hermes) AddRelayerKey(chainID string, mnemonic string, isEthWallet bool
 	)
 	command := exec.Command("bash", "-c", cmd)
 	_, err := command.CombinedOutput()
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "already exists") {
 		return fmt.Errorf("%w: logs written to %s; error from logs: %s", err, logsFile, getErrorFromHermesLogs(logsFile))
 	}
 

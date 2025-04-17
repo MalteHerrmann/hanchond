@@ -13,6 +13,7 @@ var ChainInfo = types.NewChainInfo(
 	"sagaosd",
 	"saga",
 	"https://github.com/sagaxyz/sagaos",
+	"",
 	types.EthAlgo,
 	types.EvmosSDK,
 )

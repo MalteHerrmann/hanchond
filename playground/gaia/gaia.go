@@ -12,6 +12,7 @@ var ChainInfo = types.NewChainInfo(
 	"gaiad",
 	"icsstake",
 	"https://github.com/cosmos/gaia",
+	"",
 	types.CosmosAlgo,
 	types.GaiaSDK,
 )

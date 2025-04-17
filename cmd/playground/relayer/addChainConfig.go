@@ -71,6 +71,12 @@ var addChainConfigCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		hdPath := ""
+		if isEvm {
+			// TODO: maybe check here if that's the right hd path to use? could e.g. get user confirmation
+			hdPath = "m/44'/60'/0'/0/0"
+		}
+
 		defaultChainInfo := types.NewChainInfo(
 			prefix,
 			"external",
@@ -78,6 +84,7 @@ var addChainConfigCmd = &cobra.Command{
 			"external",
 			denom,
 			"external",
+			hdPath,
 			types.CosmosAlgo,
 			types.GaiaSDK,
 		)

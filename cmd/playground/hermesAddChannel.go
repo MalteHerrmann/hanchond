@@ -36,6 +36,7 @@ var hermesAddChannelCmd = &cobra.Command{
 			fmt.Println("invalid chain id")
 			os.Exit(1)
 		}
+
 		chains := make([]database.GetAllChainNodesRow, 2)
 		nodesChainOne, err := queries.GetAllNodesForChainID(context.Background(), int64(chainOneID))
 		if err != nil {

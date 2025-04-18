@@ -12,7 +12,7 @@ var ChainInfo = types.NewChainInfo(
 	"evmosd",
 	"aevmos",
 	"https://github.com/evmos/evmos",
-	"m/44'/60'/0'/0/0",
+	types.EthHDPath,
 	types.EthAlgo,
 	types.EvmosSDK,
 )

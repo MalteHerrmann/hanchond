@@ -8,16 +8,16 @@ import (
 	"time"
 
 	"github.com/hanchon/hanchond/playground/filesmanager"
+	"github.com/hanchon/hanchond/playground/types"
 )
 
 func (h *Hermes) GetHermesBinary() string {
 	return filesmanager.GetHermesBinary()
 }
 
-func (h *Hermes) AddRelayerKeyIfMissing(chainID, mnemonic, hdPath string) error {
-	if strings.TrimSpace(hdPath) != "" {
-		hdPath = fmt.Sprintf(" --hd-path \"%s\" ", hdPath)
-	}
+func (h *Hermes) AddRelayerKeyIfMissing(chainID, mnemonic string, hd types.HDPath) error {
+	// TODO: support account index here instead of hardwiring 0? Probably not necessary..
+	hdPath := fmt.Sprintf(" --hd-path \"%s/0\" ", hd)
 
 	logsFile := filesmanager.GetHermesPath() + "/logs_keys_" + chainID
 	cmd := fmt.Sprintf(

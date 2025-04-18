@@ -12,7 +12,7 @@ type ChainInfo struct {
 	// TODO: is this even used somewhere? maybe remove
 	ClientName string        `json:"client_name"`
 	Denom      string        `json:"denom"`
-	HDPath     string        `json:"hd_path,omitempty"`
+	HDPath     HDPath        `json:"hd_path,omitempty"`
 	KeyAlgo    SignatureAlgo `json:"key_algo"`
 	SdkVersion SDKVersion    `json:"sdk_version"`
 	RepoURL    string        `json:"repo_url"`
@@ -23,7 +23,7 @@ func (ci ChainInfo) GetBinaryName() string     { return ci.BinaryName }
 func (ci ChainInfo) GetChainIDBase() string    { return ci.ChainIDBase }
 func (ci ChainInfo) GetClientName() string     { return ci.ClientName }
 func (ci ChainInfo) GetDenom() string          { return ci.Denom }
-func (ci ChainInfo) GetHDPath() string         { return ci.HDPath }
+func (ci ChainInfo) GetHDPath() HDPath         { return ci.HDPath }
 func (ci ChainInfo) GetKeyAlgo() SignatureAlgo { return ci.KeyAlgo }
 func (ci ChainInfo) GetRepoURL() string        { return ci.RepoURL }
 func (ci ChainInfo) GetSDKVersion() SDKVersion { return ci.SdkVersion }
@@ -72,7 +72,7 @@ func NewChainInfo(
 	clientName string,
 	denom string,
 	repoURL string,
-	hdPath string,
+	hdPath HDPath,
 	keyAlgo SignatureAlgo,
 	sdkVersion SDKVersion,
 ) ChainInfo {
@@ -102,4 +102,13 @@ const (
 	// NOTE: there are some differences in the namespace while interacting with the CLI, like the genesis namespace
 	GaiaSDK  SDKVersion = "gaiaSDK"
 	EvmosSDK SDKVersion = "evmosSDK"
+)
+
+type HDPath string
+
+const (
+	// CosmosHDPath as per: https://github.com/confio/cosmos-hd-key-derivation-spec?tab=readme-ov-file#the-cosmos-hub-path
+	CosmosHDPath HDPath = "m/44'/118'/0'/0"
+	// EthHDPath as per e.g.: https://docs.ethers.org/v5/api/utils/hdnode/
+	EthHDPath HDPath = "m/44'/60'/0'/0"
 )

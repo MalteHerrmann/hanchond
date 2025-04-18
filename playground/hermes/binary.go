@@ -3,21 +3,23 @@ package hermes
 import (
 	"fmt"
 	"os/exec"
+	"strings"
 	"syscall"
 	"time"
 
 	"github.com/hanchon/hanchond/playground/filesmanager"
+	"github.com/hanchon/hanchond/playground/types"
 )
 
 func (h *Hermes) GetHermesBinary() string {
 	return filesmanager.GetHermesBinary()
 }
 
-func (h *Hermes) AddRelayerKey(chainID string, mnemonic string, isEthWallet bool) error {
-	hdPath := " "
-	if isEthWallet {
-		hdPath = " --hd-path \"m/44'/60'/0'/0/0\" "
-	}
+func (h *Hermes) AddRelayerKeyIfMissing(chainID, mnemonic string, hd types.HDPath) error {
+	// TODO: support account index here instead of hardwiring 0? Probably not necessary..
+	hdPath := fmt.Sprintf(" --hd-path \"%s/0\" ", hd)
+
+	logsFile := filesmanager.GetHermesPath() + "/logs_keys_" + chainID
 	cmd := fmt.Sprintf(
 		"echo \"%s\" | %s --config %s keys add %s --mnemonic-file /dev/stdin --chain %s >> %s 2>&1",
 		mnemonic,
@@ -25,26 +27,32 @@ func (h *Hermes) AddRelayerKey(chainID string, mnemonic string, isEthWallet bool
 		h.GetConfigFile(),
 		hdPath,
 		chainID,
-		filesmanager.GetHermesPath()+"/logs_keys"+chainID,
+		logsFile,
 	)
 	command := exec.Command("bash", "-c", cmd)
 	_, err := command.CombinedOutput()
-	return err
+	if err != nil && !strings.Contains(err.Error(), "already exists") {
+		return fmt.Errorf("%w: logs written to %s; error from logs: %s", err, logsFile, getErrorFromHermesLogs(logsFile))
+	}
+
+	return nil
 }
 
 func (h *Hermes) CreateChannel(firstChainID, secondChainID string) error {
+	logsFile := fmt.Sprintf("%s/logs_channel_%s_%s", filesmanager.GetHermesPath(), firstChainID, secondChainID)
 	cmd := fmt.Sprintf(
 		"%s --config %s create channel --a-chain %s --b-chain %s --a-port transfer --b-port transfer --new-client-connection --yes >> %s 2>&1",
 		h.GetHermesBinary(),
 		h.GetConfigFile(),
 		firstChainID,
 		secondChainID,
-		filesmanager.GetHermesPath()+"/logs_channel"+firstChainID+secondChainID,
+		logsFile,
 	)
 	command := exec.Command("bash", "-c", cmd)
 	out, err := command.CombinedOutput()
 	if err != nil {
-		err = fmt.Errorf("error %s: %s", err.Error(), string(out))
+		errorFromLogs := getErrorFromHermesLogs(logsFile)
+		err = fmt.Errorf("error %s: %s; logs written to %s; error from logs: %s", err.Error(), string(out), logsFile, errorFromLogs)
 	}
 	return err
 }

@@ -1,6 +1,7 @@
 package filesmanager
 
 import (
+	"fmt"
 	"os/exec"
 	"strings"
 
@@ -21,6 +22,10 @@ func GitCloneBranch(version string, dstFolder string, repoURL string) error {
 	}
 
 	cmd := exec.Command("git", "clone", "--depth", "1", "--branch", version, repoURL, dstFolder)
-	_, err := cmd.Output()
-	return err
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("failed to clone repository; error: %w: %s", err, string(out))
+	}
+
+	return nil
 }

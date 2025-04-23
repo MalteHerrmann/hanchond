@@ -14,8 +14,8 @@ import (
 
 // CLI flags
 var (
-	getBinary, getChainID, getVal bool
-	retrievedPort                 uint16
+	getBinary, getChainID, getHome, getVal bool
+	retrievedPort                          uint16
 )
 
 // getNodeCmd represents the getNode command
@@ -52,6 +52,11 @@ var getNodeCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		if getHome {
+			fmt.Println(node.ConfigFolder)
+			os.Exit(0)
+		}
+
 		chain, err := queries.GetChain(context.Background(), node.ChainID)
 		if err != nil {
 			fmt.Println("could not get the chain:", err.Error())
@@ -84,6 +89,7 @@ var getNodeCmd = &cobra.Command{
 General Configuration:
     - Binary: %s
     - ChainID: %s
+    - Home Folder: %s
 Process:
     - IsRunning: %d
     - ProcessID: %d
@@ -101,6 +107,7 @@ Ports:
 			idNumber,
 			chain.MustParseChainInfo().GetVersionedBinaryName(node.Version),
 			chain.ChainID,
+			node.ConfigFolder,
 			node.IsRunning,
 			node.ProcessID,
 			node.ValidatorKeyName,
@@ -118,6 +125,7 @@ Ports:
 func init() {
 	getNodeCmd.Flags().BoolVarP(&getBinary, "bin", "b", false, "Get the node's running binary path")
 	getNodeCmd.Flags().BoolVarP(&getChainID, "chain-id", "c", false, "Get the chain ID of the node's network")
+	getNodeCmd.Flags().BoolVarP(&getHome, "node-home", "", false, "Get the node's home folder")
 	getNodeCmd.Flags().BoolVarP(&getVal, "val", "v", false, "Get the node's validator address")
 	getNodeCmd.Flags().Uint16VarP(&retrievedPort, "port", "p", 0, "Get the node's remapped port")
 

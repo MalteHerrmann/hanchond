@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/hanchon/hanchond/lib/smartcontract"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/sql"
@@ -91,7 +92,7 @@ var deployContractCmd = &cobra.Command{
 		}
 
 		fmt.Printf("{\"contract_address\":\"%s\", \"tx_hash\":\"%s\"}\n", contractAddress, txHash)
-		os.Exit(0)
+		utils.ExitSuccess()
 	},
 }
 

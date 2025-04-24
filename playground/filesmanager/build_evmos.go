@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/types"
 )
 
@@ -60,8 +61,7 @@ func BuildHermes(version string) error {
 	}
 
 	cmd := "CARGO_NET_GIT_FETCH_WITH_CLI=true cargo build"
-	command := exec.Command("bash", "-c", cmd)
-	_, err := command.CombinedOutput()
+	_, err := utils.ExecCommand("bash", "-c", cmd)
 	return err
 }
 

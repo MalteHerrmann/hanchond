@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/gaia"
@@ -26,8 +27,7 @@ var startNodeCmd = &cobra.Command{
 		id := args[0]
 		idNumber, err := strconv.ParseInt(id, 10, 64)
 		if err != nil {
-			fmt.Println("could not parse the ID:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not parse the ID: %w", err))
 		}
 
 		node, err := queries.GetNode(context.Background(), idNumber)

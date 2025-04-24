@@ -7,6 +7,7 @@ import (
 
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/smartcontract"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/sql"
@@ -65,7 +66,7 @@ var callContractViewCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		fmt.Println(string(resp))
-		os.Exit(0)
+		utils.ExitSuccess()
 	},
 }
 

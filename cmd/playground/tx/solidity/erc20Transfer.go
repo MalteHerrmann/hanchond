@@ -9,6 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/hanchon/hanchond/lib/converter"
 	"github.com/hanchon/hanchond/lib/txbuilder"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/solidity"
@@ -63,7 +64,7 @@ var erc20TransferCmd = &cobra.Command{
 		}
 
 		fmt.Println("{\"txhash\":\"" + txhash + "\"}")
-		os.Exit(0)
+		utils.ExitSuccess()
 	},
 }
 

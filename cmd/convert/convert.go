@@ -1,8 +1,7 @@
 package convert
 
 import (
-	"os"
-
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +14,7 @@ var ConvertCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			_ = cmd.Help()
-			os.Exit(0)
+			utils.ExitSuccess()
 		}
 	},
 }

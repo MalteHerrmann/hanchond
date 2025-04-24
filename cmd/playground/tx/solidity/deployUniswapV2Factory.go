@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/hanchon/hanchond/lib/smartcontract"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/solidity"
@@ -124,7 +125,7 @@ var deployUniswapV2FactoryCmd = &cobra.Command{
 			fmt.Println("could not clean up the temp folder:", err.Error())
 			os.Exit(1)
 		}
-		os.Exit(0)
+		utils.ExitSuccess()
 	},
 }
 

@@ -4,9 +4,8 @@ import (
 	"os"
 
 	"github.com/hanchon/hanchond/cmd/convert"
-	playground "github.com/hanchon/hanchond/cmd/playground"
+	"github.com/hanchon/hanchond/cmd/playground"
 	"github.com/hanchon/hanchond/cmd/repo"
-
 	"github.com/spf13/cobra"
 )
 

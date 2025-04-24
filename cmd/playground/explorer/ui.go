@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/explorer"
 	"github.com/hanchon/hanchond/playground/explorer/explorerui"
@@ -40,7 +41,7 @@ var uiCmd = &cobra.Command{
 			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 			os.Exit(1)
 		}
-		os.Exit(0)
+		utils.ExitSuccess()
 	},
 }
 

@@ -2,9 +2,9 @@ package filesmanager
 
 import (
 	"fmt"
-	"os/exec"
 	"strings"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/types"
 )
 
@@ -21,10 +21,9 @@ func GitCloneBranch(version string, dstFolder string, repoURL string) error {
 		panic("repoURL must start with 'https://github.com/'; got: " + repoURL)
 	}
 
-	cmd := exec.Command("git", "clone", "--depth", "1", "--branch", version, repoURL, dstFolder)
-	out, err := cmd.CombinedOutput()
+	_, err := utils.ExecCommand("git", "clone", "--depth", "1", "--branch", version, repoURL, dstFolder)
 	if err != nil {
-		return fmt.Errorf("failed to clone repository; error: %w: %s", err, string(out))
+		return fmt.Errorf("failed to clone repository; error: %w", err)
 	}
 
 	return nil

@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/hanchon/hanchond/lib/converter"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -43,7 +44,7 @@ var getNodeCmd = &cobra.Command{
 		// This means the port was specified
 		if retrievedPort != 0 {
 			fmt.Println(ports.Get(retrievedPort))
-			os.Exit(0)
+			utils.ExitSuccess()
 		}
 
 		node, err := queries.GetNode(context.Background(), idNumber)
@@ -54,7 +55,7 @@ var getNodeCmd = &cobra.Command{
 
 		if getHome {
 			fmt.Println(node.ConfigFolder)
-			os.Exit(0)
+			utils.ExitSuccess()
 		}
 
 		chain, err := queries.GetChain(context.Background(), node.ChainID)
@@ -66,17 +67,17 @@ var getNodeCmd = &cobra.Command{
 		// retrieve only binary
 		if getBinary {
 			fmt.Println(filesmanager.GetDaemondPathWithVersion(chain.MustParseChainInfo(), node.Version))
-			os.Exit(0)
+			utils.ExitSuccess()
 		}
 
 		if getVal {
 			fmt.Println(node.ValidatorWallet)
-			os.Exit(0)
+			utils.ExitSuccess()
 		}
 
 		if getChainID {
 			fmt.Println(chain.ChainID)
-			os.Exit(0)
+			utils.ExitSuccess()
 		}
 
 		hexWallet, err := converter.Bech32ToHex(node.ValidatorWallet)

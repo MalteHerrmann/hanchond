@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/spf13/cobra"
 )
@@ -101,6 +102,6 @@ var BumpModuleVersionCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		os.Exit(0)
+		utils.ExitSuccess()
 	},
 }

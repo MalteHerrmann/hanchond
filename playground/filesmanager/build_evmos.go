@@ -63,6 +63,8 @@ func CopyFile(origin string, destination string) error {
 }
 
 // NOTE: This requires that the version was already cloned
+//
+// TODO: avoid building from source and rather download from release page instead; depending on operating system get the correct binary
 func BuildHermes(version string) error {
 	// Change directory to the cloned repository
 	if err := os.Chdir(GetBranchFolder(version)); err != nil {

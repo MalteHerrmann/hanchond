@@ -18,17 +18,18 @@ var createChannelCmd = &cobra.Command{
 		_ = sql.InitDBFromCmd(cmd)
 
 		h := hermes.NewHermes()
-		fmt.Println("Relayer initialized")
+		utils.Log("Relayer initialized")
 
 		chain1 := args[0]
 		chain2 := args[1]
 
-		fmt.Println("Calling create channel")
+		utils.Log("Calling create channel")
 		err := h.CreateChannel(chain1, chain2)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error creating channel: %w", err))
 		}
-		fmt.Println("Channel created")
+
+		utils.Log("Channel created")
 	},
 }
 

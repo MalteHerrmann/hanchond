@@ -42,7 +42,7 @@ var stopNodeCmd = &cobra.Command{
 
 		out, err := command.CombinedOutput()
 		if strings.Contains(strings.ToLower(string(out)), "no such process") {
-			fmt.Println("process is not running, updating the database..")
+			utils.Log("process is not running, updating the database..")
 		} else if err != nil {
 			utils.ExitError(fmt.Errorf("could not kill the process: %w", err))
 		}
@@ -55,7 +55,7 @@ var stopNodeCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("could not update the database: %w", err))
 		}
 
-		fmt.Println("Node is no longer running")
+		utils.Log("node is no longer running")
 	},
 }
 

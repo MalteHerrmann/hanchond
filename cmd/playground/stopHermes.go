@@ -21,12 +21,12 @@ var stopHermesCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		relayer, err := queries.GetRelayer(context.Background())
 		if err != nil {
-			utils.ExitError(fmt.Errorf("the relayer is not in the database: %w", err))
+			utils.ExitError(fmt.Errorf("relayer is not in the database: %w", err))
 		}
 
 		// TODO: check if the process is running checking the PID
 		if relayer.IsRunning != 1 {
-			utils.ExitError(fmt.Errorf("the relayer is not running"))
+			utils.ExitError(fmt.Errorf("relayer is not running"))
 		}
 
 		command := exec.Command( //nolint:gosec
@@ -36,7 +36,7 @@ var stopHermesCmd = &cobra.Command{
 
 		out, err := command.CombinedOutput()
 		if strings.Contains(strings.ToLower(string(out)), "no such process") {
-			fmt.Println("the relayer is not running, updating the database..")
+			utils.Log("relayer is not running, updating the database..")
 		} else if err != nil {
 			utils.ExitError(fmt.Errorf("could not kill the process: %w", err))
 		}
@@ -48,7 +48,7 @@ var stopHermesCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("could not update the relayer database: %w", err))
 		}
 
-		fmt.Println("Relayer is no longer running")
+		utils.Log("relayer is no longer running")
 	},
 }
 

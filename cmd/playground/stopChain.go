@@ -33,7 +33,7 @@ var stopChainCmd = &cobra.Command{
 
 		for _, v := range nodes {
 			if v.IsRunning != 1 {
-				fmt.Printf("The node %d is not running\n", v.ID)
+				utils.Log("The node %d is not running", v.ID)
 				continue
 			}
 
@@ -44,7 +44,7 @@ var stopChainCmd = &cobra.Command{
 			out, err := command.CombinedOutput()
 
 			if strings.Contains(strings.ToLower(string(out)), "no such process") {
-				fmt.Printf("Process is not running for node %d, updating the database..\n", v.ID)
+				utils.Log("Process is not running for node %d, updating the database..", v.ID)
 			} else if err != nil {
 				utils.ExitError(fmt.Errorf("could not kill the process: %w", err))
 			}
@@ -58,7 +58,7 @@ var stopChainCmd = &cobra.Command{
 			}
 		}
 
-		fmt.Println("Chain is stopped")
+		utils.Log("Chain %d is stopped", chainNumber)
 	},
 }
 

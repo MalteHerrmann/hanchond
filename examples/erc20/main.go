@@ -67,7 +67,7 @@ func main() {
 		if err == nil {
 			erc20sAddress = append(erc20sAddress, address)
 		}
-		fmt.Println("contract deployed:", address)
+		utils.Log("contract deployed: %s", address)
 	}
 
 	// Create the wallets and send coins
@@ -96,13 +96,14 @@ func main() {
 			}
 		}
 	}
-	fmt.Printf("finished initializing the %d wallets\n", totalWallets)
+	utils.Log("finished initializing %d wallets", totalWallets)
 
 	startingHeight, err := client.GetBlockNumber()
 	if err != nil {
 		utils.ExitError(fmt.Errorf("could not get the current height: %w", err))
 	}
-	fmt.Println("starting height:", startingHeight)
+
+	utils.Log("starting height: %d", startingHeight)
 	heigth := startingHeight
 	for heigth < startingHeight+100 {
 		_, _ = sendRandomTransaction(erc20sAddress, wallets)
@@ -111,5 +112,5 @@ func main() {
 			utils.ExitError(fmt.Errorf("could not get the current height: %w", err))
 		}
 	}
-	fmt.Println("stop height:", heigth)
+	utils.Log("stop height: %d", heigth)
 }

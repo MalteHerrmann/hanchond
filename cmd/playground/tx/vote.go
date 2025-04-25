@@ -31,7 +31,7 @@ var voteCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("error sending the transaction: %w", err))
 		}
 		for _, v := range txhashes {
-			fmt.Println(v)
+			utils.Log("vote sent in tx: %s", v)
 		}
 	},
 }

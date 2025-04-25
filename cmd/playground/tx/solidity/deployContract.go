@@ -80,6 +80,7 @@ var deployContractCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("error getting the contract address: %w", err))
 		}
 
+		// TODO: maybe introduce new LogTable command for these types of outputs?
 		fmt.Printf("{\"contract_address\":\"%s\", \"tx_hash\":\"%s\"}\n", contractAddress, txHash)
 		utils.ExitSuccess()
 	},

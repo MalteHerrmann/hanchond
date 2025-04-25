@@ -21,15 +21,18 @@ func BuildEVMBinary(path string) error {
 		return err
 	}
 
-	cmd := exec.Command("rm", "-rf", path+"/build") //nolint:gosec
-	if _, err := cmd.CombinedOutput(); err != nil {
+	if _, err := utils.ExecCommand("rm", "-rf", path+"/build"); err != nil {
 		return err
 	}
 
-	cmd = exec.Command("make", "build", "COSMOS_BUILD_OPTIONS=nooptimization,nostrip")
-	out, err := cmd.CombinedOutput()
-	fmt.Println(string(out))
-	return err
+	out, err := utils.ExecCommand("make", "build", "COSMOS_BUILD_OPTIONS=nooptimization,nostrip")
+	if err != nil {
+		return err
+	}
+
+	// TODO: is build output required here? Could be removed just as well...
+	utils.Log("build output: %s", out)
+	return nil
 }
 
 func SaveBuiltVersion(chainInfo types.ChainInfo, version string) error {

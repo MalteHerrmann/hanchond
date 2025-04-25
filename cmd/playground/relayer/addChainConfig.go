@@ -21,7 +21,7 @@ var addChainConfigCmd = &cobra.Command{
 		_ = sql.InitDBFromCmd(cmd)
 
 		h := hermes.NewHermes()
-		fmt.Println("Relayer initialized")
+		utils.Log("Relayer initialized")
 
 		chainID, err := cmd.Flags().GetString("chainid")
 		if err != nil || chainID == "" {
@@ -83,7 +83,7 @@ var addChainConfigCmd = &cobra.Command{
 
 		switch isEvm {
 		case false:
-			fmt.Println("Adding a NOT EVM chain")
+			utils.Log("adding a non-EVM chain")
 			if err := h.AddCosmosChain(
 				defaultChainInfo,
 				chainID,
@@ -99,7 +99,7 @@ var addChainConfigCmd = &cobra.Command{
 			chainInfo.KeyAlgo = types.EthAlgo
 			chainInfo.SdkVersion = types.EvmosSDK
 
-			fmt.Println("Adding a EVM chain")
+			utils.Log("adding a EVM chain")
 			if err := h.AddEVMChain(
 				chainInfo,
 				chainID,

@@ -119,7 +119,7 @@ var initChainCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("error: %w", err))
 		}
 
-		fmt.Println("New chain created with id:", dbID)
+		utils.Log("New chain created with id: %d", dbID)
 	},
 }
 

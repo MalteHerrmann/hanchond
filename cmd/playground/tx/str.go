@@ -65,7 +65,8 @@ var strV1ProposalCmd = &cobra.Command{
 		if len(hash) > 1 {
 			hash[1] = strings.TrimSpace(hash[1])
 		}
-		fmt.Println(hash[1])
+
+		utils.Log("transaction sent: %s", hash[1])
 	},
 }
 

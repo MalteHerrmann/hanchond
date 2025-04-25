@@ -59,7 +59,7 @@ var startChainCmd = &cobra.Command{
 				utils.ExitError(fmt.Errorf("could not start the node: %w", err))
 			}
 
-			fmt.Println("Node is running with pID:", pID)
+			utils.Log("Node is running with pID: %d", pID)
 			err = queries.SetProcessID(context.Background(), database.SetProcessIDParams{
 				ProcessID: int64(pID),
 				IsRunning: 1,

@@ -49,7 +49,7 @@ var hermesAddChannelCmd = &cobra.Command{
 		chains[1] = nodesChainTwo[0]
 
 		h := hermes.NewHermes()
-		fmt.Println("Relayer initialized")
+		utils.Log("Relayer initialized")
 
 		for i, v := range chains {
 			if v.IsRunning != 1 {
@@ -61,7 +61,7 @@ var hermesAddChannelCmd = &cobra.Command{
 
 			switch binaryName {
 			case gaia.ChainInfo.GetBinaryName():
-				fmt.Printf("Adding %s chain\n", binaryName)
+				utils.Log("Adding %s chain", binaryName)
 				if err := h.AddCosmosChain(
 					chainInfo,
 					v.ChainID_2,
@@ -73,7 +73,7 @@ var hermesAddChannelCmd = &cobra.Command{
 					utils.ExitError(fmt.Errorf("error adding chain %d to the relayer: %s", i, err.Error()))
 				}
 			case evmos.ChainInfo.GetBinaryName(), sagaos.ChainInfo.GetBinaryName():
-				fmt.Printf("Adding %s chain\n", binaryName)
+				utils.Log("Adding chain %d: %s", i, binaryName)
 				if err := h.AddEVMChain(
 					chainInfo,
 					v.ChainID_2,
@@ -90,12 +90,13 @@ var hermesAddChannelCmd = &cobra.Command{
 
 		}
 
-		fmt.Println("Calling create channel")
+		utils.Log("Calling create channel")
 		err = h.CreateChannel(chains[0].ChainID_2, chains[1].ChainID_2)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error creating channel: %w", err))
 		}
-		fmt.Println("Channel created")
+
+		utils.Log("Channel created")
 	},
 }
 

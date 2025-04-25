@@ -30,7 +30,7 @@ var BumpModuleVersionCmd = &cobra.Command{
 
 		// Find the current version
 		goModPath := fmt.Sprintf("%s/go.mod", path)
-		fmt.Println("using go.mod path as:", goModPath)
+		utils.Log("using go.mod path as: %s", goModPath)
 		goModFile, err := filesmanager.ReadFile(goModPath)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error reading the go.mod file: %w", err))
@@ -43,7 +43,7 @@ var BumpModuleVersionCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("the go.mod file does not define the module name"))
 		}
 		currentVersion := modules[0][1]
-		fmt.Println("the current version is:", currentVersion)
+		utils.Log("the current version is: %s", currentVersion)
 
 		// Create the new version with all the parts of the currentVersion but overwritting the last segment
 		newVersion := ""
@@ -56,7 +56,7 @@ var BumpModuleVersionCmd = &cobra.Command{
 			newVersion += v + "/"
 		}
 
-		fmt.Println("the new version is:", newVersion)
+		utils.Log("the new version is: %s", newVersion)
 
 		// Walk through the root directory recursively
 		if err = filepath.Walk(path, func(path string, info fs.FileInfo, err error) error {
@@ -83,7 +83,7 @@ var BumpModuleVersionCmd = &cobra.Command{
 
 			// Only write if the file was modified
 			if updatedContent != fileContent {
-				fmt.Printf("updating file: %s\n", path)
+				utils.Log("updating file: %s", path)
 				err := filesmanager.SaveFileWithMode([]byte(updatedContent), path, info.Mode())
 				if err != nil {
 					utils.ExitError(fmt.Errorf("failed saving the file %s: %w", path, err))

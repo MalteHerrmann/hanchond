@@ -62,7 +62,7 @@ var compileContractCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("could not clean up temp folder: %w", err))
 		}
 
-		fmt.Printf("Contract compiled at %s\n", outputFolder)
+		utils.Log("Contract compiled at %s", outputFolder)
 		utils.ExitSuccess()
 	},
 }

@@ -36,7 +36,7 @@ var startHermesCmd = &cobra.Command{
 		if err != nil {
 			utils.ExitError(fmt.Errorf("could not start the relayer: %w", err))
 		}
-		fmt.Println("Hermes running with PID:", pid)
+		utils.Log("Hermes running with PID: %d", pid)
 
 		if err := queries.UpdateRelayer(context.Background(), database.UpdateRelayerParams{
 			ProcessID: int64(pid),

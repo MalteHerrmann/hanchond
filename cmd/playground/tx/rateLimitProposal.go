@@ -54,7 +54,7 @@ var rateLimitProposalCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("error sending the transaction: %w", err))
 		}
 
-		fmt.Println(txhash)
+		utils.Log("transaction sent: %s", txhash)
 	},
 }
 

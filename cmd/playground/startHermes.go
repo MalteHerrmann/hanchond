@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"os"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/hermes"
 	localsql "github.com/hanchon/hanchond/playground/sql"
@@ -23,21 +23,18 @@ var startHermesCmd = &cobra.Command{
 		relayer, err := queries.GetRelayer(context.Background())
 		if errors.Is(err, sql.ErrNoRows) {
 			if err := queries.InitRelayer(context.Background()); err != nil {
-				fmt.Println("could not init the relayer's database:", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("could not init the relayer's database: %w", err))
 			}
 		}
 
 		// TODO: check if the process is running checking the PID
 		if relayer.IsRunning == 1 {
-			fmt.Println("the relayer is already running")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("the relayer is already running"))
 		}
 
 		pid, err := hermes.NewHermes().Start()
 		if err != nil {
-			fmt.Println("could not start the relayer:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not start the relayer: %w", err))
 		}
 		fmt.Println("Hermes running with PID:", pid)
 
@@ -45,8 +42,7 @@ var startHermesCmd = &cobra.Command{
 			ProcessID: int64(pid),
 			IsRunning: 1,
 		}); err != nil {
-			fmt.Println("could not update the relayer database", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not update the relayer database: %w", err))
 		}
 	},
 }

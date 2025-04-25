@@ -9,6 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/txbuilder"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/solidity"
 	"golang.org/x/exp/rand"
@@ -42,8 +43,7 @@ func sendRandomTransaction(erc20Address []string, wallets []*txbuilder.SimpleWeb
 
 func main() {
 	if len(os.Args) < 4 {
-		fmt.Println("usage [mnemonic] [web3_endpoint] [home_dir]")
-		os.Exit(1)
+		utils.ExitError(fmt.Errorf("usage [mnemonic] [web3_endpoint] [home_dir]"))
 	}
 	mnemonic := os.Args[1]
 	web3Endpoint := os.Args[2]
@@ -61,8 +61,7 @@ func main() {
 		initialAmount := "1000000"
 		txHash, err := solidity.BuildAndDeployERC20Contract(randString(7), randString(3), initialAmount, false, valWallet.TxBuilder, 1_000_000)
 		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
+			utils.ExitError(err)
 		}
 		address, err := client.GetContractAddress(txHash)
 		if err == nil {
@@ -82,21 +81,18 @@ func main() {
 			w.Address.Hex(),
 			big.NewInt(9_000_000_000_000_000_000),
 		); err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
+			utils.ExitError(err)
 		}
 
 		for _, erc20Wallet := range erc20sAddress {
 			callData, err := solidity.ERC20TransferCallData(w.Address.Hex(), "100000")
 			if err != nil {
-				fmt.Println(err.Error())
-				os.Exit(1)
+				utils.ExitError(err)
 			}
 
 			to := common.HexToAddress(erc20Wallet)
 			if _, err := valWallet.TxBuilder.SendTx(valWallet.Address, &to, big.NewInt(0), 200_000, callData, valWallet.PrivKey); err != nil {
-				fmt.Println(err.Error())
-				os.Exit(1)
+				utils.ExitError(err)
 			}
 		}
 	}
@@ -104,8 +100,7 @@ func main() {
 
 	startingHeight, err := client.GetBlockNumber()
 	if err != nil {
-		fmt.Println("could not get the current height:", err.Error())
-		os.Exit(1)
+		utils.ExitError(fmt.Errorf("could not get the current height: %w", err))
 	}
 	fmt.Println("starting height:", startingHeight)
 	heigth := startingHeight
@@ -113,8 +108,7 @@ func main() {
 		_, _ = sendRandomTransaction(erc20sAddress, wallets)
 		heigth, err = client.GetBlockNumber()
 		if err != nil {
-			fmt.Println("could not get the current height:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the current height: %w", err))
 		}
 	}
 	fmt.Println("stop height:", heigth)

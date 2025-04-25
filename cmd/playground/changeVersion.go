@@ -3,10 +3,10 @@ package playground
 import (
 	"context"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -24,8 +24,7 @@ var changeVersionCmd = &cobra.Command{
 		id := args[0]
 		idNumber, err := strconv.ParseInt(id, 10, 64)
 		if err != nil {
-			fmt.Println("could not parse the ID:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not parse the ID: %w", err))
 		}
 		binaryVersion := strings.TrimSpace(args[1])
 
@@ -33,8 +32,7 @@ var changeVersionCmd = &cobra.Command{
 			// Update all of the chain's nodes
 			nodes, err := queries.GetAllNodesForChainID(context.Background(), idNumber)
 			if err != nil {
-				fmt.Println("could not get chain nodes:", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("could not get chain nodes: %w", err))
 			}
 
 			for _, v := range nodes {
@@ -55,8 +53,7 @@ func init() {
 func updateNodeVersion(queries *database.Queries, nodeID int64, version string) {
 	_, err := queries.GetNode(context.Background(), nodeID)
 	if err != nil {
-		fmt.Println("could not get the node:", err.Error())
-		os.Exit(1)
+		utils.ExitError(fmt.Errorf("could not get the node: %w", err))
 	}
 
 	err = queries.SetNodeVersion(context.Background(), database.SetNodeVersionParams{
@@ -64,9 +61,8 @@ func updateNodeVersion(queries *database.Queries, nodeID int64, version string) 
 		ID:      nodeID,
 	})
 	if err != nil {
-		fmt.Println("could not update the binary version:", err.Error())
-		os.Exit(1)
+		utils.ExitError(fmt.Errorf("could not update the binary version: %w", err))
 	}
 
-	fmt.Printf("Node %d updated to version %s\n", nodeID, version)
+	utils.Log("Node %d updated to version %s", nodeID, version)
 }

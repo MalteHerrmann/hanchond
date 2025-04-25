@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/types"
 	"github.com/spf13/cobra"
 )
@@ -18,8 +19,7 @@ func SetBaseDir(path string) {
 func SetHomeFolderFromCobraFlags(cmd *cobra.Command) string {
 	home, err := cmd.Flags().GetString("home")
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		utils.ExitError(err)
 	}
 	home, _ = strings.CutSuffix(home, "/")
 	SetBaseDir(home)

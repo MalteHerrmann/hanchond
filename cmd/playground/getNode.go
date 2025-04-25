@@ -3,7 +3,6 @@ package playground
 import (
 	"context"
 	"fmt"
-	"os"
 	"strconv"
 
 	"github.com/hanchon/hanchond/lib/converter"
@@ -31,14 +30,12 @@ var getNodeCmd = &cobra.Command{
 		id := args[0]
 		idNumber, err := strconv.ParseInt(id, 10, 64)
 		if err != nil {
-			fmt.Println("could not parse the ID:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not parse the ID: %w", err))
 		}
 
 		ports, err := queries.GetNodePorts(context.Background(), idNumber)
 		if err != nil {
-			fmt.Println("could not get the ports:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the ports: %w", err))
 		}
 
 		// This means the port was specified
@@ -49,8 +46,7 @@ var getNodeCmd = &cobra.Command{
 
 		node, err := queries.GetNode(context.Background(), idNumber)
 		if err != nil {
-			fmt.Println("could not get the node:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the node: %w", err))
 		}
 
 		if getHome {
@@ -60,8 +56,7 @@ var getNodeCmd = &cobra.Command{
 
 		chain, err := queries.GetChain(context.Background(), node.ChainID)
 		if err != nil {
-			fmt.Println("could not get the chain:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the chain: %w", err))
 		}
 
 		// retrieve only binary
@@ -82,8 +77,7 @@ var getNodeCmd = &cobra.Command{
 
 		hexWallet, err := converter.Bech32ToHex(node.ValidatorWallet)
 		if err != nil {
-			fmt.Println("could not convert validator wallet to eth:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not convert validator wallet to eth: %w", err))
 		}
 
 		fmt.Printf(`Node: %d

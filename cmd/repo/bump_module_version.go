@@ -3,7 +3,6 @@ package repo
 import (
 	"fmt"
 	"io/fs"
-	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -34,16 +33,14 @@ var BumpModuleVersionCmd = &cobra.Command{
 		fmt.Println("using go.mod path as:", goModPath)
 		goModFile, err := filesmanager.ReadFile(goModPath)
 		if err != nil {
-			fmt.Println("error reading the go.mod file:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error reading the go.mod file: %w", err))
 		}
 
 		// Get the current version
 		re := regexp.MustCompile(`(?m)^module\s+(\S+)$`)
 		modules := re.FindAllStringSubmatch(string(goModFile), -1)
 		if len(modules) == 0 {
-			fmt.Println("the go.mod file does not define the module name")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("the go.mod file does not define the module name"))
 		}
 		currentVersion := modules[0][1]
 		fmt.Println("the current version is:", currentVersion)
@@ -64,8 +61,7 @@ var BumpModuleVersionCmd = &cobra.Command{
 		// Walk through the root directory recursively
 		if err = filepath.Walk(path, func(path string, info fs.FileInfo, err error) error {
 			if err != nil {
-				fmt.Println("error reading the directory", path)
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("error reading the directory %s: %w", path, err))
 			}
 
 			// Only process regular files
@@ -76,8 +72,7 @@ var BumpModuleVersionCmd = &cobra.Command{
 			// Read the file
 			content, err := filesmanager.ReadFile(path)
 			if err != nil {
-				fmt.Println("failed reading the file:", path)
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("failed reading the file %s: %w", path, err))
 			}
 
 			fileContent := string(content)
@@ -91,15 +86,13 @@ var BumpModuleVersionCmd = &cobra.Command{
 				fmt.Printf("updating file: %s\n", path)
 				err := filesmanager.SaveFileWithMode([]byte(updatedContent), path, info.Mode())
 				if err != nil {
-					fmt.Println("failed saving the file:", path)
-					os.Exit(1)
+					utils.ExitError(fmt.Errorf("failed saving the file %s: %w", path, err))
 				}
 			}
 
 			return nil
 		}); err != nil {
-			fmt.Println("error walking the directory:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error walking the directory: %w", err))
 		}
 
 		utils.ExitSuccess()

@@ -1,11 +1,10 @@
 package cmd
 
 import (
-	"os"
-
 	"github.com/hanchon/hanchond/cmd/convert"
 	"github.com/hanchon/hanchond/cmd/playground"
 	"github.com/hanchon/hanchond/cmd/repo"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +18,7 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
-		os.Exit(1)
+		utils.ExitError(err)
 	}
 }
 

@@ -2,8 +2,8 @@ package relayer
 
 import (
 	"fmt"
-	"os"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/hermes"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/hanchon/hanchond/playground/types"
@@ -25,50 +25,42 @@ var addChainConfigCmd = &cobra.Command{
 
 		chainID, err := cmd.Flags().GetString("chainid")
 		if err != nil || chainID == "" {
-			fmt.Println("missing chainid value")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("missing chainid value"))
 		}
 
 		p26657, err := cmd.Flags().GetString("p26657")
 		if err != nil || chainID == "" {
-			fmt.Println("missing p26657 value")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("missing p26657 value"))
 		}
 
 		p9090, err := cmd.Flags().GetString("p9090")
 		if err != nil || chainID == "" {
-			fmt.Println("missing p9090 value")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("missing p9090 value"))
 		}
 
 		keyname, err := cmd.Flags().GetString("keyname")
 		if err != nil || chainID == "" {
-			fmt.Println("missing keyname value")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("missing keyname value"))
 		}
 
 		keymnemonic, err := cmd.Flags().GetString("keymnemonic")
 		if err != nil || chainID == "" {
-			fmt.Println("missing keymnemonic value")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("missing keymnemonic value"))
 		}
 
 		prefix, err := cmd.Flags().GetString("prefix")
 		if err != nil || chainID == "" {
-			fmt.Println("missing prefix value")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("missing prefix value"))
 		}
 
 		denom, err := cmd.Flags().GetString("denom")
 		if err != nil || chainID == "" {
-			fmt.Println("missing denom value")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("missing denom value"))
 		}
 
 		isEvm, err := cmd.Flags().GetBool("is-evm")
 		if err != nil || chainID == "" {
-			fmt.Println("missing is-evm value")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("missing is-evm value"))
 		}
 
 		hdPath := types.CosmosHDPath
@@ -100,8 +92,7 @@ var addChainConfigCmd = &cobra.Command{
 				keyname,
 				keymnemonic,
 			); err != nil {
-				fmt.Println("error adding first chain to the relayer:", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("error adding first chain to the relayer: %w", err))
 			}
 		case true:
 			chainInfo := defaultChainInfo
@@ -117,8 +108,7 @@ var addChainConfigCmd = &cobra.Command{
 				keyname,
 				keymnemonic,
 			); err != nil {
-				fmt.Println("error adding first chain to the relayer:", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("error adding first chain to the relayer: %w", err))
 			}
 		}
 	},

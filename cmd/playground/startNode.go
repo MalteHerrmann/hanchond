@@ -3,7 +3,6 @@ package playground
 import (
 	"context"
 	"fmt"
-	"os"
 	"strconv"
 
 	"github.com/hanchon/hanchond/lib/utils"
@@ -32,14 +31,12 @@ var startNodeCmd = &cobra.Command{
 
 		node, err := queries.GetNode(context.Background(), idNumber)
 		if err != nil {
-			fmt.Println("could not get the node:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the node: %w", err))
 		}
 
 		chain, err := queries.GetChain(context.Background(), node.ChainID)
 		if err != nil {
-			fmt.Println("could not get the chain:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the chain: %w", err))
 		}
 
 		ci := chain.MustParseChainInfo()
@@ -76,8 +73,7 @@ var startNodeCmd = &cobra.Command{
 			panic("invalid binary name: " + ci.GetBinaryName())
 		}
 		if err != nil {
-			fmt.Println("could not start the node:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not start the node: %w", err))
 		}
 		fmt.Println("Node is running with pID:", pID)
 
@@ -87,8 +83,7 @@ var startNodeCmd = &cobra.Command{
 			ID:        node.ID,
 		})
 		if err != nil {
-			fmt.Println("could not save the process ID to the db:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not save the process ID to the db: %w", err))
 		}
 	},
 }

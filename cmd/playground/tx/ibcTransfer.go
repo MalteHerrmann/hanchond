@@ -2,9 +2,9 @@ package tx
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -21,14 +21,12 @@ var ibcTransferCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			fmt.Println("node not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("node not set"))
 		}
 
 		channel, err := cmd.Flags().GetString("channel")
 		if err != nil {
-			fmt.Println("ibc channel not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("ibc channel not set"))
 		}
 
 		dstWallet := args[0]
@@ -37,22 +35,22 @@ var ibcTransferCmd = &cobra.Command{
 		e := evmos.NewEvmosFromDB(queries, nodeID)
 		denom, err := cmd.Flags().GetString("denom")
 		if err != nil {
-			fmt.Println("denom not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("denom not set"))
 		}
+
 		if denom == "" {
 			denom = e.BaseDenom
 		}
+
 		out, err := e.SendIBC("transfer", channel, dstWallet, amount+denom)
 		if err != nil {
-			fmt.Println("error sending the transaction:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error sending the transaction: %w", err))
 		}
+
 		if !strings.Contains(out, "code: 0") {
-			fmt.Println("transaction failed!")
-			fmt.Println(out)
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("transaction failed: %s", out))
 		}
+
 		hash := strings.Split(out, "txhash: ")
 		if len(hash) > 1 {
 			hash[1] = strings.TrimSpace(hash[1])

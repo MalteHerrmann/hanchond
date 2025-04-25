@@ -3,9 +3,9 @@ package playground
 import (
 	"context"
 	"fmt"
-	"os"
 	"strconv"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/gaia"
@@ -27,28 +27,24 @@ var hermesAddChannelCmd = &cobra.Command{
 		chainOne := args[0]
 		chainOneID, err := strconv.Atoi(chainOne)
 		if err != nil {
-			fmt.Println("invalid chain id")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("invalid chain id"))
 		}
 		chainTwo := args[1]
 		chainTwoID, err := strconv.Atoi(chainTwo)
 		if err != nil {
-			fmt.Println("invalid chain id")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("invalid chain id"))
 		}
 
 		chains := make([]database.GetAllChainNodesRow, 2)
 		nodesChainOne, err := queries.GetAllNodesForChainID(context.Background(), int64(chainOneID))
 		if err != nil {
-			fmt.Println("could not find nodes for chain:", chainOne)
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not find nodes for chain: %s", chainOne))
 		}
 		chains[0] = nodesChainOne[0]
 
 		nodesChainTwo, err := queries.GetAllNodesForChainID(context.Background(), int64(chainTwoID))
 		if err != nil {
-			fmt.Println("could not find nodes for chain:", chainTwo)
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not find nodes for chain: %s", chainTwo))
 		}
 		chains[1] = nodesChainTwo[0]
 
@@ -57,8 +53,7 @@ var hermesAddChannelCmd = &cobra.Command{
 
 		for i, v := range chains {
 			if v.IsRunning != 1 {
-				fmt.Printf("node %d of chain %d is not running; start first\n", v.NodeID, v.ChainID)
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("node %d of chain %d is not running; start first", v.NodeID, v.ChainID))
 			}
 
 			chainInfo := v.MustParseChainInfo()
@@ -75,8 +70,7 @@ var hermesAddChannelCmd = &cobra.Command{
 					v.ValidatorKeyName,
 					v.ValidatorKey,
 				); err != nil {
-					fmt.Printf("error adding chain %d to the relayer: %s\n", i, err.Error())
-					os.Exit(1)
+					utils.ExitError(fmt.Errorf("error adding chain %d to the relayer: %s", i, err.Error()))
 				}
 			case evmos.ChainInfo.GetBinaryName(), sagaos.ChainInfo.GetBinaryName():
 				fmt.Printf("Adding %s chain\n", binaryName)
@@ -88,12 +82,10 @@ var hermesAddChannelCmd = &cobra.Command{
 					v.ValidatorKeyName,
 					v.ValidatorKey,
 				); err != nil {
-					fmt.Printf("error adding chain %d to the relayer: %s\n", i, err.Error())
-					os.Exit(1)
+					utils.ExitError(fmt.Errorf("error adding chain %d to the relayer: %s", i, err.Error()))
 				}
 			default:
-				fmt.Println("incorrect binary name: ", binaryName)
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("incorrect binary name: %s", binaryName))
 			}
 
 		}
@@ -101,8 +93,7 @@ var hermesAddChannelCmd = &cobra.Command{
 		fmt.Println("Calling create channel")
 		err = h.CreateChannel(chains[0].ChainID_2, chains[1].ChainID_2)
 		if err != nil {
-			fmt.Println("error creating channel", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error creating channel: %w", err))
 		}
 		fmt.Println("Channel created")
 	},

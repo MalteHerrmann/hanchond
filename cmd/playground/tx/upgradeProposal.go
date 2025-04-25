@@ -2,11 +2,11 @@ package tx
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
 	"github.com/hanchon/hanchond/lib/requester"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -21,8 +21,7 @@ var upgradeProposalCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			fmt.Println("node not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("node not set"))
 		}
 		version := strings.TrimSpace(args[0])
 
@@ -31,31 +30,26 @@ var upgradeProposalCmd = &cobra.Command{
 		if err != nil || height == "" {
 			diff, err := cmd.Flags().GetString("height-diff")
 			if err != nil {
-				fmt.Println("could not read any height related flag:", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("could not read any height related flag: %w", err))
 			}
 			diffInt, err := strconv.Atoi(diff)
 			if err != nil {
-				fmt.Println("could not convert diff to int:", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("could not convert diff to int: %w", err))
 			}
 			currentHeight, err := requester.NewClient().WithUnsecureTendermintEndpoint(fmt.Sprintf("http://localhost:%d", e.Ports.P26657)).GetCurrentHeight()
 			if err != nil {
-				fmt.Println("could not get current height:", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("could not get current height: %w", err))
 			}
 			currentHeightInt, err := strconv.Atoi(currentHeight)
 			if err != nil {
-				fmt.Println("could convert height response to int:", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("could convert height response to int: %w", err))
 			}
 			height = fmt.Sprintf("%d", currentHeightInt+diffInt)
 		}
 
 		txhash, err := e.CreateUpgradeProposal(version, height)
 		if err != nil {
-			fmt.Println("error sending the transaction:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error sending the transaction: %w", err))
 		}
 
 		fmt.Printf("{\"txhash\":\"%s\", \"height\": %s}\n", txhash, height)

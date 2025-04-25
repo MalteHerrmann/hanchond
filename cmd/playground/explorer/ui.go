@@ -2,7 +2,6 @@ package explorer
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
@@ -21,14 +20,12 @@ var uiCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			fmt.Println("node not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("node not set"))
 		}
 
 		startingHeight, err := cmd.Flags().GetInt("starting-height")
 		if err != nil {
-			fmt.Println("starting height not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("starting height not set"))
 		}
 
 		// TODO: move the newFromDB to cosmos daemon
@@ -38,9 +35,9 @@ var uiCmd = &cobra.Command{
 
 		p := explorerui.CreateExplorerTUI(startingHeight, ex)
 		if _, err := p.Run(); err != nil {
-			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error: %w", err))
 		}
+
 		utils.ExitSuccess()
 	},
 }

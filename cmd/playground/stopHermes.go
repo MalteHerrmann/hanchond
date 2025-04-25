@@ -3,10 +3,10 @@ package playground
 import (
 	"context"
 	"fmt"
-	"os"
 	"os/exec"
 	"strings"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -21,14 +21,12 @@ var stopHermesCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		relayer, err := queries.GetRelayer(context.Background())
 		if err != nil {
-			fmt.Println("the relayer is not in the database", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("the relayer is not in the database: %w", err))
 		}
 
 		// TODO: check if the process is running checking the PID
 		if relayer.IsRunning != 1 {
-			fmt.Println("the relayer is not running")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("the relayer is not running"))
 		}
 
 		command := exec.Command( //nolint:gosec
@@ -40,16 +38,14 @@ var stopHermesCmd = &cobra.Command{
 		if strings.Contains(strings.ToLower(string(out)), "no such process") {
 			fmt.Println("the relayer is not running, updating the database..")
 		} else if err != nil {
-			fmt.Println("could not kill the process:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not kill the process: %w", err))
 		}
 
 		if err := queries.UpdateRelayer(context.Background(), database.UpdateRelayerParams{
 			ProcessID: 0,
 			IsRunning: 0,
 		}); err != nil {
-			fmt.Println("could not update the relayer database", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not update the relayer database: %w", err))
 		}
 
 		fmt.Println("Relayer is no longer running")

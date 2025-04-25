@@ -3,11 +3,11 @@ package playground
 import (
 	"context"
 	"fmt"
-	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -25,18 +25,15 @@ var stopNodeCmd = &cobra.Command{
 		id := args[0]
 		idNumber, err := strconv.ParseInt(id, 10, 64)
 		if err != nil {
-			fmt.Println("could not parse the ID:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not parse the ID: %w", err))
 		}
 		node, err := queries.GetNode(context.Background(), idNumber)
 		if err != nil {
-			fmt.Println("could not get the node:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the node: %w", err))
 		}
 
 		if node.IsRunning != 1 {
-			fmt.Println("the node is not running")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("the node is not running"))
 		}
 		command := exec.Command( //nolint:gosec
 			"kill",
@@ -47,8 +44,7 @@ var stopNodeCmd = &cobra.Command{
 		if strings.Contains(strings.ToLower(string(out)), "no such process") {
 			fmt.Println("process is not running, updating the database..")
 		} else if err != nil {
-			fmt.Println("could not kill the process:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not kill the process: %w", err))
 		}
 
 		if err = queries.SetProcessID(context.Background(), database.SetProcessIDParams{
@@ -56,8 +52,7 @@ var stopNodeCmd = &cobra.Command{
 			IsRunning: 0,
 			ID:        idNumber,
 		}); err != nil {
-			fmt.Println("could not update the database:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not update the database: %w", err))
 		}
 
 		fmt.Println("Node is no longer running")

@@ -2,8 +2,8 @@ package relayer
 
 import (
 	"fmt"
-	"os"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/hermes"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -26,8 +26,7 @@ var createChannelCmd = &cobra.Command{
 		fmt.Println("Calling create channel")
 		err := h.CreateChannel(chain1, chain2)
 		if err != nil {
-			fmt.Println("error creating channel", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error creating channel: %w", err))
 		}
 		fmt.Println("Channel created")
 	},

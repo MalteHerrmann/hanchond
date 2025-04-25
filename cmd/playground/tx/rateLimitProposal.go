@@ -2,9 +2,9 @@ package tx
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -19,32 +19,27 @@ var rateLimitProposalCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			fmt.Println("node not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("node not set"))
 		}
 
 		channel, err := cmd.Flags().GetString("channel")
 		if err != nil {
-			fmt.Println("channel not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("channel not set"))
 		}
 
 		duration, err := cmd.Flags().GetString("duration")
 		if err != nil {
-			fmt.Println("duration not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("duration not set"))
 		}
 
 		maxSend, err := cmd.Flags().GetString("max-send")
 		if err != nil {
-			fmt.Println("max-send not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("max-send not set"))
 		}
 
 		maxRecv, err := cmd.Flags().GetString("max-recv")
 		if err != nil {
-			fmt.Println("max-recv not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("max-recv not set"))
 		}
 
 		e := evmos.NewEvmosFromDB(queries, nodeID)
@@ -56,8 +51,7 @@ var rateLimitProposalCmd = &cobra.Command{
 			Duration: duration,
 		})
 		if err != nil {
-			fmt.Println("error sending the transaction:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error sending the transaction: %w", err))
 		}
 
 		fmt.Println(txhash)

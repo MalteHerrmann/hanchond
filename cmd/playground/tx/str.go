@@ -2,9 +2,9 @@ package tx
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -20,34 +20,29 @@ var strV1ProposalCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			fmt.Println("node not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("node not set"))
 		}
 
 		denom := args[0]
 
 		exponent, err := cmd.Flags().GetInt("exponent")
 		if err != nil {
-			fmt.Println("exponent not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("exponent not set"))
 		}
 
 		alias, err := cmd.Flags().GetString("alias")
 		if err != nil {
-			fmt.Println("alias not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("alias not set"))
 		}
 
 		name, err := cmd.Flags().GetString("name")
 		if err != nil {
-			fmt.Println("name not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("name not set"))
 		}
 
 		symbol, err := cmd.Flags().GetString("symbol")
 		if err != nil {
-			fmt.Println("symbol not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("symbol not set"))
 		}
 
 		e := evmos.NewEvmosFromDB(queries, nodeID)
@@ -59,15 +54,13 @@ var strV1ProposalCmd = &cobra.Command{
 			Symbol:   symbol,
 		})
 		if err != nil {
-			fmt.Println("error sending the transaction:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error sending the transaction: %w", err))
 		}
 
 		if !strings.Contains(out, "code: 0") {
-			fmt.Println("transaction failed!")
-			fmt.Println(out)
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("transaction failed! %s", out))
 		}
+
 		hash := strings.Split(out, "txhash: ")
 		if len(hash) > 1 {
 			hash[1] = strings.TrimSpace(hash[1])

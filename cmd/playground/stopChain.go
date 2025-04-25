@@ -3,11 +3,11 @@ package playground
 import (
 	"context"
 	"fmt"
-	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -24,13 +24,11 @@ var stopChainCmd = &cobra.Command{
 
 		chainNumber, err := strconv.Atoi(strings.TrimSpace(args[0]))
 		if err != nil {
-			fmt.Println("invalid chain id:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("invalid chain id: %w", err))
 		}
 		nodes, err := queries.GetAllNodesForChainID(context.Background(), int64(chainNumber))
 		if err != nil {
-			fmt.Println("could not find the chain:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not find the chain: %w", err))
 		}
 
 		for _, v := range nodes {
@@ -48,8 +46,7 @@ var stopChainCmd = &cobra.Command{
 			if strings.Contains(strings.ToLower(string(out)), "no such process") {
 				fmt.Printf("Process is not running for node %d, updating the database..\n", v.ID)
 			} else if err != nil {
-				fmt.Println("could not kill the process:", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("could not kill the process: %w", err))
 			}
 
 			if err = queries.SetProcessID(context.Background(), database.SetProcessIDParams{
@@ -57,8 +54,7 @@ var stopChainCmd = &cobra.Command{
 				IsRunning: 0,
 				ID:        v.ID,
 			}); err != nil {
-				fmt.Println("could not update the database:", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("could not update the database: %w", err))
 			}
 		}
 

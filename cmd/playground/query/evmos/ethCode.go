@@ -2,9 +2,9 @@ package evmos
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/hanchon/hanchond/lib/requester"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -20,21 +20,18 @@ var ethCodeCmd = &cobra.Command{
 
 		height, err := cmd.Flags().GetString("height")
 		if err != nil {
-			fmt.Println("error getting the request height:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error getting the request height: %w", err))
 		}
 
 		endpoint, err := cosmosdaemon.GetWeb3Endpoint(queries, cmd)
 		if err != nil {
-			fmt.Printf("error generting web3 endpoint: %s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error generting web3 endpoint: %w", err))
 		}
 		client := requester.NewClient().WithUnsecureWeb3Endpoint(endpoint)
 
 		code, err := client.EthCode(args[0], height)
 		if err != nil {
-			fmt.Println("could not get the ethCode:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the ethCode: %w", err))
 		}
 
 		fmt.Println(string(code))

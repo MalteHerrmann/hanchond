@@ -2,13 +2,13 @@ package erc20
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
 	"github.com/hanchon/hanchond/lib/converter"
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/smartcontract/erc20"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -27,14 +27,12 @@ var balanceCmd = &cobra.Command{
 		wallet := strings.TrimSpace(args[1])
 		wallet, err := converter.NormalizeAddressToHex(wallet)
 		if err != nil {
-			fmt.Println("could not convert address to hex encoding")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not convert address to hex encoding: %w", err))
 		}
 
 		endpoint, err := cosmosdaemon.GetWeb3Endpoint(queries, cmd)
 		if err != nil {
-			fmt.Printf("error generting web3 endpoint: %s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error generting web3 endpoint: %w", err))
 		}
 
 		client := requester.NewClient().WithUnsecureWeb3Endpoint(endpoint)
@@ -42,15 +40,13 @@ var balanceCmd = &cobra.Command{
 		if height != "latest" {
 			temp, err := strconv.ParseInt(height, 10, 64)
 			if err != nil {
-				fmt.Printf("invalid height: %s\n", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("invalid height: %w", err))
 			}
 			heightInt = int(temp)
 		}
 		balance, err := client.GetBalanceERC20(contract, wallet, heightInt)
 		if err != nil {
-			fmt.Println("could not get the balance:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the balance: %w", err))
 		}
 		fmt.Println(balance)
 	},

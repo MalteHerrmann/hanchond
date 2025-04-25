@@ -2,8 +2,8 @@ package playground
 
 import (
 	"fmt"
-	"os"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/solidity"
 	"github.com/spf13/cobra"
@@ -17,28 +17,25 @@ var buildSolcCmd = &cobra.Command{
 		_ = filesmanager.SetHomeFolderFromCobraFlags(cmd)
 		version, err := cmd.Flags().GetString("version")
 		if err != nil {
-			fmt.Println("could not read the version:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not read the version: %w", err))
 		}
 
 		isDarwin, err := cmd.Flags().GetBool("is-darwin")
 		if err != nil {
-			fmt.Println("could not read the isDarwin:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not read the isDarwin: %w", err))
 		}
 
 		// Create build folder if needed
 		if err := filesmanager.CreateBuildsDir(); err != nil {
-			fmt.Println("could not create build folder:" + err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not create build folder: %w", err))
 		}
 
-		fmt.Println("Downloading solidity from github:", version)
+		utils.Log("Downloading solidity from github: %s", version)
 		if err := solidity.DownloadSolcBinary(isDarwin, version); err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
+			utils.ExitError(err)
 		}
-		fmt.Printf("Solc %s is now available\n", version)
+
+		utils.Log("Solc %s is now available", version)
 	},
 }
 

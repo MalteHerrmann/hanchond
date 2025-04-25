@@ -2,8 +2,8 @@ package query
 
 import (
 	"fmt"
-	"os"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -18,8 +18,7 @@ var txCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			fmt.Println("node not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("node not set"))
 		}
 
 		txhash := args[0]
@@ -27,8 +26,7 @@ var txCmd = &cobra.Command{
 		e := evmos.NewEvmosFromDB(queries, nodeID)
 		resp, err := e.GetTransaction(txhash)
 		if err != nil {
-			fmt.Println("error sending the request:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error sending the request: %w", err))
 		}
 		fmt.Println(resp)
 	},

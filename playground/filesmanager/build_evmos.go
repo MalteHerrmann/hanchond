@@ -69,5 +69,9 @@ func BuildHermes(version string) error {
 }
 
 func SaveHermesBuiltVersion(version string) error {
-	return os.Rename(GetBranchFolder(version)+"/target/debug/hermes", GetHermesBinary())
+	_ = CreateBuildsDir() // Make sure that the build dir exists
+	return MoveFile(
+		GetBranchFolder(version)+"/target/debug/hermes",
+		GetHermesBinary(),
+	)
 }

@@ -3,7 +3,7 @@ package filesmanager
 import (
 	"fmt"
 	"os"
-	"os/exec"
+	"strings"
 
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/types"
@@ -25,13 +25,13 @@ func BuildEVMBinary(path string) error {
 		return err
 	}
 
-	out, err := utils.ExecCommand("make", "build", "COSMOS_BUILD_OPTIONS=nooptimization,nostrip")
+	_, err := utils.ExecCommand("make", "build", "COSMOS_BUILD_OPTIONS=nooptimization,nostrip")
 	if err != nil {
 		return err
 	}
 
 	// TODO: is build output required here? Could be removed just as well...
-	utils.Log("build output: %s", out)
+	// utils.Log("build output: %s", out)
 	return nil
 }
 
@@ -44,16 +44,22 @@ func SaveBuiltVersion(chainInfo types.ChainInfo, version string) error {
 }
 
 func MoveFile(origin string, destination string) error {
+	if _, err := os.Stat(origin); os.IsNotExist(err) {
+		return fmt.Errorf("file not found at %s", origin)
+	}
+
+	// check if folder of destination exists, assuming destination is a file
+	parentDir := destination[:strings.LastIndex(destination, "/")]
+	if _, err := os.Stat(parentDir); os.IsNotExist(err) {
+		return fmt.Errorf("destination parent folder not found at %s", parentDir)
+	}
+
 	return os.Rename(origin, destination)
 }
 
 func CopyFile(origin string, destination string) error {
-	cmd := exec.Command("cp", origin, destination)
-	if out, err := cmd.CombinedOutput(); err != nil {
-		err = fmt.Errorf("error %s: %s", err.Error(), string(out))
-		return err
-	}
-	return nil
+	_, err := utils.ExecCommand("cp", origin, destination)
+	return err
 }
 
 // NOTE: This requires that the version was already cloned
@@ -69,9 +75,12 @@ func BuildHermes(version string) error {
 }
 
 func SaveHermesBuiltVersion(version string) error {
+	buildTarget := GetBranchFolder(version) + "/target/debug/hermes"
+
 	_ = CreateBuildsDir() // Make sure that the build dir exists
-	return MoveFile(
-		GetBranchFolder(version)+"/target/debug/hermes",
-		GetHermesBinary(),
-	)
+	if err := MoveFile(buildTarget, GetHermesBinary()); err != nil {
+		return fmt.Errorf("error moving hermes binary: %w", err)
+	}
+
+	return nil
 }

@@ -2,8 +2,8 @@ package query
 
 import (
 	"fmt"
-	"os"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -18,8 +18,7 @@ var balanceCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			fmt.Println("node not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("node not set"))
 		}
 
 		wallet := args[0]
@@ -28,9 +27,9 @@ var balanceCmd = &cobra.Command{
 		e := evmos.NewEvmosFromDB(queries, nodeID)
 		balance, err := e.CheckBalance(wallet)
 		if err != nil {
-			fmt.Println("could not get the balance:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the balance: %w", err))
 		}
+
 		fmt.Println(balance)
 	},
 }

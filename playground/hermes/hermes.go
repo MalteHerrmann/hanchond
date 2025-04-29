@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 )
 
@@ -13,8 +14,7 @@ func NewHermes() *Hermes {
 	h := &Hermes{}
 
 	if _, err := os.Stat(h.GetHermesBinary()); os.IsNotExist(err) {
-		fmt.Printf("Hermes binary at %s does not exist; build it first\n", h.GetHermesBinary())
-		os.Exit(1)
+		utils.ExitError(fmt.Errorf("Hermes binary at %s does not exist; build it first", h.GetHermesBinary()))
 	}
 
 	_ = filesmanager.CreateHermesFolder()

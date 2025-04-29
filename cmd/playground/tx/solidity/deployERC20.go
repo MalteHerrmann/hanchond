@@ -2,8 +2,8 @@ package solidity
 
 import (
 	"fmt"
-	"os"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/solidity"
@@ -20,26 +20,22 @@ var deployERC20Cmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			fmt.Println("node not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("node not set"))
 		}
 
 		gasLimit, err := cmd.Flags().GetUint64("gas-limit")
 		if err != nil {
-			fmt.Println("incorrect gas limit", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("incorrect gas limit: %w", err))
 		}
 
 		initialAmount, err := cmd.Flags().GetString("initial-amount")
 		if err != nil {
-			fmt.Println("incorrect initial-amount")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("incorrect initial-amount: %w", err))
 		}
 
 		isWrapped, err := cmd.Flags().GetBool("is-wrapped-coin")
 		if err != nil {
-			fmt.Println("incorrect wrapped flag")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("incorrect wrapped flag: %w", err))
 		}
 
 		name := args[0]
@@ -51,24 +47,21 @@ var deployERC20Cmd = &cobra.Command{
 
 		txHash, err := solidity.BuildAndDeployERC20Contract(name, symbol, initialAmount, isWrapped, builder, gasLimit)
 		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error building and deploying the erc20 contract: %w", err))
 		}
 
 		contractAddress, err := e.NewRequester().GetContractAddress(txHash)
 		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error getting the contract address: %w", err))
 		}
 
 		fmt.Printf("{\"contract_address\":\"%s\", \"tx_hash\":\"%s\"}\n", contractAddress, txHash)
 
 		// Clean up files
 		if err := filesmanager.CleanUpTempFolder(); err != nil {
-			fmt.Println("could not clean up the temp folder:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not clean up the temp folder: %w", err))
 		}
-		os.Exit(0)
+		utils.ExitSuccess()
 	},
 }
 

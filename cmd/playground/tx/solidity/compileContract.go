@@ -2,9 +2,9 @@ package solidity
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/solidity"
 	"github.com/hanchon/hanchond/playground/sql"
@@ -22,8 +22,7 @@ var compileContractCmd = &cobra.Command{
 
 		outputFolder, err := cmd.Flags().GetString("output-folder")
 		if err != nil {
-			fmt.Println("incorrect output folder")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("incorrect output folder"))
 		}
 		if outputFolder[len(outputFolder)-1] != '/' {
 			outputFolder += "/"
@@ -32,45 +31,39 @@ var compileContractCmd = &cobra.Command{
 		// TODO: read from pragma the correct version and use it automatically
 		solcVersion, err := cmd.Flags().GetString("solc-version")
 		if err != nil {
-			fmt.Println("incorrect solc version")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("incorrect solc version"))
 		}
 
 		pathToSolidityCode := args[0]
 
 		if err := filesmanager.CleanUpTempFolder(); err != nil {
-			fmt.Printf("could not clean up temp folder:%s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not clean up temp folder: %w", err))
 		}
 
 		folderName := "compiler"
 		if err := filesmanager.CreateTempFolder(folderName); err != nil {
-			fmt.Printf("could not create up temp folder:%s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not create up temp folder: %w", err))
 		}
 
 		err = solidity.CompileWithSolc(solcVersion, pathToSolidityCode, filesmanager.GetBranchFolder(folderName))
 		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not compile the contract: %w", err))
 		}
 
 		if err := moveFiles(filesmanager.GetBranchFolder(folderName), outputFolder, "abi"); err != nil {
-			fmt.Printf("error copying the built files: %s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error copying the built files: %w", err))
 		}
 
 		if err := moveFiles(filesmanager.GetBranchFolder(folderName), outputFolder, "bin"); err != nil {
-			fmt.Printf("error copying the built files: %s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error copying the built files: %w", err))
 		}
 
 		if err := filesmanager.CleanUpTempFolder(); err != nil {
-			fmt.Printf("could not clean up temp folder:%s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not clean up temp folder: %w", err))
 		}
 
-		fmt.Printf("Contract compiled at %s\n", outputFolder)
+		utils.Log("Contract compiled at %s", outputFolder)
+		utils.ExitSuccess()
 	},
 }
 

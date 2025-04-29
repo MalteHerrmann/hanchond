@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strconv"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/spf13/cobra"
@@ -74,7 +75,8 @@ func InitFilesAndDB(nodes []*Daemon, queries *database.Queries) (int64, error) {
 		if err != nil {
 			return 0, err
 		}
-		fmt.Printf("Node added with ID: %d\n", nodeID)
+
+		utils.Log("node added with ID: %d", nodeID)
 	}
 	return chainDB.ID, nil
 }

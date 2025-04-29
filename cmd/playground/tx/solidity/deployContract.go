@@ -3,9 +3,9 @@ package solidity
 import (
 	"encoding/hex"
 	"fmt"
-	"os"
 
 	"github.com/hanchon/hanchond/lib/smartcontract"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/sql"
@@ -23,14 +23,12 @@ var deployContractCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			fmt.Println("node not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("node not set"))
 		}
 
 		gasLimit, err := cmd.Flags().GetInt("gas-limit")
 		if err != nil {
-			fmt.Println("incorrect gas limit", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("incorrect gas limit: %w", err))
 		}
 
 		pathToBytecode := args[0]
@@ -40,58 +38,51 @@ var deployContractCmd = &cobra.Command{
 
 		bytecode, err := filesmanager.ReadFile(pathToBytecode)
 		if err != nil {
-			fmt.Printf("error reading the bytecode file:%s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error reading the bytecode file: %w", err))
 		}
 
 		bytecode, err = hex.DecodeString(string(bytecode))
 		if err != nil {
-			fmt.Println("error converting bytecode to []byte:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error converting bytecode to []byte: %w", err))
 		}
 
 		abiPath, err := cmd.Flags().GetString("abi")
 		if err != nil {
-			fmt.Println("could not read abi path:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not read abi path: %w", err))
 		}
 
 		if abiPath != "" {
 			// It requires a constructor
 			abiBytes, err := filesmanager.ReadFile(abiPath)
 			if err != nil {
-				fmt.Printf("error reading the abi file:%s\n", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("error reading the abi file: %w", err))
 			}
 			// Get Params
 			callArgs, err := smartcontract.StringsToABIArguments(params)
 			if err != nil {
-				fmt.Printf("error converting arguments: %s\n", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("error converting arguments: %w", err))
 			}
 
 			callData, err := smartcontract.ABIPackRaw(abiBytes, "", callArgs...)
 			if err != nil {
-				fmt.Println(err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("error converting arguments: %w", err))
 			}
 			bytecode = append(bytecode, callData...)
 		}
 
 		txHash, err := builder.DeployContract(0, bytecode, uint64(gasLimit))
 		if err != nil {
-			fmt.Printf("error sending the transaction: %s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error sending the transaction: %w", err))
 		}
 
 		contractAddress, err := e.NewRequester().GetContractAddress(txHash)
 		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error getting the contract address: %w", err))
 		}
 
+		// TODO: maybe introduce new LogTable command for these types of outputs?
 		fmt.Printf("{\"contract_address\":\"%s\", \"tx_hash\":\"%s\"}\n", contractAddress, txHash)
-		os.Exit(0)
+		utils.ExitSuccess()
 	},
 }
 

@@ -2,8 +2,8 @@ package playground
 
 import (
 	"fmt"
-	"os"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/gaia"
 	"github.com/spf13/cobra"
@@ -18,28 +18,25 @@ var buildGaiadCmd = &cobra.Command{
 		_ = filesmanager.SetHomeFolderFromCobraFlags(cmd)
 		version, err := cmd.Flags().GetString("version")
 		if err != nil {
-			fmt.Println("could not read the version:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not read the version: %w", err))
 		}
 
 		isDarwin, err := cmd.Flags().GetBool("is-darwin")
 		if err != nil {
-			fmt.Println("could not read the isDarwin:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not read the isDarwin: %w", err))
 		}
 
 		// Create build folder if needed
 		if err := filesmanager.CreateBuildsDir(); err != nil {
-			fmt.Println("could not create build folder:" + err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not create build folder: %w", err))
 		}
 
-		fmt.Println("Downloading gaiad from github:", version)
+		utils.Log("Downloading gaiad from github: %s", version)
 		if err = gaia.GetGaiadBinary(isDarwin, version); err != nil {
-			fmt.Println("could not get gaiad from github:" + err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get gaiad from github: %w", err))
 		}
-		fmt.Println("Gaiad is now available")
+
+		utils.Log("Gaiad is now available")
 	},
 }
 

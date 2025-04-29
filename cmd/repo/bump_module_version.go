@@ -3,11 +3,11 @@ package repo
 import (
 	"fmt"
 	"io/fs"
-	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/spf13/cobra"
 )
@@ -30,22 +30,20 @@ var BumpModuleVersionCmd = &cobra.Command{
 
 		// Find the current version
 		goModPath := fmt.Sprintf("%s/go.mod", path)
-		fmt.Println("using go.mod path as:", goModPath)
+		utils.Log("using go.mod path as: %s", goModPath)
 		goModFile, err := filesmanager.ReadFile(goModPath)
 		if err != nil {
-			fmt.Println("error reading the go.mod file:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error reading the go.mod file: %w", err))
 		}
 
 		// Get the current version
 		re := regexp.MustCompile(`(?m)^module\s+(\S+)$`)
 		modules := re.FindAllStringSubmatch(string(goModFile), -1)
 		if len(modules) == 0 {
-			fmt.Println("the go.mod file does not define the module name")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("the go.mod file does not define the module name"))
 		}
 		currentVersion := modules[0][1]
-		fmt.Println("the current version is:", currentVersion)
+		utils.Log("the current version is: %s", currentVersion)
 
 		// Create the new version with all the parts of the currentVersion but overwritting the last segment
 		newVersion := ""
@@ -58,13 +56,12 @@ var BumpModuleVersionCmd = &cobra.Command{
 			newVersion += v + "/"
 		}
 
-		fmt.Println("the new version is:", newVersion)
+		utils.Log("the new version is: %s", newVersion)
 
 		// Walk through the root directory recursively
 		if err = filepath.Walk(path, func(path string, info fs.FileInfo, err error) error {
 			if err != nil {
-				fmt.Println("error reading the directory", path)
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("error reading the directory %s: %w", path, err))
 			}
 
 			// Only process regular files
@@ -75,8 +72,7 @@ var BumpModuleVersionCmd = &cobra.Command{
 			// Read the file
 			content, err := filesmanager.ReadFile(path)
 			if err != nil {
-				fmt.Println("failed reading the file:", path)
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("failed reading the file %s: %w", path, err))
 			}
 
 			fileContent := string(content)
@@ -87,20 +83,18 @@ var BumpModuleVersionCmd = &cobra.Command{
 
 			// Only write if the file was modified
 			if updatedContent != fileContent {
-				fmt.Printf("updating file: %s\n", path)
+				utils.Log("updating file: %s", path)
 				err := filesmanager.SaveFileWithMode([]byte(updatedContent), path, info.Mode())
 				if err != nil {
-					fmt.Println("failed saving the file:", path)
-					os.Exit(1)
+					utils.ExitError(fmt.Errorf("failed saving the file %s: %w", path, err))
 				}
 			}
 
 			return nil
 		}); err != nil {
-			fmt.Println("error walking the directory:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error walking the directory: %w", err))
 		}
 
-		os.Exit(0)
+		utils.ExitSuccess()
 	},
 }

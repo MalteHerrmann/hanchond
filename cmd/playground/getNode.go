@@ -3,10 +3,10 @@ package playground
 import (
 	"context"
 	"fmt"
-	"os"
 	"strconv"
 
 	"github.com/hanchon/hanchond/lib/converter"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -30,59 +30,54 @@ var getNodeCmd = &cobra.Command{
 		id := args[0]
 		idNumber, err := strconv.ParseInt(id, 10, 64)
 		if err != nil {
-			fmt.Println("could not parse the ID:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not parse the ID: %w", err))
 		}
 
 		ports, err := queries.GetNodePorts(context.Background(), idNumber)
 		if err != nil {
-			fmt.Println("could not get the ports:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the ports: %w", err))
 		}
 
 		// This means the port was specified
 		if retrievedPort != 0 {
 			fmt.Println(ports.Get(retrievedPort))
-			os.Exit(0)
+			utils.ExitSuccess()
 		}
 
 		node, err := queries.GetNode(context.Background(), idNumber)
 		if err != nil {
-			fmt.Println("could not get the node:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the node: %w", err))
 		}
 
 		if getHome {
 			fmt.Println(node.ConfigFolder)
-			os.Exit(0)
+			utils.ExitSuccess()
 		}
 
 		chain, err := queries.GetChain(context.Background(), node.ChainID)
 		if err != nil {
-			fmt.Println("could not get the chain:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the chain: %w", err))
 		}
 
 		// retrieve only binary
 		if getBinary {
 			fmt.Println(filesmanager.GetDaemondPathWithVersion(chain.MustParseChainInfo(), node.Version))
-			os.Exit(0)
+			utils.ExitSuccess()
 		}
 
 		if getVal {
 			fmt.Println(node.ValidatorWallet)
-			os.Exit(0)
+			utils.ExitSuccess()
 		}
 
 		if getChainID {
 			fmt.Println(chain.ChainID)
-			os.Exit(0)
+			utils.ExitSuccess()
 		}
 
 		hexWallet, err := converter.Bech32ToHex(node.ValidatorWallet)
 		if err != nil {
-			fmt.Println("could not convert validator wallet to eth:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not convert validator wallet to eth: %w", err))
 		}
 
 		fmt.Printf(`Node: %d

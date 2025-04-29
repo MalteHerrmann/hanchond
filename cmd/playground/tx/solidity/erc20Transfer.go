@@ -3,12 +3,12 @@ package solidity
 import (
 	"fmt"
 	"math/big"
-	"os"
 	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/hanchon/hanchond/lib/converter"
 	"github.com/hanchon/hanchond/lib/txbuilder"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/solidity"
@@ -31,20 +31,17 @@ var erc20TransferCmd = &cobra.Command{
 
 		wallet, err = converter.NormalizeAddressToHex(wallet)
 		if err != nil {
-			fmt.Println("invalid wallet")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("invalid wallet: %w", err))
 		}
 
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			fmt.Println("node not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("node not set"))
 		}
 
 		endpoint, err := cosmosdaemon.GetWeb3Endpoint(queries, cmd)
 		if err != nil {
-			fmt.Printf("error generting web3 endpoint: %s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error generting web3 endpoint: %w", err))
 		}
 
 		e := evmos.NewEvmosFromDB(queries, nodeID)
@@ -52,18 +49,16 @@ var erc20TransferCmd = &cobra.Command{
 
 		callData, err := solidity.ERC20TransferCallData(wallet, amount)
 		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error building the call data: %w", err))
 		}
 		to := common.HexToAddress(contract)
 		txhash, err := valWallet.TxBuilder.SendTx(valWallet.Address, &to, big.NewInt(0), 200_000, callData, valWallet.PrivKey)
 		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error sending the transaction: %w", err))
 		}
 
 		fmt.Println("{\"txhash\":\"" + txhash + "\"}")
-		os.Exit(0)
+		utils.ExitSuccess()
 	},
 }
 

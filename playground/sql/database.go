@@ -5,11 +5,11 @@ import (
 	"database/sql"
 	_ "embed"
 	"fmt"
-	"os"
 
 	// blank import to support sqlite3
 	_ "modernc.org/sqlite"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/spf13/cobra"
@@ -44,8 +44,7 @@ func InitDBFromCmd(cmd *cobra.Command) *database.Queries {
 	home := filesmanager.SetHomeFolderFromCobraFlags(cmd)
 	queries, err := initDB(home)
 	if err != nil {
-		fmt.Println("could not init database", err.Error())
-		os.Exit(1)
+		utils.ExitError(fmt.Errorf("could not init database: %w", err))
 	}
 	return queries
 }

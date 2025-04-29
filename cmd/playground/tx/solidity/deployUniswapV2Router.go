@@ -3,10 +3,10 @@ package solidity
 import (
 	"encoding/hex"
 	"fmt"
-	"os"
 	"regexp"
 
 	"github.com/hanchon/hanchond/lib/smartcontract"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/solidity"
@@ -23,14 +23,12 @@ var deployUniswapV2RouteryCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			fmt.Println("node not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("node not set"))
 		}
 
 		gasLimit, err := cmd.Flags().GetInt("gas-limit")
 		if err != nil {
-			fmt.Println("incorrect gas limit")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("incorrect gas limit"))
 		}
 
 		factoryAddress := args[0]
@@ -42,71 +40,61 @@ var deployUniswapV2RouteryCmd = &cobra.Command{
 
 		factoryCodeHash, err := e.NewRequester().EthCodeHash(factoryAddress, "latest")
 		if err != nil {
-			fmt.Println("failed to get the eth code:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("failed to get the eth code: %w", err))
 		}
 
 		contractName := "/Router"
 		// Clone v2-minified if needed
 		path, err := solidity.DownloadUniswapV2Minified()
 		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error downloading the uniswap v2 minified: %w", err))
 		}
 
 		// Keep working with the main contract
 		path = path + "/contracts" + contractName + ".sol"
 		libFile, err := filesmanager.ReadFile(path)
 		if err != nil {
-			fmt.Println("error opening the router file:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error opening the router file: %w", err))
 		}
 
 		regex := regexp.MustCompile(`hex".{3,}"`)
 		libFile = regex.ReplaceAll(libFile, []byte(fmt.Sprintf("hex'%s'", factoryCodeHash)))
 		if err := filesmanager.SaveFile(libFile, path); err != nil {
-			fmt.Println("error saving the router file:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error saving the router file: %w", err))
 		}
 
 		// Set up temp folder
 		if err := filesmanager.CleanUpTempFolder(); err != nil {
-			fmt.Println("could not clean up the temp folder:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not clean up the temp folder: %w", err))
 		}
 
 		folderName := "routerBuilder"
 		if err := filesmanager.CreateTempFolder(folderName); err != nil {
-			fmt.Println("could not create the temp folder:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not create the temp folder: %w", err))
 		}
 
 		// Compile the contract
 		err = solidity.CompileWithSolc("0.6.6", path, filesmanager.GetBranchFolder(folderName))
 		if err != nil {
-			fmt.Println("could not compile the erc20 contract:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not compile the erc20 contract: %w", err))
 		}
 
 		contractName = "/UniswapV2Router02"
 
 		bytecode, err := filesmanager.ReadFile(filesmanager.GetBranchFolder(folderName) + contractName + ".bin")
 		if err != nil {
-			fmt.Printf("error reading the bytecode file:%s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error reading the bytecode file: %w", err))
 		}
 
 		bytecode, err = hex.DecodeString(string(bytecode))
 		if err != nil {
-			fmt.Println("error converting bytecode to []byte:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error converting bytecode to []byte: %w", err))
 		}
 
 		// Generate the constructor
 		abiBytes, err := filesmanager.ReadFile(filesmanager.GetBranchFolder(folderName) + contractName + ".abi")
 		if err != nil {
-			fmt.Printf("error reading the abi file:%s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error reading the abi file: %w", err))
 		}
 
 		// Get Params
@@ -117,43 +105,37 @@ var deployUniswapV2RouteryCmd = &cobra.Command{
 			},
 		)
 		if err != nil {
-			fmt.Printf("error converting arguments: %s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error converting arguments: %w", err))
 		}
 
 		callData, err := smartcontract.ABIPackRaw(abiBytes, "", callArgs...)
 		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error converting arguments: %w", err))
 		}
 		bytecode = append(bytecode, callData...)
 
 		txHash, err := builder.DeployContract(0, bytecode, uint64(gasLimit))
 		if err != nil {
-			fmt.Printf("error sending the transaction: %s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error sending the transaction: %w", err))
 		}
 
 		contractAddress, err := e.NewRequester().GetContractAddress(txHash)
 		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error getting the contract address: %w", err))
 		}
 
 		codeHash, err := e.NewRequester().EthCodeHash(contractAddress, "latest")
 		if err != nil {
-			fmt.Println("failed to get the eth code:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("failed to get the eth code: %w", err))
 		}
 
 		fmt.Printf("{\"contract_address\":\"%s\", \"code_hash\":\"%s\", \"tx_hash\":\"%s\"}\n", contractAddress, "0x"+codeHash, txHash)
 
 		// Clean up files
 		if err := filesmanager.CleanUpTempFolder(); err != nil {
-			fmt.Println("could not clean up the temp folder:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not clean up the temp folder: %w", err))
 		}
-		os.Exit(0)
+		utils.ExitSuccess()
 	},
 }
 

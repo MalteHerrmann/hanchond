@@ -2,11 +2,11 @@ package solidity
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/smartcontract"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/sql"
@@ -25,8 +25,7 @@ var callContractViewCmd = &cobra.Command{
 
 		height, err := cmd.Flags().GetString("height")
 		if err != nil {
-			fmt.Println("could not read height value:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not read height value: %w", err))
 		}
 
 		contract := strings.TrimSpace(args[0])
@@ -35,37 +34,32 @@ var callContractViewCmd = &cobra.Command{
 
 		abiBytes, err := filesmanager.ReadFile(abiPath)
 		if err != nil {
-			fmt.Printf("error reading the abi file:%s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error reading the abi file: %w", err))
 		}
 
 		endpoint, err := cosmosdaemon.GetWeb3Endpoint(queries, cmd)
 		if err != nil {
-			fmt.Printf("error generting web3 endpoint: %s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error generting web3 endpoint: %w", err))
 		}
 
 		callArgs, err := smartcontract.StringsToABIArguments(params)
 		if err != nil {
-			fmt.Printf("error converting arguments: %s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error converting arguments: %w", err))
 		}
 
 		client := requester.NewClient().WithUnsecureWeb3Endpoint(endpoint)
 
 		callData, err := smartcontract.ABIPack(abiBytes, method, callArgs...)
 		if err != nil {
-			fmt.Println(err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error converting arguments: %w", err))
 		}
 
 		resp, err := client.EthCall(contract, callData, height)
 		if err != nil {
-			fmt.Println("error on eth call", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error on eth call: %w", err))
 		}
 		fmt.Println(string(resp))
-		os.Exit(0)
+		utils.ExitSuccess()
 	},
 }
 

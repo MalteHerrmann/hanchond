@@ -5,10 +5,10 @@ import (
 	dbsql "database/sql"
 	"errors"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/filesmanager"
@@ -29,24 +29,20 @@ var initChainCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		client, err := cmd.Flags().GetString("client")
 		if err != nil {
-			fmt.Println("client flag was not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("client flag was not set"))
 		}
 		version, err := cmd.Flags().GetString("version")
 		if err != nil {
-			fmt.Println("version flag was not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("version flag was not set"))
 		}
 		chainID, err := cmd.Flags().GetString("chainid")
 		if err != nil {
-			fmt.Println("chainid flag was not set")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("chainid flag was not set"))
 		}
 
 		amountOfValidators, err := strconv.ParseInt(args[0], 10, 64)
 		if err != nil {
-			fmt.Println("invalid amount of validators")
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("invalid amount of validators"))
 		}
 
 		queries := sql.InitDBFromCmd(cmd)
@@ -56,8 +52,7 @@ var initChainCmd = &cobra.Command{
 		if err == nil {
 			chainNumber = int(latestChain.ID) + 1
 		} else if !errors.Is(err, dbsql.ErrNoRows) { // NOTE: no rows can be expected for an empty db
-			fmt.Println("could not get the chains info from db: ", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the chains info from db: %w", err))
 		}
 
 		var (
@@ -112,8 +107,7 @@ var initChainCmd = &cobra.Command{
 
 		for k := range nodes {
 			if filesmanager.IsNodeHomeFolderInitialized(int64(chainNumber), int64(k)) {
-				fmt.Printf("the home folder already exists: %d-%d\n", chainNumber, k)
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("the home folder already exists: %d-%d", chainNumber, k))
 			}
 
 			path := filesmanager.GetNodeHomeFolder(int64(chainNumber), int64(k))
@@ -122,11 +116,10 @@ var initChainCmd = &cobra.Command{
 
 		dbID, err := cosmosdaemon.InitMultiNodeChain(nodes, queries)
 		if err != nil {
-			fmt.Printf("error: %s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error: %w", err))
 		}
 
-		fmt.Println("New chain created with id:", dbID)
+		utils.Log("New chain created with id: %d", dbID)
 	},
 }
 

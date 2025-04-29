@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/types"
 	"github.com/spf13/cobra"
@@ -15,15 +16,15 @@ func BuildLocalEVMBinary(chainInfo types.ChainInfo, path string) error {
 	version := LocalVersion
 	path = strings.TrimRight(path, "/")
 
-	fmt.Printf("Building %s...\n", chainInfo.GetBinaryName())
+	utils.Log("Building %s...", chainInfo.GetBinaryName())
 	if err := filesmanager.BuildEVMBinary(path); err != nil {
 		return fmt.Errorf("error building %s: %w", chainInfo.GetBinaryName(), err)
 	}
 
-	fmt.Println("Moving built binary...")
+	utils.Log("Moving built binary...")
 	buildPath := fmt.Sprintf("%s/build/%s", path, chainInfo.GetBinaryName())
 	if err := filesmanager.MoveFile(buildPath, filesmanager.GetDaemondPathWithVersion(chainInfo, version)); err != nil {
-		fmt.Println("could not move the built binary:", err.Error())
+		utils.Log("could not move the built binary: %s", err)
 		return err
 	}
 
@@ -36,22 +37,22 @@ func BuildEVMBinaryFromGitHub(chainInfo types.ChainInfo, version string) error {
 		return fmt.Errorf("could not create temp folder: %w", err)
 	}
 
-	fmt.Printf("Cloning %s version: %s\n", chainInfo.GetBinaryName(), version)
+	utils.Log("Cloning %s version: %s", chainInfo.GetBinaryName(), version)
 	if err := filesmanager.GitCloneGitHubBranch(chainInfo, version); err != nil {
 		return fmt.Errorf("could not clone the %s version: %s", chainInfo.GetBinaryName(), err)
 	}
 
-	fmt.Printf("Building %s...\n", chainInfo.GetBinaryName())
+	utils.Log("Building %s...", chainInfo.GetBinaryName())
 	if err := filesmanager.BuildEVMChainVersion(version); err != nil {
 		return fmt.Errorf("error building %s: %w", chainInfo.GetBinaryName(), err)
 	}
 
-	fmt.Println("Moving built binary...")
+	utils.Log("Moving built binary...")
 	if err := filesmanager.SaveBuiltVersion(chainInfo, version); err != nil {
 		return fmt.Errorf("could not move the built binary: %w", err)
 	}
 
-	fmt.Println("Cleaning up...")
+	utils.Log("Cleaning up...")
 	if err := filesmanager.CleanUpTempFolder(); err != nil {
 		return fmt.Errorf("could not remove temp folder: %w", err)
 	}

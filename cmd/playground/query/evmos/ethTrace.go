@@ -3,9 +3,9 @@ package evmos
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/hanchon/hanchond/lib/requester"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -21,21 +21,18 @@ var ethTraceCmd = &cobra.Command{
 
 		endpoint, err := cosmosdaemon.GetWeb3Endpoint(queries, cmd)
 		if err != nil {
-			fmt.Printf("error generting web3 endpoint: %s\n", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("error generting web3 endpoint: %w", err))
 		}
 		client := requester.NewClient().WithUnsecureWeb3Endpoint(endpoint)
 
 		receipt, err := client.GetTransactionTrace(args[0])
 		if err != nil {
-			fmt.Println("could not get the ethTrace:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not get the ethTrace: %w", err))
 		}
 
 		val, err := json.Marshal(receipt.Result)
 		if err != nil {
-			fmt.Println("could not process the ethTrace:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not process the ethTrace: %w", err))
 		}
 
 		fmt.Println(string(val))

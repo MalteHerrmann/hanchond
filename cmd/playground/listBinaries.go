@@ -2,8 +2,8 @@ package playground
 
 import (
 	"fmt"
-	"os"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/spf13/cobra"
 )
@@ -17,8 +17,7 @@ var listBinariesCmd = &cobra.Command{
 		_ = filesmanager.SetHomeFolderFromCobraFlags(cmd)
 		versions, err := filesmanager.GetAllEvmosdVersions()
 		if err != nil {
-			fmt.Println("could not read files in directory:" + err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not read files in directory: %w", err))
 		}
 		fmt.Println("Binaries:")
 		for _, v := range versions {

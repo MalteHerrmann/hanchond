@@ -8,6 +8,7 @@ import (
 	"github.com/hanchon/hanchond/cmd/playground/query"
 	"github.com/hanchon/hanchond/cmd/playground/relayer"
 	"github.com/hanchon/hanchond/cmd/playground/tx"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/spf13/cobra"
 )
@@ -29,7 +30,7 @@ var PlaygroundCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, _ []string) {
 		filesmanager.SetHomeFolderFromCobraFlags(cmd)
 		_ = cmd.Help()
-		os.Exit(0)
+		utils.ExitSuccess()
 	},
 }
 

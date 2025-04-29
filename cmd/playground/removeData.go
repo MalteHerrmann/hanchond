@@ -3,10 +3,10 @@ package playground
 import (
 	"context"
 	"fmt"
-	"os"
 	"os/exec"
 	"time"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/sql"
 	"github.com/spf13/cobra"
@@ -21,7 +21,7 @@ var removeDataCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 
 		// Stop all nodes
-		fmt.Println("Stopping all the running nodes...")
+		utils.Log("Stopping running nodes...")
 		stopping := false
 		if nodes, err := queries.GetAllNodes(context.Background()); err == nil {
 			// Database is initialized
@@ -38,7 +38,7 @@ var removeDataCmd = &cobra.Command{
 		}
 
 		// Stop the relayer
-		fmt.Println("Stopping the relayer...")
+		utils.Log("Stopping the relayer...")
 		if relayer, err := queries.GetRelayer(context.Background()); err == nil {
 			// The relayer is runnning
 			if relayer.IsRunning == 1 {
@@ -57,10 +57,9 @@ var removeDataCmd = &cobra.Command{
 		}
 
 		// Clean up disk data
-		fmt.Println("Cleaning up the data...")
+		utils.Log("Cleaning up the data...")
 		if err := filesmanager.CleanUpData(); err != nil {
-			fmt.Println("failed to remove the data:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("failed to remove the data: %w", err))
 		}
 	},
 }

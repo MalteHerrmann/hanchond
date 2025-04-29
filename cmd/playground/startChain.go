@@ -3,10 +3,10 @@ package playground
 import (
 	"context"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/gaia"
@@ -29,13 +29,11 @@ var startChainCmd = &cobra.Command{
 
 		chainNumber, err := strconv.Atoi(strings.TrimSpace(args[0]))
 		if err != nil {
-			fmt.Println("invalid chain id:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("invalid chain id: %w", err))
 		}
 		nodes, err := queries.GetAllNodesForChainID(context.Background(), int64(chainNumber))
 		if err != nil {
-			fmt.Println("could not find the chain:", err.Error())
-			os.Exit(1)
+			utils.ExitError(fmt.Errorf("could not find the chain: %w", err))
 		}
 
 		for _, v := range nodes {
@@ -54,24 +52,21 @@ var startChainCmd = &cobra.Command{
 				d := sagaos.NewSagaOS(v.Moniker, v.Version, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
 				pID, err = d.Start()
 			default:
-				fmt.Printf("binary %s not configured\n", binaryName)
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("binary %s not configured", binaryName))
 			}
 
 			if err != nil {
-				fmt.Println("could not start the node:", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("could not start the node: %w", err))
 			}
 
-			fmt.Println("Node is running with pID:", pID)
+			utils.Log("Node is running with pID: %d", pID)
 			err = queries.SetProcessID(context.Background(), database.SetProcessIDParams{
 				ProcessID: int64(pID),
 				IsRunning: 1,
 				ID:        v.ID,
 			})
 			if err != nil {
-				fmt.Println("could not save the process ID to the db:", err.Error())
-				os.Exit(1)
+				utils.ExitError(fmt.Errorf("could not save the process ID to the db: %w", err))
 			}
 		}
 	},

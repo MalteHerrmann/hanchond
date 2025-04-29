@@ -2,9 +2,9 @@ package convert
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/hanchon/hanchond/lib/converter"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -19,21 +19,20 @@ var AddrCmd = &cobra.Command{
 		if converter.Has0xPrefix(input) {
 			prefix, err := cmd.Flags().GetString("prefix")
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				utils.ExitError(err)
 			}
 			value, err := converter.HexToBech32(input, prefix)
 			if err != nil {
-				fmt.Println(err.Error())
-				os.Exit(1)
+				utils.ExitError(err)
 			}
+
 			fmt.Println(value)
 		} else {
 			addr, err := converter.Bech32ToHex(input)
 			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+				utils.ExitError(err)
 			}
+
 			fmt.Println(addr)
 		}
 	},

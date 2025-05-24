@@ -16,6 +16,7 @@ func BuildEVMChainVersion(version string) error {
 	return BuildEVMBinary(GetBranchFolder(version))
 }
 
+// TODO: this should also use the chain config that specifies the build command and options for the corresponding repository
 func BuildEVMBinary(path string) error {
 	if err := os.Chdir(path); err != nil {
 		return err

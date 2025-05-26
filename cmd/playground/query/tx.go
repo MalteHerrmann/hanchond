@@ -23,6 +23,7 @@ var txCmd = &cobra.Command{
 
 		txhash := args[0]
 
+		// TODO: this should be refactored to check the node in the DB and get the correct client from there to instantiate the correct daemon
 		e := evmos.NewEvmosFromDB(queries, nodeID)
 		resp, err := e.GetTransaction(txhash)
 		if err != nil {

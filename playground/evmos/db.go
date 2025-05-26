@@ -14,6 +14,7 @@ type NodeFromDB struct {
 	Ports database.Port
 }
 
+// TODO: this can be moved to the cosmosdaemon package
 func GetNodeFromDB(queries *database.Queries, nodeID string) *NodeFromDB {
 	validatorID, err := strconv.ParseInt(nodeID, 10, 64)
 	if err != nil {
@@ -40,6 +41,7 @@ func GetNodeFromDB(queries *database.Queries, nodeID string) *NodeFromDB {
 	}
 }
 
+// TODO: this shouldn't be required anymore after fully refactoring to use the chain config
 func NewEvmosFromDB(queries *database.Queries, nodeID string) *Evmos {
 	data := GetNodeFromDB(queries, nodeID)
 	e := NewEvmos(data.Node.Moniker, data.Node.Version, data.Node.ConfigFolder, data.Chain.ChainID, data.Node.ValidatorKeyName)

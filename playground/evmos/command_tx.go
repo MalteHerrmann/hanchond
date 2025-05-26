@@ -5,6 +5,7 @@ import (
 	"os/exec"
 )
 
+// TODO: this can probably be refactored for all chains and use the chain config / chain info
 func (e *Evmos) GetTransaction(txhash string) (string, error) {
 	command := exec.Command( //nolint:gosec
 		e.GetVersionedBinaryPath(),

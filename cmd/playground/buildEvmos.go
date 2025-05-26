@@ -3,7 +3,6 @@ package playground
 import (
 	"errors"
 
-	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/spf13/cobra"
 )
 
@@ -19,9 +18,7 @@ var buildEvmosCmd = &cobra.Command{
 		}
 
 		version := args[0]
-		chainInfo := evmos.ChainInfo
-
-		return RunBuildEVMChainCmd(cmd, chainInfo, version)
+		return RunBuildEVMChainCmd(cmd, "evmos", version)
 	},
 }
 

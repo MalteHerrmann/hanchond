@@ -14,6 +14,7 @@ func (e *Evmos) UpdateAppFile() error {
 	return e.Daemon.SaveAppFile(appFile)
 }
 
+// TODO: this isn't really required, we can just set this using the additional start flags in the chain config
 func (e *Evmos) enableWeb3API(config []byte) []byte {
 	configValues := string(config)
 	configValues = strings.Replace(

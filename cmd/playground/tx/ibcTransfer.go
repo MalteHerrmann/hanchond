@@ -32,6 +32,7 @@ var ibcTransferCmd = &cobra.Command{
 		dstWallet := args[0]
 		amount := args[1]
 
+		// TODO: this should be refactored to check the node in the DB and get the correct client from there to instantiate the correct daemon instead of hardcoding evmos
 		e := evmos.NewEvmosFromDB(queries, nodeID)
 		denom, err := cmd.Flags().GetString("denom")
 		if err != nil {

@@ -3,7 +3,6 @@ package playground
 import (
 	"errors"
 
-	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/spf13/cobra"
 )
 
@@ -18,9 +17,7 @@ var buildSagaOSCmd = &cobra.Command{
 		}
 
 		version := args[0]
-		chainInfo := sagaos.ChainInfo
-
-		return RunBuildEVMChainCmd(cmd, chainInfo, version)
+		return RunBuildEVMChainCmd(cmd, "sagaos", version)
 	},
 }
 

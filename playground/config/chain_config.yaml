@@ -1,0 +1,45 @@
+chains:
+  evmos:
+    account_prefix: "evmos"
+    binary_name: "evmosd"
+    chain_id_base: "evmos_9000-"
+    client_name: "evmos"
+    denom: "aevmos"
+    repo_url: "https://github.com/evmos/evmos"
+    hd_path: "m/44'/60'/0'/0"
+    key_algo: "eth_secp256k1"
+    sdk_version: "evmosSDK"
+    build:
+      make_target: "build"
+      make_options: "COSMOS_BUILD_OPTIONS=nooptimization,nostrip"
+      binary_path: "build/evmosd"
+
+  sagaos:
+    account_prefix: "saga"
+    binary_name: "sagaosd"
+    chain_id_base: "sagaos_1234-"
+    client_name: "sagaos"
+    denom: "saga"
+    repo_url: "https://github.com/sagaxyz/sagaos"
+    hd_path: "m/44'/118'/0'/0"
+    key_algo: "eth_secp256k1"
+    sdk_version: "evmosSDK"
+    build:
+      make_target: "build"
+      make_options: "COSMOS_BUILD_OPTIONS=nooptimization,nostrip"
+      binary_path: "build/sagaosd"
+
+  gaia:
+    account_prefix: "cosmos"
+    binary_name: "gaiad"
+    chain_id_base: "cosmoshub-"
+    client_name: "gaia"
+    denom: "icsstake"
+    repo_url: "https://github.com/cosmos/gaia"
+    hd_path: "m/44'/118'/0'/0"
+    key_algo: "secp256k1"
+    sdk_version: "gaiaSDK"
+    build:
+      make_target: "build"
+      make_options: "COSMOS_BUILD_OPTIONS=nooptimization,nostrip"
+      binary_path: "build/gaiad" 

@@ -5,6 +5,7 @@ import (
 	"os/exec"
 )
 
+// TODO: this can be refactored to the default Cosmos daemon as we assume all chains are IBC-enabled for now
 func (e *Evmos) SendIBC(port, channel, receiver, amount string) (string, error) {
 	command := exec.Command( //nolint:gosec
 		e.GetVersionedBinaryPath(),

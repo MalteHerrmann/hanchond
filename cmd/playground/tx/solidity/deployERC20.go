@@ -43,6 +43,18 @@ var deployERC20Cmd = &cobra.Command{
 
 		// TODO: allow mainnet as a valid endpoint
 		e := evmos.NewEvmosFromDB(queries, nodeID)
+
+		// daemon, err := playgroundutils.NewDaemonFromDB(queries, nodeID)
+		//if err != nil {
+		//	utils.ExitError(fmt.Errorf("failed to initialize daemon: %w", err))
+		//}
+		//
+		//// TODO: implement Daemon interface and the cast to Evmos then; currently it's using the Daemon struct
+		//e, ok := daemon.(*evmos.Evmos)
+		//if !ok {
+		//	utils.ExitError(fmt.Errorf("wrong type of daemon; expected *Evmos; got %T", daemon))
+		//}
+		//
 		builder := e.NewTxBuilder(gasLimit)
 
 		txHash, err := solidity.BuildAndDeployERC20Contract(name, symbol, initialAmount, isWrapped, builder, gasLimit)

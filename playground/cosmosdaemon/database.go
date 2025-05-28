@@ -56,3 +56,31 @@ func (d *Daemon) SaveNodeToDB(chain database.Chain, queries *database.Queries) (
 
 	return nodeID, nil
 }
+
+type NodeFromDB struct {
+	Node  database.Node
+	Chain database.Chain
+	Ports database.Port
+}
+
+func GetNodeFromDB(queries *database.Queries, nodeID int64) (*NodeFromDB, error) {
+	validatorNode, err := queries.GetNode(context.Background(), nodeID)
+	if err != nil {
+		return nil, err
+	}
+
+	validatorPorts, err := queries.GetNodePorts(context.Background(), validatorNode.ID)
+	if err != nil {
+		return nil, err
+	}
+	chain, err := queries.GetChain(context.Background(), validatorNode.ChainID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &NodeFromDB{
+		Node:  validatorNode,
+		Chain: chain,
+		Ports: validatorPorts,
+	}, nil
+}

@@ -21,18 +21,14 @@ func (d *Daemon) AddGenesisAccount(validatorAddr string) error {
 		d.HomeDir,
 	}
 
-	genesisNamespace, err := d.GetGenesisNamespace(args[0])
+	genesisSubcommand, err := d.GetGenesisSubcommand(args)
 	if err != nil {
 		return err
 	}
 
-	if genesisNamespace != "" {
-		args = append([]string{genesisNamespace}, args...)
-	}
-
 	command := exec.Command( //nolint:gosec
 		d.GetVersionedBinaryPath(),
-		args...,
+		genesisSubcommand...,
 	)
 
 	out, err := command.CombinedOutput()
@@ -57,17 +53,14 @@ func (d *Daemon) ValidatorGenTx() error {
 		d.HomeDir,
 	}
 
-	genesisNamespace, err := d.GetGenesisNamespace(args[0])
+	genesisSubcommand, err := d.GetGenesisSubcommand(args)
 	if err != nil {
 		return err
-	}
-	if genesisNamespace != "" {
-		args = append([]string{genesisNamespace}, args...)
 	}
 
 	command := exec.Command( //nolint:gosec
 		d.GetVersionedBinaryPath(),
-		args...,
+		genesisSubcommand...,
 	)
 	out, err := command.CombinedOutput()
 	if err != nil {
@@ -83,17 +76,14 @@ func (d *Daemon) CollectGenTxs() error {
 		d.HomeDir,
 	}
 
-	genesisNamespace, err := d.GetGenesisNamespace(args[0])
+	genesisSubcommand, err := d.GetGenesisSubcommand(args)
 	if err != nil {
 		return err
-	}
-	if genesisNamespace != "" {
-		args = append([]string{genesisNamespace}, args...)
 	}
 
 	command := exec.Command( //nolint:gosec
 		d.GetVersionedBinaryPath(),
-		args...,
+		genesisSubcommand...,
 	)
 	out, err := command.CombinedOutput()
 	if err != nil {
@@ -108,16 +98,15 @@ func (d *Daemon) ValidateGenesis() error {
 		"--home",
 		d.HomeDir,
 	}
-	genesisNamespace, err := d.GetGenesisNamespace(args[0])
+
+	genesisSubcommand, err := d.GetGenesisSubcommand(args)
 	if err != nil {
 		return err
 	}
-	if genesisNamespace != "" {
-		args = append([]string{genesisNamespace}, args...)
-	}
+
 	command := exec.Command( //nolint:gosec
 		d.GetVersionedBinaryPath(),
-		args...,
+		genesisSubcommand...,
 	)
 	out, err := command.CombinedOutput()
 	if err != nil {

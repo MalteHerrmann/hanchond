@@ -5,33 +5,38 @@ import (
 	"os/exec"
 )
 
-func (d *Daemon) GetGenesisNamespace(subcommand string) (string, error) {
-	// check if `$BIN tx subcommand -h` is successful
+func (d *Daemon) GetGenesisSubcommand(args []string) ([]string, error) {
+	if len(args) < 2 {
+		return nil, fmt.Errorf("not enough arguments to get genesis subcommand")
+	}
+
+	subcommand := args[0]
+
+	// check if `$BIN subcommand -h` is successful
 	command := exec.Command( //nolint:gosec
 		d.GetVersionedBinaryPath(),
-		"tx",
 		subcommand,
 		"-h",
 	)
 
 	if _, err := command.CombinedOutput(); err == nil {
-		return "", nil
+		return args, nil
 	}
 
-	// check if `$BIN tx genesis subcommand -h` is successful
+	// check if `$BIN genesis subcommand -h` is successful
 	command = exec.Command( //nolint:gosec
 		d.GetVersionedBinaryPath(),
-		"tx",
 		"genesis",
 		subcommand,
 		"-h",
 	)
 
 	if _, err := command.CombinedOutput(); err == nil {
-		return "genesis", nil
+		args = append([]string{"genesis"}, args...)
+		return args, nil
 	}
 
-	return "", fmt.Errorf("no corresponding cli command found for %s", subcommand)
+	return nil, fmt.Errorf("no corresponding cli command found for %s", subcommand)
 }
 
 func (d *Daemon) UpdateGenesisFile() error {

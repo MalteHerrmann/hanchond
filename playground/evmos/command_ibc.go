@@ -19,6 +19,8 @@ func (e *Evmos) SendIBC(port, channel, receiver, amount string) (string, error) 
 		e.KeyringBackend,
 		"--home",
 		e.HomeDir,
+		"--chain-id",
+		e.ChainID,
 		"--node",
 		fmt.Sprintf("http://localhost:%d", e.Ports.P26657),
 		"--from",

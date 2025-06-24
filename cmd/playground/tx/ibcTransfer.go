@@ -42,7 +42,12 @@ var ibcTransferCmd = &cobra.Command{
 			denom = e.BaseDenom
 		}
 
-		out, err := e.SendIBC("transfer", channel, dstWallet, amount+denom)
+		amountWithDenom := amount
+		if !strings.Contains(amountWithDenom, denom) {
+			amountWithDenom = amount + denom
+		}
+
+		out, err := e.SendIBC("transfer", channel, dstWallet, amountWithDenom)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error sending the transaction: %w", err))
 		}

@@ -14,7 +14,6 @@ var ChainInfo = types.NewChainInfo(
 	"https://github.com/evmos/evmos",
 	types.EthHDPath,
 	types.EthAlgo,
-	types.EvmosSDK,
 )
 
 type Evmos struct {

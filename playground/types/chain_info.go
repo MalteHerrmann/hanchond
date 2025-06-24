@@ -14,7 +14,6 @@ type ChainInfo struct {
 	Denom      string        `json:"denom"`
 	HDPath     HDPath        `json:"hd_path,omitempty"`
 	KeyAlgo    SignatureAlgo `json:"key_algo"`
-	SdkVersion SDKVersion    `json:"sdk_version"`
 	RepoURL    string        `json:"repo_url"`
 }
 
@@ -26,7 +25,6 @@ func (ci ChainInfo) GetDenom() string          { return ci.Denom }
 func (ci ChainInfo) GetHDPath() HDPath         { return ci.HDPath }
 func (ci ChainInfo) GetKeyAlgo() SignatureAlgo { return ci.KeyAlgo }
 func (ci ChainInfo) GetRepoURL() string        { return ci.RepoURL }
-func (ci ChainInfo) GetSDKVersion() SDKVersion { return ci.SdkVersion }
 
 func (ci ChainInfo) IsEVMChain() bool {
 	return ci.KeyAlgo == EthAlgo
@@ -74,7 +72,6 @@ func NewChainInfo(
 	repoURL string,
 	hdPath HDPath,
 	keyAlgo SignatureAlgo,
-	sdkVersion SDKVersion,
 ) ChainInfo {
 	return ChainInfo{
 		AccountPrefix: accountPrefix,
@@ -85,7 +82,6 @@ func NewChainInfo(
 		HDPath:        hdPath,
 		RepoURL:       repoURL,
 		KeyAlgo:       keyAlgo,
-		SdkVersion:    sdkVersion,
 	}
 }
 
@@ -94,14 +90,6 @@ type SignatureAlgo string
 const (
 	EthAlgo    SignatureAlgo = "eth_secp256k1"
 	CosmosAlgo SignatureAlgo = "secp256k1"
-)
-
-type SDKVersion string
-
-const (
-	// NOTE: there are some differences in the namespace while interacting with the CLI, like the genesis namespace
-	GaiaSDK  SDKVersion = "gaiaSDK"
-	EvmosSDK SDKVersion = "evmosSDK"
 )
 
 type HDPath string

@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/hanchon/hanchond/playground/filesmanager"
-	"github.com/hanchon/hanchond/playground/types"
 )
 
 func (d *Daemon) AddGenesisAccount(validatorAddr string) error {
@@ -21,8 +20,14 @@ func (d *Daemon) AddGenesisAccount(validatorAddr string) error {
 		"--home",
 		d.HomeDir,
 	}
-	if d.chainInfo.GetSDKVersion() == types.GaiaSDK {
-		args = append([]string{"genesis"}, args...)
+
+	genesisNamespace, err := d.GetGenesisNamespace(args[0])
+	if err != nil {
+		return err
+	}
+
+	if genesisNamespace != "" {
+		args = append([]string{genesisNamespace}, args...)
 	}
 
 	command := exec.Command( //nolint:gosec
@@ -52,8 +57,12 @@ func (d *Daemon) ValidatorGenTx() error {
 		d.HomeDir,
 	}
 
-	if d.chainInfo.GetSDKVersion() == types.GaiaSDK {
-		args = append([]string{"genesis"}, args...)
+	genesisNamespace, err := d.GetGenesisNamespace(args[0])
+	if err != nil {
+		return err
+	}
+	if genesisNamespace != "" {
+		args = append([]string{genesisNamespace}, args...)
 	}
 
 	command := exec.Command( //nolint:gosec
@@ -74,9 +83,14 @@ func (d *Daemon) CollectGenTxs() error {
 		d.HomeDir,
 	}
 
-	if d.chainInfo.GetSDKVersion() == types.GaiaSDK {
-		args = append([]string{"genesis"}, args...)
+	genesisNamespace, err := d.GetGenesisNamespace(args[0])
+	if err != nil {
+		return err
 	}
+	if genesisNamespace != "" {
+		args = append([]string{genesisNamespace}, args...)
+	}
+
 	command := exec.Command( //nolint:gosec
 		d.GetVersionedBinaryPath(),
 		args...,
@@ -94,8 +108,12 @@ func (d *Daemon) ValidateGenesis() error {
 		"--home",
 		d.HomeDir,
 	}
-	if d.chainInfo.GetSDKVersion() == types.GaiaSDK {
-		args = append([]string{"genesis"}, args...)
+	genesisNamespace, err := d.GetGenesisNamespace(args[0])
+	if err != nil {
+		return err
+	}
+	if genesisNamespace != "" {
+		args = append([]string{genesisNamespace}, args...)
 	}
 	command := exec.Command( //nolint:gosec
 		d.GetVersionedBinaryPath(),

@@ -1,5 +1,39 @@
 package cosmosdaemon
 
+import (
+	"fmt"
+	"os/exec"
+)
+
+func (d *Daemon) GetGenesisNamespace(subcommand string) (string, error) {
+	// check if `$BIN tx subcommand -h` is successful
+	command := exec.Command( //nolint:gosec
+		d.GetVersionedBinaryPath(),
+		"tx",
+		subcommand,
+		"-h",
+	)
+
+	if _, err := command.CombinedOutput(); err == nil {
+		return "", nil
+	}
+
+	// check if `$BIN tx genesis subcommand -h` is successful
+	command = exec.Command( //nolint:gosec
+		d.GetVersionedBinaryPath(),
+		"tx",
+		"genesis",
+		subcommand,
+		"-h",
+	)
+
+	if _, err := command.CombinedOutput(); err == nil {
+		return "genesis", nil
+	}
+
+	return "", fmt.Errorf("no corresponding cli command found for %s", subcommand)
+}
+
 func (d *Daemon) UpdateGenesisFile() error {
 	genesis, err := d.OpenGenesisFile()
 	if err != nil {

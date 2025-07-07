@@ -19,7 +19,7 @@ func (d *Daemon) GetGenesisSubcommand(args []string) ([]string, error) {
 		"-h",
 	)
 
-	if _, err := command.CombinedOutput(); err == nil {
+	if err := command.Run(); err == nil {
 		return args, nil
 	}
 
@@ -31,7 +31,7 @@ func (d *Daemon) GetGenesisSubcommand(args []string) ([]string, error) {
 		"-h",
 	)
 
-	if _, err := command.CombinedOutput(); err == nil {
+	if err := command.Run(); err == nil {
 		args = append([]string{"genesis"}, args...)
 		return args, nil
 	}

@@ -78,7 +78,6 @@ var addChainConfigCmd = &cobra.Command{
 			"external",
 			hdPath,
 			types.CosmosAlgo,
-			types.GaiaSDK,
 		)
 
 		switch isEvm {
@@ -97,7 +96,6 @@ var addChainConfigCmd = &cobra.Command{
 		case true:
 			chainInfo := defaultChainInfo
 			chainInfo.KeyAlgo = types.EthAlgo
-			chainInfo.SdkVersion = types.EvmosSDK
 
 			utils.Log("adding a EVM chain")
 			if err := h.AddEVMChain(

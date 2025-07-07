@@ -15,7 +15,6 @@ var ChainInfo = types.NewChainInfo(
 	"https://github.com/sagaxyz/sagaos",
 	types.CosmosHDPath,
 	types.EthAlgo,
-	types.EvmosSDK,
 )
 
 type SagaOS struct {

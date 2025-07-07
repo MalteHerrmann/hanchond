@@ -14,7 +14,6 @@ var ChainInfo = types.NewChainInfo(
 	"https://github.com/cosmos/gaia",
 	types.CosmosHDPath,
 	types.CosmosAlgo,
-	types.GaiaSDK,
 )
 
 type Gaia struct {

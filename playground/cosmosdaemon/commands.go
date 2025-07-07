@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/hanchon/hanchond/playground/filesmanager"
-	"github.com/hanchon/hanchond/playground/types"
 )
 
 func (d *Daemon) AddGenesisAccount(validatorAddr string) error {
@@ -21,13 +20,15 @@ func (d *Daemon) AddGenesisAccount(validatorAddr string) error {
 		"--home",
 		d.HomeDir,
 	}
-	if d.chainInfo.GetSDKVersion() == types.GaiaSDK {
-		args = append([]string{"genesis"}, args...)
+
+	genesisSubcommand, err := d.GetGenesisSubcommand(args)
+	if err != nil {
+		return err
 	}
 
 	command := exec.Command( //nolint:gosec
 		d.GetVersionedBinaryPath(),
-		args...,
+		genesisSubcommand...,
 	)
 
 	out, err := command.CombinedOutput()
@@ -52,13 +53,14 @@ func (d *Daemon) ValidatorGenTx() error {
 		d.HomeDir,
 	}
 
-	if d.chainInfo.GetSDKVersion() == types.GaiaSDK {
-		args = append([]string{"genesis"}, args...)
+	genesisSubcommand, err := d.GetGenesisSubcommand(args)
+	if err != nil {
+		return err
 	}
 
 	command := exec.Command( //nolint:gosec
 		d.GetVersionedBinaryPath(),
-		args...,
+		genesisSubcommand...,
 	)
 	out, err := command.CombinedOutput()
 	if err != nil {
@@ -74,12 +76,14 @@ func (d *Daemon) CollectGenTxs() error {
 		d.HomeDir,
 	}
 
-	if d.chainInfo.GetSDKVersion() == types.GaiaSDK {
-		args = append([]string{"genesis"}, args...)
+	genesisSubcommand, err := d.GetGenesisSubcommand(args)
+	if err != nil {
+		return err
 	}
+
 	command := exec.Command( //nolint:gosec
 		d.GetVersionedBinaryPath(),
-		args...,
+		genesisSubcommand...,
 	)
 	out, err := command.CombinedOutput()
 	if err != nil {
@@ -94,12 +98,15 @@ func (d *Daemon) ValidateGenesis() error {
 		"--home",
 		d.HomeDir,
 	}
-	if d.chainInfo.GetSDKVersion() == types.GaiaSDK {
-		args = append([]string{"genesis"}, args...)
+
+	genesisSubcommand, err := d.GetGenesisSubcommand(args)
+	if err != nil {
+		return err
 	}
+
 	command := exec.Command( //nolint:gosec
 		d.GetVersionedBinaryPath(),
-		args...,
+		genesisSubcommand...,
 	)
 	out, err := command.CombinedOutput()
 	if err != nil {

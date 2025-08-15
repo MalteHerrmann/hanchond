@@ -20,6 +20,7 @@ type Evmos struct {
 	*cosmosdaemon.Daemon
 }
 
+// TODO: this should be able to be removed after fully refactoring to use the chain config
 func NewEvmos(moniker, version, homeDir, chainID, keyName string) *Evmos {
 	e := &Evmos{
 		Daemon: cosmosdaemon.NewDameon(

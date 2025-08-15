@@ -8,13 +8,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const DEFAULT_HERMES_VERSION = "v1.10.5"
+const DefaultHermesVersion = "v1.10.5"
 
 // buildHermesCmd represents the buildHermes command
 var buildHermesCmd = &cobra.Command{
 	Use:   "build-hermes",
 	Short: "Build the Hermes relayer binary",
-	Long:  fmt.Sprintf(`It builds the relayer from source, it accepts a version flag to specify any tag. It defaults to: %s.`, DEFAULT_HERMES_VERSION),
+	Long:  fmt.Sprintf(`It builds the relayer from source, it accepts a version flag to specify any tag. It defaults to: %s.`, DefaultHermesVersion),
 	Run: func(cmd *cobra.Command, _ []string) {
 		// TODO: download from release page instead of building from source
 		_ = filesmanager.SetHomeFolderFromCobraFlags(cmd)
@@ -51,5 +51,5 @@ var buildHermesCmd = &cobra.Command{
 
 func init() {
 	PlaygroundCmd.AddCommand(buildHermesCmd)
-	buildHermesCmd.PersistentFlags().StringP("version", "v", DEFAULT_HERMES_VERSION, "Hermes version to build")
+	buildHermesCmd.PersistentFlags().StringP("version", "v", DefaultHermesVersion, "Hermes version to build")
 }

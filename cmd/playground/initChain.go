@@ -9,18 +9,14 @@ import (
 	"strings"
 
 	"github.com/hanchon/hanchond/lib/utils"
+	"github.com/hanchon/hanchond/playground/config"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
-	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/filesmanager"
-	"github.com/hanchon/hanchond/playground/gaia"
-	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/hanchon/hanchond/playground/types"
-
 	"github.com/spf13/cobra"
 )
 
-// initChainCmd represents the initChainCmd
+// initChainCmd represents the initChain command
 var initChainCmd = &cobra.Command{
 	Use:   "init-chain [amount_of_validators]",
 	Args:  cobra.ExactArgs(1),
@@ -55,51 +51,13 @@ var initChainCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("could not get the chains info from db: %w", err))
 		}
 
-		var (
-			chainInfo        types.ChainInfo
-			createDaemonFunc func(path string, k int) *cosmosdaemon.Daemon
-		)
-
-		nodes := make([]*cosmosdaemon.Daemon, amountOfValidators)
-		switch strings.ToLower(strings.TrimSpace(client)) {
-		case "evmos":
-			chainInfo = evmos.ChainInfo
-
-			createDaemonFunc = func(path string, k int) *cosmosdaemon.Daemon {
-				return evmos.NewEvmos(
-					fmt.Sprintf("moniker-%d-%d", chainNumber, k),
-					version,
-					path,
-					chainID,
-					fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
-				).Daemon
-			}
-		case "gaia":
-			chainInfo = gaia.ChainInfo
-
-			createDaemonFunc = func(path string, k int) *cosmosdaemon.Daemon {
-				return gaia.NewGaia(
-					fmt.Sprintf("moniker-%d-%d", chainNumber, k),
-					path,
-					chainID,
-					fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
-				).Daemon
-			}
-		case "sagaos":
-			chainInfo = sagaos.ChainInfo
-
-			createDaemonFunc = func(path string, k int) *cosmosdaemon.Daemon {
-				return sagaos.NewSagaOS(
-					fmt.Sprintf("moniker-%d-%d", chainNumber, k),
-					version,
-					path,
-					chainID,
-					fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
-				).Daemon
-			}
-		default:
-			panic("invalid client flag: " + client)
+		chainConfig, err := config.GetChainConfig(strings.ToLower(client))
+		if err != nil {
+			utils.ExitError(fmt.Errorf("error getting chain config: %w", err))
 		}
+
+		chainInfo := chainConfig.ToChainInfo()
+		nodes := make([]*cosmosdaemon.Daemon, amountOfValidators)
 
 		if chainID == "" {
 			chainID = fmt.Sprintf("%s%d", chainInfo.GetChainIDBase(), chainNumber)
@@ -111,7 +69,14 @@ var initChainCmd = &cobra.Command{
 			}
 
 			path := filesmanager.GetNodeHomeFolder(int64(chainNumber), int64(k))
-			nodes[k] = createDaemonFunc(path, k)
+			nodes[k] = cosmosdaemon.NewDameon(
+				chainInfo,
+				fmt.Sprintf("moniker-%d-%d", chainNumber, k),
+				version,
+				path,
+				chainID,
+				fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
+			)
 		}
 
 		dbID, err := cosmosdaemon.InitMultiNodeChain(nodes, queries)
@@ -125,7 +90,7 @@ var initChainCmd = &cobra.Command{
 
 func init() {
 	PlaygroundCmd.AddCommand(initChainCmd)
-	initChainCmd.Flags().String("client", "evmos", "Client that you want to use. Options: evmos, gaia")
+	initChainCmd.Flags().String("client", "evmos", "Client that you want to use. Options: evmos, sagaos, gaia")
 	initChainCmd.Flags().StringP("version", "v", "local", "Version of the Evmos node that you want to use, defaults to local. Tag names are supported. If selected node is gaia, the flag is ignored.")
 	initChainCmd.Flags().StringP("chainid", "c", "", "Chain-ID to be used when creating the genesis file, it defaults to `evmos_9001-X` or `cosmoshub-X`, depending on the client.")
 }

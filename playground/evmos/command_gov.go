@@ -20,6 +20,7 @@ type STRv1 struct {
 	Symbol   string
 }
 
+// TODO: this only works for evmos < v19 or something so this should be reflected in the error message -- low prio
 func (e *Evmos) CreateSTRv1Proposal(params STRv1) (string, error) {
 	metadata := fmt.Sprintf(`
 {

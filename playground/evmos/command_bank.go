@@ -5,6 +5,7 @@ import (
 	"os/exec"
 )
 
+// TODO: this should be refactored to the default Cosmos daemon
 func (e *Evmos) CheckBalance(wallet string) (string, error) {
 	command := exec.Command( //nolint:gosec
 		e.GetVersionedBinaryPath(),

@@ -1,11 +1,13 @@
 package cosmosdaemon
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/hanchon/hanchond/lib/converter"
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/txbuilder"
+	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/types"
 )
@@ -113,4 +115,33 @@ func (d *Daemon) NewTxBuilder(gasLimit uint64) *txbuilder.TxBuilder {
 		gasLimit,
 		d.NewRequester(),
 	)
+}
+
+// StartNodeAndStoreInfo starts a node and stores its information in the database
+func (d *Daemon) StartNodeAndStoreInfo(queries *database.Queries, nodeID int64) (int, error) {
+	logFile := d.HomeDir + "/run.log"
+	// TODO: this contains the EVM specific flags, which should be defined per-chain in the config using a `AdditionalStartFlags` field.
+	startCmd := fmt.Sprintf("%s start --chain-id %s --home %s --json-rpc.api eth,txpool,personal,net,debug,web3 --json-rpc.enable --api.enable --grpc.enable >> %s 2>&1",
+		d.GetVersionedBinaryPath(),
+		d.ChainID,
+		d.HomeDir,
+		logFile,
+	)
+
+	pid, err := d.Start(startCmd)
+	if err != nil {
+		return 0, fmt.Errorf("error starting node: %w", err)
+	}
+
+	// Store node information in database
+	err = queries.SetProcessID(context.Background(), database.SetProcessIDParams{
+		ProcessID: int64(pid),
+		IsRunning: 1,
+		ID:        nodeID,
+	})
+	if err != nil {
+		return 0, fmt.Errorf("could not save the process ID to the db: %w", err)
+	}
+
+	return pid, nil
 }

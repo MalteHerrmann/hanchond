@@ -3,6 +3,7 @@ package playground
 import (
 	"context"
 	"fmt"
+	"github.com/hanchon/hanchond/playground/orbiter"
 	"strconv"
 	"strings"
 
@@ -50,6 +51,10 @@ var startChainCmd = &cobra.Command{
 				pID, err = d.Start()
 			case sagaos.ChainInfo.GetBinaryName():
 				d := sagaos.NewSagaOS(v.Moniker, v.Version, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
+				pID, err = d.Start()
+			// TODO: instead of simd abstract this away to enable multiple things that are called simd
+			case orbiter.ChainInfo.GetBinaryName():
+				d := orbiter.NewOrbiter(v.Moniker, v.Version, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
 				pID, err = d.Start()
 			default:
 				utils.ExitError(fmt.Errorf("binary %s not configured", binaryName))

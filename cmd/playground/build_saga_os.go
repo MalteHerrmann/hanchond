@@ -26,5 +26,5 @@ var buildSagaOSCmd = &cobra.Command{
 
 func init() {
 	PlaygroundCmd.AddCommand(buildSagaOSCmd)
-	buildSagaOSCmd.Flags().StringP("path", "p", "", "Path to you local clone of Evmos")
+	buildSagaOSCmd.Flags().StringP("path", "p", "", "Path to your local copy of the repository")
 }

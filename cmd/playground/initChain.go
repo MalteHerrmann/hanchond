@@ -5,6 +5,7 @@ import (
 	dbsql "database/sql"
 	"errors"
 	"fmt"
+	"github.com/hanchon/hanchond/playground/orbiter"
 	"strconv"
 	"strings"
 
@@ -90,6 +91,18 @@ var initChainCmd = &cobra.Command{
 
 			createDaemonFunc = func(path string, k int) *cosmosdaemon.Daemon {
 				return sagaos.NewSagaOS(
+					fmt.Sprintf("moniker-%d-%d", chainNumber, k),
+					version,
+					path,
+					chainID,
+					fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
+				).Daemon
+			}
+		case "orbiter":
+			chainInfo = orbiter.ChainInfo
+
+			createDaemonFunc = func(path string, k int) *cosmosdaemon.Daemon {
+				return orbiter.NewOrbiter(
 					fmt.Sprintf("moniker-%d-%d", chainNumber, k),
 					version,
 					path,

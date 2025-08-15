@@ -18,6 +18,10 @@ func (d *Daemon) getAppPath() string {
 	return d.HomeDir + "/config/app.toml"
 }
 
+func (d *Daemon) GetLogPath() string {
+	return d.HomeDir + "/run.log"
+}
+
 func (d *Daemon) OpenGenesisFile() (map[string]interface{}, error) {
 	return readJSONFile(d.getGenesisPath())
 }

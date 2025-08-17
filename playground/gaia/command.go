@@ -11,5 +11,6 @@ func (g *Gaia) Start() (int, error) {
 		g.HomeDir,
 		g.GetLogPath(),
 	)
+
 	return g.Daemon.Start(cmd)
 }

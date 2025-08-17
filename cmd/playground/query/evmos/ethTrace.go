@@ -4,14 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// ethTraceCmd represents the ethTrace command
+// ethTraceCmd represents the ethTrace command.
 var ethTraceCmd = &cobra.Command{
 	Use:   "eth-trace [tx_hash]",
 	Args:  cobra.ExactArgs(1),

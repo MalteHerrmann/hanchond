@@ -9,7 +9,12 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-func (c *Client) SendGetRequestEasyJSON(endpoint string, url string, res easyjson.Unmarshaler, auth string) error {
+func (c *Client) SendGetRequestEasyJSON(
+	endpoint string,
+	url string,
+	res easyjson.Unmarshaler,
+	auth string,
+) error {
 	req := fasthttp.AcquireRequest()
 	req.SetRequestURI(endpoint + url)
 	req.Header.SetMethod(fasthttp.MethodGet)
@@ -52,5 +57,6 @@ func (c *Client) SendGetRequest(endpoint string, url string, auth string) ([]byt
 
 	ret := make([]byte, len(resp.Body()))
 	copy(ret, resp.Body())
+
 	return ret, nil
 }

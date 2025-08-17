@@ -22,11 +22,11 @@ func (d *Daemon) GetLogPath() string {
 	return d.HomeDir + "/run.log"
 }
 
-func (d *Daemon) OpenGenesisFile() (map[string]interface{}, error) {
+func (d *Daemon) OpenGenesisFile() (map[string]any, error) {
 	return readJSONFile(d.getGenesisPath())
 }
 
-func (d *Daemon) SaveGenesisFile(genesis map[string]interface{}) error {
+func (d *Daemon) SaveGenesisFile(genesis map[string]any) error {
 	return saveJSONFile(genesis, d.getGenesisPath())
 }
 

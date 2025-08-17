@@ -5,10 +5,11 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/types"
-	"github.com/spf13/cobra"
 )
 
 const LocalVersion = "local"
@@ -32,6 +33,7 @@ func BuildLocalEVMBinary(chainInfo types.ChainInfo, path string) error {
 	fullBuildPath := filepath.Join(path, relBuildPath)
 	if err := filesmanager.MoveFile(fullBuildPath, filesmanager.GetDaemondPathWithVersion(chainInfo, version)); err != nil {
 		utils.Log("could not move the built binary: %s", err)
+
 		return err
 	}
 
@@ -46,7 +48,7 @@ func BuildEVMBinaryFromGitHub(chainInfo types.ChainInfo, version string) error {
 
 	utils.Log("Cloning %s version: %s", chainInfo.GetBinaryName(), version)
 	if err := filesmanager.GitCloneGitHubBranch(chainInfo, version); err != nil {
-		return fmt.Errorf("could not clone the %s version: %s", chainInfo.GetBinaryName(), err)
+		return fmt.Errorf("could not clone the %s version: %w", chainInfo.GetBinaryName(), err)
 	}
 
 	utils.Log("Building %s...", chainInfo.GetBinaryName())

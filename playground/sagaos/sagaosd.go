@@ -33,5 +33,6 @@ func NewSagaOS(moniker, version, homeDir, chainID, keyName string) *SagaOS {
 		),
 	}
 	s.SetCustomConfig(s.UpdateAppFile)
+
 	return s
 }

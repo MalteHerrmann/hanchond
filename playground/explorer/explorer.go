@@ -6,12 +6,12 @@ import (
 	"log"
 	"sync"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/hanchon/hanchond/lib/converter"
 	"github.com/hanchon/hanchond/lib/protoencoder/codec"
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/playground/explorer/database"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Client struct {
@@ -30,7 +30,10 @@ type Client struct {
 }
 
 func NewLocalExplorerClient(web3Port, cosmosPort int, homeFolder string) *Client {
-	db, queries, err := database.InitExplorerDatabase(context.Background(), homeFolder+"/explorer.db")
+	db, queries, err := database.InitExplorerDatabase(
+		context.Background(),
+		homeFolder+"/explorer.db",
+	)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
@@ -44,12 +47,14 @@ func NewLocalExplorerClient(web3Port, cosmosPort int, homeFolder string) *Client
 		DBHeight:       0,
 	}
 	c.DB = NewDatabase(c.ctx, db, queries)
-	c.Client = requester.NewClient().WithUnsecureWeb3Endpoint(c.web3Endpoint).WithUnsecureRestEndpoint(c.cosmosEndpoint)
+	c.Client = requester.NewClient().
+		WithUnsecureWeb3Endpoint(c.web3Endpoint).
+		WithUnsecureRestEndpoint(c.cosmosEndpoint)
 
 	return c
 }
 
-// ProcessMissingBlocks process up to 500 blocks at the time
+// ProcessMissingBlocks process up to 500 blocks at the time.
 func (c *Client) ProcessMissingBlocks(startBlock int64) error {
 	if !c.mutex.TryLock() {
 		return nil
@@ -119,7 +124,8 @@ func (c *Client) ProcessMissingBlocks(startBlock int64) error {
 				ethTxHash = ethTx.Hash().Hex()
 				sender = from.String()
 			} else if len(tx.AuthInfo.GetSignerInfos()) != 0 {
-				// If the transaction was not an Eth Transaction, the sender is in the cosmos signer info
+				// If the transaction was not an Eth Transaction, the sender is in the cosmos signer
+				// info
 				sender = sdk.AccAddress(tx.AuthInfo.GetSignerInfos()[0].PublicKey.Value).String()
 			}
 
@@ -140,5 +146,6 @@ func (c *Client) ProcessMissingBlocks(startBlock int64) error {
 	}
 
 	c.DBHeight = int(nextBlockToIndex)
+
 	return nil
 }

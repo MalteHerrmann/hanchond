@@ -3,13 +3,14 @@ package query
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// txCmd represents the query tx command
+// txCmd represents the query tx command.
 var txCmd = &cobra.Command{
 	Use:   "tx [txhash]",
 	Args:  cobra.ExactArgs(1),

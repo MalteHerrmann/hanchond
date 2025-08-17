@@ -3,11 +3,12 @@ package playground
 import (
 	"errors"
 
-	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/spf13/cobra"
+
+	"github.com/hanchon/hanchond/playground/evmos"
 )
 
-// buildEvmosCmd represents the buildEvmos command
+// buildEvmosCmd represents the buildEvmos command.
 var buildEvmosCmd = &cobra.Command{
 	Use:   "build-evmos",
 	Short: "Build an specific version of Evmos (hanchond playground build-evmos v18.0.0), it also supports local repositories (hanchond playground build-evmos --path /home/hanchon/evmos)",

@@ -22,6 +22,7 @@ func (c *Client) GetERC20Client() (*erc20.ERC20, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return c.ERC20Client, nil
 }
 
@@ -30,13 +31,19 @@ func (c *Client) GetTotalSupply(contractAddress string, height int) (*big.Int, e
 	if err != nil {
 		return nil, err
 	}
+
 	return client.GetTotalSupply(contractAddress, height)
 }
 
-func (c *Client) GetBalanceERC20(contractAddress string, wallet string, height int) (*big.Int, error) {
+func (c *Client) GetBalanceERC20(
+	contractAddress string,
+	wallet string,
+	height int,
+) (*big.Int, error) {
 	client, err := c.GetERC20Client()
 	if err != nil {
 		return nil, err
 	}
+
 	return client.GetBalance(contractAddress, wallet, height)
 }

@@ -5,5 +5,6 @@ func (t *TxBuilder) GetGasLimit(method string) uint64 {
 	if ok {
 		return v
 	}
+
 	return t.defaultGasLimit
 }

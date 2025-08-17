@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// strV1ProposalCmd represents the str-v1-proposal command
+// strV1ProposalCmd represents the str-v1-proposal command.
 var strV1ProposalCmd = &cobra.Command{
 	Use:     "str-v1-proposal [denom]",
 	Aliases: []string{"strv1"},

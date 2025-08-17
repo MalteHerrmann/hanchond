@@ -6,6 +6,7 @@ import (
 
 func (c *Client) GetChainStatus() (*tenderminttypes.StatusResponse, error) {
 	var result tenderminttypes.StatusResponse
+
 	return &result, c.SendGetRequestEasyJSON(
 		c.TendermintRestEndpoint,
 		"/status",
@@ -19,5 +20,6 @@ func (c *Client) GetCurrentHeight() (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return status.Result.SyncInfo.LatestBlockHeight, nil
 }

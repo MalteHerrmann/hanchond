@@ -14,10 +14,13 @@ func NewHermes() *Hermes {
 	h := &Hermes{}
 
 	if _, err := os.Stat(h.GetHermesBinary()); os.IsNotExist(err) {
-		utils.ExitError(fmt.Errorf("Hermes binary at %s does not exist; build it first", h.GetHermesBinary()))
+		utils.ExitError(
+			fmt.Errorf("Hermes binary at %s does not exist; build it first", h.GetHermesBinary()),
+		)
 	}
 
 	_ = filesmanager.CreateHermesFolder()
 	h.initHermesConfig()
+
 	return h
 }

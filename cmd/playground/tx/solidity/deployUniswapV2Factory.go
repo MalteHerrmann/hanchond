@@ -4,16 +4,17 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/smartcontract"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/solidity"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// deployUniswapV2FactoryCmd represents the deploy command
+// deployUniswapV2FactoryCmd represents the deploy command.
 var deployUniswapV2FactoryCmd = &cobra.Command{
 	Use:   "deploy-uniswap-v2-factory [fee_wallet]",
 	Args:  cobra.ExactArgs(1),
@@ -60,7 +61,9 @@ var deployUniswapV2FactoryCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("could not compile the erc20 contract: %w", err))
 		}
 
-		bytecode, err := filesmanager.ReadFile(filesmanager.GetBranchFolder(folderName) + contractName + ".bin")
+		bytecode, err := filesmanager.ReadFile(
+			filesmanager.GetBranchFolder(folderName) + contractName + ".bin",
+		)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error reading the bytecode file: %w", err))
 		}
@@ -71,13 +74,17 @@ var deployUniswapV2FactoryCmd = &cobra.Command{
 		}
 
 		// Generate the constructor
-		abiBytes, err := filesmanager.ReadFile(filesmanager.GetBranchFolder(folderName) + contractName + ".abi")
+		abiBytes, err := filesmanager.ReadFile(
+			filesmanager.GetBranchFolder(folderName) + contractName + ".abi",
+		)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error reading the abi file: %w", err))
 		}
 
 		// Get Params
-		callArgs, err := smartcontract.StringsToABIArguments([]string{fmt.Sprintf("a:%s", feeWallet)})
+		callArgs, err := smartcontract.StringsToABIArguments(
+			[]string{fmt.Sprintf("a:%s", feeWallet)},
+		)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error converting arguments: %w", err))
 		}
@@ -103,7 +110,12 @@ var deployUniswapV2FactoryCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("failed to get the eth code: %w", err))
 		}
 
-		fmt.Printf("{\"contract_address\":\"%s\", \"code_hash\":\"%s\", \"tx_hash\":\"%s\"}\n", contractAddress, "0x"+codeHash, txHash)
+		fmt.Printf(
+			"{\"contract_address\":\"%s\", \"code_hash\":\"%s\", \"tx_hash\":\"%s\"}\n",
+			contractAddress,
+			"0x"+codeHash,
+			txHash,
+		)
 
 		// Clean up files
 		if err := filesmanager.CleanUpTempFolder(); err != nil {
@@ -115,5 +127,6 @@ var deployUniswapV2FactoryCmd = &cobra.Command{
 
 func init() {
 	SolidityCmd.AddCommand(deployUniswapV2FactoryCmd)
-	deployUniswapV2FactoryCmd.Flags().Int("gas-limit", 20_000_000, "GasLimit to be used to deploy the transaction")
+	deployUniswapV2FactoryCmd.Flags().
+		Int("gas-limit", 20_000_000, "GasLimit to be used to deploy the transaction")
 }

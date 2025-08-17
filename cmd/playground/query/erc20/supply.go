@@ -5,15 +5,16 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/smartcontract/erc20"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// supplyCmd represents the supply command
+// supplyCmd represents the supply command.
 var supplyCmd = &cobra.Command{
 	Use:   "supply [contract]",
 	Args:  cobra.ExactArgs(1),
@@ -30,6 +31,8 @@ var supplyCmd = &cobra.Command{
 
 		height, _ := cmd.Flags().GetString("height")
 		heightInt := erc20.Latest
+
+		//nolint:goconst // no need to add constant for "latest"
 		if height != "latest" {
 			temp, err := strconv.ParseInt(height, 10, 64)
 			if err != nil {

@@ -7,12 +7,12 @@ import (
 	"strings"
 )
 
-// Assumes pgrep installed and bash spawing only one child
+// Assumes pgrep installed and bash spawing only one child.
 func GetChildPID(parentID int) (int, error) {
 	psCmd := exec.Command("pgrep", "-P", strconv.Itoa(parentID)) //nolint:gosec
 	output, err := psCmd.Output()
 	if err != nil {
-		return 0, fmt.Errorf("error finding child process: %v", err)
+		return 0, fmt.Errorf("error finding child process: %w", err)
 	}
 	childPids := strings.Fields(string(output))
 	if len(childPids) == 0 {
@@ -20,7 +20,8 @@ func GetChildPID(parentID int) (int, error) {
 	}
 	childPid, err := strconv.Atoi(childPids[0])
 	if err != nil {
-		return 0, fmt.Errorf("invalid child PID: %v", err)
+		return 0, fmt.Errorf("invalid child PID: %w", err)
 	}
+
 	return childPid, nil
 }

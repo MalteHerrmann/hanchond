@@ -4,14 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// rateLimitsCmd represents the ibc-rate-limits command
+// rateLimitsCmd represents the ibc-rate-limits command.
 var rateLimitsCmd = &cobra.Command{
 	Use:   "ibc-rate-limits",
 	Short: "Get all active IBC rate limits",
@@ -23,7 +24,8 @@ var rateLimitsCmd = &cobra.Command{
 		}
 
 		e := evmos.NewEvmosFromDB(queries, nodeID)
-		client := requester.NewClient().WithUnsecureRestEndpoint(fmt.Sprintf("http://localhost:%d", e.Ports.P1317))
+		client := requester.NewClient().
+			WithUnsecureRestEndpoint(fmt.Sprintf("http://localhost:%d", e.Ports.P1317))
 		rateLimits, err := client.GetIBCRateLimits()
 		if err != nil {
 			utils.ExitError(fmt.Errorf("could not get the rateLimits: %w", err))

@@ -81,7 +81,7 @@ func (d *Daemon) GetVersionedBinaryPath() string {
 	return filesmanager.GetDaemondPathWithVersion(d.chainInfo, d.Version)
 }
 
-// This is used to change the config files that are specific to a client
+// This is used to change the config files that are specific to a client.
 func (d *Daemon) SetCustomConfig(configurator func() error) {
 	d.CustomConfig = configurator
 }
@@ -90,6 +90,7 @@ func (d *Daemon) ExecuteCustomConfig() error {
 	if d.CustomConfig == nil {
 		return nil
 	}
+
 	return d.CustomConfig()
 }
 

@@ -3,12 +3,13 @@ package convert
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/converter"
 	"github.com/hanchon/hanchond/lib/utils"
-	"github.com/spf13/cobra"
 )
 
-// AddrCmd represents the addr command
+// AddrCmd represents the addr command.
 var AddrCmd = &cobra.Command{
 	Use:   "addr",
 	Args:  cobra.ExactArgs(1),

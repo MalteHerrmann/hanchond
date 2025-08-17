@@ -5,14 +5,15 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// upgradeProposalCmd represents the upgrade-proposal command
+// upgradeProposalCmd represents the upgrade-proposal command.
 var upgradeProposalCmd = &cobra.Command{
 	Use:   "upgrade-proposal [version]",
 	Args:  cobra.ExactArgs(1),
@@ -36,7 +37,9 @@ var upgradeProposalCmd = &cobra.Command{
 			if err != nil {
 				utils.ExitError(fmt.Errorf("could not convert diff to int: %w", err))
 			}
-			currentHeight, err := requester.NewClient().WithUnsecureTendermintEndpoint(fmt.Sprintf("http://localhost:%d", e.Ports.P26657)).GetCurrentHeight()
+			currentHeight, err := requester.NewClient().
+				WithUnsecureTendermintEndpoint(fmt.Sprintf("http://localhost:%d", e.Ports.P26657)).
+				GetCurrentHeight()
 			if err != nil {
 				utils.ExitError(fmt.Errorf("could not get current height: %w", err))
 			}
@@ -59,5 +62,6 @@ var upgradeProposalCmd = &cobra.Command{
 func init() {
 	TxCmd.AddCommand(upgradeProposalCmd)
 	upgradeProposalCmd.Flags().String("height", "", "Upgrade height.")
-	upgradeProposalCmd.Flags().String("height-diff", "20", "Blocks in the future when the upgrade is going to be executed.")
+	upgradeProposalCmd.Flags().
+		String("height-diff", "20", "Blocks in the future when the upgrade is going to be executed.")
 }

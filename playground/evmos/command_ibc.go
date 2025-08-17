@@ -29,5 +29,6 @@ func (e *Evmos) SendIBC(port, channel, receiver, amount string) (string, error) 
 	)
 
 	out, err := command.CombinedOutput()
+
 	return string(out), err
 }

@@ -1,14 +1,15 @@
 package cmd
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/cmd/convert"
 	"github.com/hanchon/hanchond/cmd/playground"
 	"github.com/hanchon/hanchond/cmd/repo"
 	"github.com/hanchon/hanchond/lib/utils"
-	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
+// rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "hanchond",
 	Short: "Hanchon's toolkit",

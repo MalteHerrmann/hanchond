@@ -29,17 +29,29 @@ func (h *Hermes) AddRelayerKeyIfMissing(chainID, mnemonic string, hd types.HDPat
 		chainID,
 		logsFile,
 	)
+
+	//nolint:gosec // okay to launch subcommand here with variable
 	command := exec.Command("bash", "-c", cmd)
 	_, err := command.CombinedOutput()
 	if err != nil && !strings.Contains(err.Error(), "already exists") {
-		return fmt.Errorf("%w: logs written to %s; error from logs: %s", err, logsFile, getErrorFromHermesLogs(logsFile))
+		return fmt.Errorf(
+			"%w: logs written to %s; error from logs: %s",
+			err,
+			logsFile,
+			getErrorFromHermesLogs(logsFile),
+		)
 	}
 
 	return nil
 }
 
 func (h *Hermes) CreateChannel(firstChainID, secondChainID string) error {
-	logsFile := fmt.Sprintf("%s/logs_channel_%s_%s", filesmanager.GetHermesPath(), firstChainID, secondChainID)
+	logsFile := fmt.Sprintf(
+		"%s/logs_channel_%s_%s",
+		filesmanager.GetHermesPath(),
+		firstChainID,
+		secondChainID,
+	)
 	cmd := fmt.Sprintf(
 		"%s --config %s create channel --a-chain %s --b-chain %s --a-port transfer --b-port transfer --new-client-connection --yes >> %s 2>&1",
 		h.GetHermesBinary(),
@@ -48,12 +60,21 @@ func (h *Hermes) CreateChannel(firstChainID, secondChainID string) error {
 		secondChainID,
 		logsFile,
 	)
+
+	//nolint:gosec // okay to launch subcommand here with variable
 	command := exec.Command("bash", "-c", cmd)
 	out, err := command.CombinedOutput()
 	if err != nil {
 		errorFromLogs := getErrorFromHermesLogs(logsFile)
-		err = fmt.Errorf("error %s: %s; logs written to %s; error from logs: %s", err.Error(), string(out), logsFile, errorFromLogs)
+		err = fmt.Errorf(
+			"error %s: %s; logs written to %s; error from logs: %s",
+			err.Error(),
+			string(out),
+			logsFile,
+			errorFromLogs,
+		)
 	}
+
 	return err
 }
 
@@ -65,6 +86,7 @@ func (h *Hermes) Start() (int, error) {
 		filesmanager.GetHermesPath()+"/run.log",
 	)
 
+	//nolint:gosec // okay to launch subcommand here
 	command := exec.Command("bash", "-c", cmd)
 
 	// Deattach the program

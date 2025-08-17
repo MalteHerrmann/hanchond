@@ -32,5 +32,6 @@ func NewEvmos(moniker, version, homeDir, chainID, keyName string) *Evmos {
 		),
 	}
 	e.SetCustomConfig(e.UpdateAppFile)
+
 	return e
 }

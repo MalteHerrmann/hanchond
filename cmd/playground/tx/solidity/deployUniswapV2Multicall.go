@@ -4,15 +4,16 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/solidity"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// deployUniswapV2MulticallyCmd represents the deploy command
+// deployUniswapV2MulticallyCmd represents the deploy command.
 var deployUniswapV2MulticallyCmd = &cobra.Command{
 	Use:   "deploy-uniswap-v2-multicall",
 	Args:  cobra.ExactArgs(0),
@@ -59,7 +60,9 @@ var deployUniswapV2MulticallyCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("could not compile the erc20 contract: %w", err))
 		}
 
-		bytecode, err := filesmanager.ReadFile(filesmanager.GetBranchFolder(folderName) + contractName + ".bin")
+		bytecode, err := filesmanager.ReadFile(
+			filesmanager.GetBranchFolder(folderName) + contractName + ".bin",
+		)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error reading the bytecode file: %w", err))
 		}
@@ -84,7 +87,12 @@ var deployUniswapV2MulticallyCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("failed to get the eth code: %w", err))
 		}
 
-		fmt.Printf("{\"contract_address\":\"%s\", \"code_hash\":\"%s\", \"tx_hash\":\"%s\"}\n", contractAddress, "0x"+codeHash, txHash)
+		fmt.Printf(
+			"{\"contract_address\":\"%s\", \"code_hash\":\"%s\", \"tx_hash\":\"%s\"}\n",
+			contractAddress,
+			"0x"+codeHash,
+			txHash,
+		)
 
 		// Clean up files
 		if err := filesmanager.CleanUpTempFolder(); err != nil {
@@ -96,5 +104,6 @@ var deployUniswapV2MulticallyCmd = &cobra.Command{
 
 func init() {
 	SolidityCmd.AddCommand(deployUniswapV2MulticallyCmd)
-	deployUniswapV2MulticallyCmd.Flags().Int("gas-limit", 20_000_000, "GasLimit to be used to deploy the transaction")
+	deployUniswapV2MulticallyCmd.Flags().
+		Int("gas-limit", 20_000_000, "GasLimit to be used to deploy the transaction")
 }

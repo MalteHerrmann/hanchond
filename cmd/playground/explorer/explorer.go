@@ -1,12 +1,13 @@
 package explorer
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
-	"github.com/spf13/cobra"
 )
 
-// ExplorerCmd represents the explorer command
+// ExplorerCmd represents the explorer command.
 var ExplorerCmd = &cobra.Command{
 	Use:     "explorer",
 	Aliases: []string{"e"},
@@ -19,5 +20,6 @@ var ExplorerCmd = &cobra.Command{
 }
 
 func init() {
-	ExplorerCmd.PersistentFlags().StringP("node", "n", "1", "Playground node used to get the information")
+	ExplorerCmd.PersistentFlags().
+		StringP("node", "n", "1", "Playground node used to get the information")
 }

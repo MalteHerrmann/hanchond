@@ -3,11 +3,12 @@ package playground
 import (
 	"errors"
 
-	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/spf13/cobra"
+
+	"github.com/hanchon/hanchond/playground/sagaos"
 )
 
-// buildSagaOSCmd represents the buildSagaOSCmd command
+// buildSagaOSCmd represents the buildSagaOSCmd command.
 var buildSagaOSCmd = &cobra.Command{
 	Use:   "build-sagaos",
 	Short: "Build an specific version of sagaosd (hanchond playground build-sagaos v0.8.0), it also supports local repositories (hanchond playground build-sagaos --path $HOME/sagaxyz/sagaos)",

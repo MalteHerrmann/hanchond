@@ -10,7 +10,14 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 )
 
-func (t *TxBuilder) SendTxToContract(contractName string, address common.Address, privateKey *ecdsa.PrivateKey, value *big.Int, message string, args ...interface{}) (string, error) {
+func (t *TxBuilder) SendTxToContract(
+	contractName string,
+	address common.Address,
+	privateKey *ecdsa.PrivateKey,
+	value *big.Int,
+	message string,
+	args ...any,
+) (string, error) {
 	var contractABI abi.ABI
 	var contractAddress common.Address
 	var err error
@@ -33,7 +40,14 @@ func (t *TxBuilder) SendTxToContract(contractName string, address common.Address
 	return t.SendTx(address, &contractAddress, value, gasLimit, data, privateKey)
 }
 
-func (t *TxBuilder) SendTx(from common.Address, to *common.Address, value *big.Int, gasLimit uint64, data []byte, privateKey *ecdsa.PrivateKey) (string, error) {
+func (t *TxBuilder) SendTx(
+	from common.Address,
+	to *common.Address,
+	value *big.Int,
+	gasLimit uint64,
+	data []byte,
+	privateKey *ecdsa.PrivateKey,
+) (string, error) {
 	var err error
 
 	v, ok := t.currentNonce[from.Hex()]

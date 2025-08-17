@@ -8,11 +8,13 @@ import (
 )
 
 func ReadFile(path string) ([]byte, error) {
+	//nolint:gosec // file operation is fine here; no file inclusion attack expected
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+	defer file.Close() //nolint:errcheck
+
 	return io.ReadAll(file)
 }
 
@@ -28,5 +30,6 @@ func DoesFileExist(path string) bool {
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
 		return false
 	}
+
 	return true
 }

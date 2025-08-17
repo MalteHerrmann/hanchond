@@ -17,52 +17,6 @@ type ChainInfo struct {
 	RepoURL    string        `json:"repo_url"`
 }
 
-func (ci ChainInfo) GetAccountPrefix() string  { return ci.AccountPrefix }
-func (ci ChainInfo) GetBinaryName() string     { return ci.BinaryName }
-func (ci ChainInfo) GetChainIDBase() string    { return ci.ChainIDBase }
-func (ci ChainInfo) GetClientName() string     { return ci.ClientName }
-func (ci ChainInfo) GetDenom() string          { return ci.Denom }
-func (ci ChainInfo) GetHDPath() HDPath         { return ci.HDPath }
-func (ci ChainInfo) GetKeyAlgo() SignatureAlgo { return ci.KeyAlgo }
-func (ci ChainInfo) GetRepoURL() string        { return ci.RepoURL }
-
-func (ci ChainInfo) IsEVMChain() bool {
-	return ci.KeyAlgo == EthAlgo
-}
-
-func (ci ChainInfo) GetPrefixedDaemonName(version string) string {
-	daemonName := version
-	if !strings.Contains(version, ci.BinaryName) {
-		daemonName = ci.BinaryName + version
-	}
-	return daemonName
-}
-
-func (ci ChainInfo) GetVersionedBinaryName(version string) string {
-	return ci.BinaryName + "_" + version
-}
-
-func (ci ChainInfo) MustMarshal() []byte {
-	bz, err := json.Marshal(&ci)
-	if err != nil {
-		panic(err)
-	}
-	return bz
-}
-
-func ParseChainInfo(input string) (ci ChainInfo, err error) {
-	err = json.Unmarshal([]byte(input), &ci)
-	return
-}
-
-func MustParseChainInfo(input string) ChainInfo {
-	ci, err := ParseChainInfo(input)
-	if err != nil {
-		panic("could not parse chain info: " + err.Error())
-	}
-	return ci
-}
-
 func NewChainInfo(
 	accountPrefix string,
 	binaryName string,
@@ -85,6 +39,56 @@ func NewChainInfo(
 	}
 }
 
+func MustParseChainInfo(input string) ChainInfo {
+	ci, err := ParseChainInfo(input)
+	if err != nil {
+		panic("could not parse chain info: " + err.Error())
+	}
+
+	return ci
+}
+
+func (ci ChainInfo) GetAccountPrefix() string  { return ci.AccountPrefix }
+func (ci ChainInfo) GetBinaryName() string     { return ci.BinaryName }
+func (ci ChainInfo) GetChainIDBase() string    { return ci.ChainIDBase }
+func (ci ChainInfo) GetClientName() string     { return ci.ClientName }
+func (ci ChainInfo) GetDenom() string          { return ci.Denom }
+func (ci ChainInfo) GetHDPath() HDPath         { return ci.HDPath }
+func (ci ChainInfo) GetKeyAlgo() SignatureAlgo { return ci.KeyAlgo }
+func (ci ChainInfo) GetRepoURL() string        { return ci.RepoURL }
+
+func (ci ChainInfo) IsEVMChain() bool {
+	return ci.KeyAlgo == EthAlgo
+}
+
+func (ci ChainInfo) GetPrefixedDaemonName(version string) string {
+	daemonName := version
+	if !strings.Contains(version, ci.BinaryName) {
+		daemonName = ci.BinaryName + version
+	}
+
+	return daemonName
+}
+
+func (ci ChainInfo) GetVersionedBinaryName(version string) string {
+	return ci.BinaryName + "_" + version
+}
+
+func (ci ChainInfo) MustMarshal() []byte {
+	bz, err := json.Marshal(&ci)
+	if err != nil {
+		panic(err)
+	}
+
+	return bz
+}
+
+func ParseChainInfo(input string) (ci ChainInfo, err error) {
+	err = json.Unmarshal([]byte(input), &ci)
+
+	return
+}
+
 type SignatureAlgo string
 
 const (
@@ -95,7 +99,8 @@ const (
 type HDPath string
 
 const (
-	// CosmosHDPath as per: https://github.com/confio/cosmos-hd-key-derivation-spec?tab=readme-ov-file#the-cosmos-hub-path
+	// CosmosHDPath as per:
+	// https://github.com/confio/cosmos-hd-key-derivation-spec?tab=readme-ov-file#the-cosmos-hub-path
 	CosmosHDPath HDPath = "m/44'/118'/0'/0"
 	// EthHDPath as per e.g.: https://docs.ethers.org/v5/api/utils/hdnode/
 	EthHDPath HDPath = "m/44'/60'/0'/0"

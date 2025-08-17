@@ -6,14 +6,15 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/hermes"
 	localsql "github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// startHermesCmd represents the start-hermes command
+// startHermesCmd represents the start-hermes command.
 var startHermesCmd = &cobra.Command{
 	Use:   "start-hermes",
 	Short: "Starts the relayer",

@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// ibcTransferCmd represents the ibc-transfer command
+// ibcTransferCmd represents the ibc-transfer command.
 var ibcTransferCmd = &cobra.Command{
 	Use:     "ibc-transfer wallet amount",
 	Args:    cobra.ExactArgs(2),
@@ -63,5 +64,6 @@ var ibcTransferCmd = &cobra.Command{
 func init() {
 	TxCmd.AddCommand(ibcTransferCmd)
 	ibcTransferCmd.Flags().StringP("channel", "c", "channel-0", "IBC channel")
-	ibcTransferCmd.Flags().StringP("denom", "d", "", "Denom that you are sending, it defaults to the base denom of the chain")
+	ibcTransferCmd.Flags().
+		StringP("denom", "d", "", "Denom that you are sending, it defaults to the base denom of the chain")
 }

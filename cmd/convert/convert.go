@@ -1,11 +1,12 @@
 package convert
 
 import (
-	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/spf13/cobra"
+
+	"github.com/hanchon/hanchond/lib/utils"
 )
 
-// ConvertCmd represents the converter command
+// ConvertCmd represents the converter command.
 var ConvertCmd = &cobra.Command{
 	Use:     "convert",
 	Aliases: []string{"c"},

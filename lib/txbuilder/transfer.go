@@ -18,6 +18,7 @@ func (t *TxBuilder) SendCoins(to string, amount *big.Int) (string, error) {
 	}
 
 	toAddress := common.HexToAddress(to)
+
 	return t.SendTx(
 		account.Address,
 		&toAddress,

@@ -3,13 +3,14 @@ package relayer
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/hermes"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// represents the createChannelCmd command
+// represents the createChannelCmd command.
 var createChannelCmd = &cobra.Command{
 	Use:   "create-channel [chain_id] [chain_id]",
 	Args:  cobra.ExactArgs(2),

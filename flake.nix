@@ -2,7 +2,7 @@
   description = "Hanchond development flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/25.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -17,7 +17,6 @@
           buildInputs = [
             pkgs.go
             pkgs.golangci-lint
-            pkgs.gofumpt
 
             # SQL compiler
             pkgs.sqlc
@@ -30,8 +29,6 @@
             export GOROOT="${go}/share/go"
             # Not setting GOPATH explicitly will make Go use its default location
             export PATH="$HOME/go/bin:$PATH"
-
-            echo "Go development environment activated with default GOPATH"
           '';
         };
       });

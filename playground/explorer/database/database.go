@@ -3,9 +3,9 @@ package database
 import (
 	"context"
 	"database/sql"
-	_ "embed"
 
-	// blank import to support sqlite3
+	_ "embed"
+	// blank import to support sqlite3.
 	_ "modernc.org/sqlite"
 )
 

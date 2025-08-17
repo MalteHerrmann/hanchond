@@ -9,6 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
+
 	explorerClient "github.com/hanchon/hanchond/playground/explorer"
 )
 
@@ -58,11 +59,18 @@ func (m explorerModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.lists[0].SetItems(BDBlockToItem(b))
 			m.lists[1].SetItems(BDTxToItem(t))
 		}
+
 		return m, indexerTickerCmd()
 	case tea.WindowSizeMsg:
 		m.height = v.Height
 		m.width = v.Width - 2
-		m.mdValues = fmt.Sprintf("%d %d", msg.(tea.WindowSizeMsg).Height, msg.(tea.WindowSizeMsg).Width)
+
+		windowSize, ok := msg.(tea.WindowSizeMsg)
+		if !ok {
+			panic(fmt.Errorf("expected tea.WindowSizeMsg; got %T", msg))
+		}
+
+		m.mdValues = fmt.Sprintf("%d %d", windowSize.Height, windowSize.Width)
 		basicStyle = basicStyle.
 			Width(m.width - 2).
 			Height(m.height)
@@ -72,6 +80,7 @@ func (m explorerModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		} else {
 			m.resolutionError = false
 		}
+
 		return m, indexerTickerCmd()
 	case tea.KeyMsg:
 		key := v.String()
@@ -80,26 +89,38 @@ func (m explorerModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		if key == "tab" {
 			m.activeList = (m.activeList + 1) % 3
+
 			return m, nil
 		}
 
 		if key == "shift+tab" {
 			m.activeList = (m.activeList - 1) % 3
+
 			return m, nil
 		}
 		if key == "enter" {
 			switch m.activeList {
 			case 0:
-				selectedItem := m.lists[0].SelectedItem().(Block)
+				selectedItem, ok := m.lists[0].SelectedItem().(Block)
+				if !ok {
+					panic("expected selected item to be Block")
+				}
+
 				info, _ := mdRendered.Render(RenderBlock(selectedItem, m.client))
 				m.viewport.SetContent(info)
 				_ = m.viewport.GotoTop()
+
 				return m, nil
 			case 1:
-				selectedItem := m.lists[1].SelectedItem().(Txn)
+				selectedItem, ok := m.lists[1].SelectedItem().(Txn)
+				if !ok {
+					panic("expected selected item to be Txn")
+				}
+
 				info, _ := mdRendered.Render(RenderTx(selectedItem, m.client))
 				m.viewport.SetContent(info)
 				_ = m.viewport.GotoTop()
+
 				return m, nil
 			}
 		}
@@ -108,12 +129,15 @@ func (m explorerModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch m.activeList {
 	case 0:
 		m.lists[0], cmd = m.lists[0].Update(msg)
+
 		return m, cmd
 	case 1:
 		m.lists[1], cmd = m.lists[1].Update(msg)
+
 		return m, cmd
 	case 2:
 		m.viewport, cmd = m.viewport.Update(msg)
+
 		return m, cmd
 	}
 
@@ -135,7 +159,13 @@ func (m explorerModel) View() string {
 		lipgloss.Top,
 		Header(m.width-4),
 		ChainHeightFrame(m.width-4, m.client.NetworkHeight, m.client.DBHeight),
-		BotContainer(m.width-4, m.lists[0].View(), m.lists[1].View(), m.viewport.View(), m.activeList),
+		BotContainer(
+			m.width-4,
+			m.lists[0].View(),
+			m.lists[1].View(),
+			m.viewport.View(),
+			m.activeList,
+		),
 	)
 
 	return basicStyle.Render(value)

@@ -3,13 +3,14 @@ package playground
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/solidity"
-	"github.com/spf13/cobra"
 )
 
-// buildSolcCmd represents the buildSolc command
+// buildSolcCmd represents the buildSolc command.
 var buildSolcCmd = &cobra.Command{
 	Use:   "build-solc",
 	Short: "Build an specific version of Solc",

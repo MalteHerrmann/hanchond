@@ -12,14 +12,27 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	coretypes "github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
+
 	web3types "github.com/hanchon/hanchond/lib/types/web3"
 )
 
-func (c *Client) GetBlockByNumber(height string, withTransactions bool) (*web3types.BlockByNumberWithTransactions, error) {
+const LATEST = "latest"
+
+func (c *Client) GetBlockByNumber(
+	height string,
+	withTransactions bool,
+) (*web3types.BlockByNumberWithTransactions, error) {
 	var receipt web3types.BlockByNumberWithTransactions
+
 	return &receipt, c.SendPostRequestEasyJSON(
 		c.Web3Endpoint,
-		[]byte(fmt.Sprintf(`{"method":"eth_getBlockByNumber","params":["%s",%t],"id":1,"jsonrpc":"2.0"}`, height, withTransactions)),
+		[]byte(
+			fmt.Sprintf(
+				`{"method":"eth_getBlockByNumber","params":["%s",%t],"id":1,"jsonrpc":"2.0"}`,
+				height,
+				withTransactions,
+			),
+		),
 		&receipt,
 		c.Web3Auth,
 	)
@@ -27,9 +40,12 @@ func (c *Client) GetBlockByNumber(height string, withTransactions bool) (*web3ty
 
 func (c *Client) GetTransactionTrace(hash string) (*web3types.TraceTransactionResult, error) {
 	var trace web3types.TraceTransactionResult
+
 	return &trace, c.SendPostRequestEasyJSON(
 		c.Web3Endpoint,
-		[]byte(`{"method":"debug_traceTransaction","params":["`+hash+`", {"tracer": "callTracer"}],"id":1,"jsonrpc":"2.0"}`),
+		[]byte(
+			`{"method":"debug_traceTransaction","params":["`+hash+`", {"tracer": "callTracer"}],"id":1,"jsonrpc":"2.0"}`,
+		),
 		&trace,
 		c.Web3Auth,
 	)
@@ -37,22 +53,30 @@ func (c *Client) GetTransactionTrace(hash string) (*web3types.TraceTransactionRe
 
 func (c *Client) GetTransactionReceipt(hash string) (*web3types.TxReceipt, error) {
 	var receipt web3types.TxReceipt
+
 	return &receipt, c.SendPostRequestEasyJSON(
 		c.Web3Endpoint,
-		[]byte(`{"method":"eth_getTransactionReceipt","params":["`+hash+`"],"id":1,"jsonrpc":"2.0"}`),
+		[]byte(
+			`{"method":"eth_getTransactionReceipt","params":["`+hash+`"],"id":1,"jsonrpc":"2.0"}`,
+		),
 		&receipt,
 		c.Web3Auth,
 	)
 }
 
-func (c *Client) GetTransactionReceiptWithRetry(hash string, retryInSeconds int) (receipt *web3types.TxReceipt, err error) {
+func (c *Client) GetTransactionReceiptWithRetry(
+	hash string,
+	retryInSeconds int,
+) (receipt *web3types.TxReceipt, err error) {
 	retry := 0
 	for retry < retryInSeconds {
 		receipt, err = c.GetTransactionReceipt(hash)
 		if err != nil || receipt.Result.BlockHash == "" {
 			time.Sleep(time.Second)
+
 			continue
 		}
+
 		return
 	}
 
@@ -69,6 +93,7 @@ func (c *Client) GetNonce(address string) (uint64, error) {
 	); err != nil {
 		return 0, err
 	}
+
 	return strconv.ParseUint(resp.Result, 0, 64)
 }
 
@@ -85,6 +110,7 @@ func (c *Client) GasPrice() (*big.Int, error) {
 
 	supply := new(big.Int)
 	supply.SetString(resp.Result[2:], 16)
+
 	return supply, nil
 }
 
@@ -107,7 +133,7 @@ func (c *Client) ChanID() (*big.Int, error) {
 	return version, nil
 }
 
-// BroadcastTx returns txhash and error
+// BroadcastTx returns txhash and error.
 func (c *Client) BroadcastTx(tx *coretypes.Transaction) (string, error) {
 	var resp web3types.SendRawTransactionResponse
 	data, err := tx.MarshalBinary()
@@ -132,28 +158,34 @@ func (c *Client) BroadcastTx(tx *coretypes.Transaction) (string, error) {
 	return "", fmt.Errorf("%s", resp.Error.Message)
 }
 
-// Eth_call
+// Eth_call.
 func (c *Client) EthCall(address string, data string, height string) ([]byte, error) {
 	heightString, err := heigthToQueryParam(height)
 	if err != nil {
 		return nil, err
 	}
+
 	return c.SendPostRequest(
 		c.Web3Endpoint,
-		[]byte(`{"method":"eth_call","params":[{"to":"`+address+`","data":"`+data+`"},"`+heightString+`"],"id":1,"jsonrpc":"2.0"}`),
+		[]byte(
+			`{"method":"eth_call","params":[{"to":"`+address+`","data":"`+data+`"},"`+heightString+`"],"id":1,"jsonrpc":"2.0"}`,
+		),
 		c.Web3Auth,
 	)
 }
 
-// Eth_code
+// Eth_code.
 func (c *Client) EthCode(address string, height string) ([]byte, error) {
 	heightString, err := heigthToQueryParam(height)
 	if err != nil {
 		return nil, err
 	}
+
 	return c.SendPostRequest(
 		c.Web3Endpoint,
-		[]byte(`{"method":"eth_getCode","params":["`+address+`","`+heightString+`"],"id":1,"jsonrpc":"2.0"}`),
+		[]byte(
+			`{"method":"eth_getCode","params":["`+address+`","`+heightString+`"],"id":1,"jsonrpc":"2.0"}`,
+		),
 		c.Web3Auth,
 	)
 }
@@ -176,8 +208,8 @@ func (c *Client) EthCodeHash(address string, height string) (string, error) {
 }
 
 func heigthToQueryParam(height string) (string, error) {
-	heightString := "latest"
-	if height != "latest" {
+	heightString := LATEST
+	if height != LATEST {
 		temp, err := strconv.ParseInt(height, 10, 64)
 		if err != nil {
 			return "", fmt.Errorf("invalid height: %s", err.Error())
@@ -185,6 +217,7 @@ func heigthToQueryParam(height string) (string, error) {
 
 		heightString = fmt.Sprintf("0x%x", temp)
 	}
+
 	return heightString, nil
 }
 
@@ -202,6 +235,7 @@ func (c *Client) GetContractAddress(txHash string) (string, error) {
 	if trace.Result.Error != "" {
 		return "", fmt.Errorf("failed to execute the transaction:%s", trace.Result.Error)
 	}
+
 	return receipt.Result.ContractAddress, nil
 }
 
@@ -219,5 +253,6 @@ func (c *Client) GetBlockNumber() (int64, error) {
 
 	supply := new(big.Int)
 	supply.SetString(resp.Result[2:], 16)
+
 	return supply.Int64(), nil
 }

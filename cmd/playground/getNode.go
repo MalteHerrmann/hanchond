@@ -5,20 +5,21 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/converter"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// CLI flags
+// CLI flags.
 var (
 	getBinary, getChainID, getHome, getVal bool
 	retrievedPort                          uint16
 )
 
-// getNodeCmd represents the getNode command
+// getNodeCmd represents the getNode command.
 var getNodeCmd = &cobra.Command{
 	Use:   "get-node [id]",
 	Args:  cobra.ExactArgs(1),
@@ -61,7 +62,9 @@ var getNodeCmd = &cobra.Command{
 
 		// retrieve only binary
 		if getBinary {
-			fmt.Println(filesmanager.GetDaemondPathWithVersion(chain.MustParseChainInfo(), node.Version))
+			fmt.Println(
+				filesmanager.GetDaemondPathWithVersion(chain.MustParseChainInfo(), node.Version),
+			)
 			utils.ExitSuccess()
 		}
 
@@ -119,7 +122,8 @@ Ports:
 
 func init() {
 	getNodeCmd.Flags().BoolVarP(&getBinary, "bin", "b", false, "Get the node's running binary path")
-	getNodeCmd.Flags().BoolVarP(&getChainID, "chain-id", "c", false, "Get the chain ID of the node's network")
+	getNodeCmd.Flags().
+		BoolVarP(&getChainID, "chain-id", "c", false, "Get the chain ID of the node's network")
 	getNodeCmd.Flags().BoolVarP(&getHome, "node-home", "", false, "Get the node's home folder")
 	getNodeCmd.Flags().BoolVarP(&getVal, "val", "v", false, "Get the node's validator address")
 	getNodeCmd.Flags().Uint16VarP(&retrievedPort, "port", "p", 0, "Get the node's remapped port")

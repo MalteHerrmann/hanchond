@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/cmd/playground/explorer"
 	"github.com/hanchon/hanchond/cmd/playground/query"
 	"github.com/hanchon/hanchond/cmd/playground/relayer"
 	"github.com/hanchon/hanchond/cmd/playground/tx"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
-	"github.com/spf13/cobra"
 )
 
 func init() {
@@ -18,10 +19,11 @@ func init() {
 	if err != nil {
 		panic("could not find home folder:" + err.Error())
 	}
-	PlaygroundCmd.PersistentFlags().String("home", fmt.Sprintf("%s/.hanchond", home), "Home folder for the playground")
+	PlaygroundCmd.PersistentFlags().
+		String("home", fmt.Sprintf("%s/.hanchond", home), "Home folder for the playground")
 }
 
-// PlaygroundCmd represents the playground command
+// PlaygroundCmd represents the playground command.
 var PlaygroundCmd = &cobra.Command{
 	Use:     "playground",
 	Aliases: []string{"p"},

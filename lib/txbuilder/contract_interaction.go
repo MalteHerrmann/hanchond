@@ -7,7 +7,7 @@ func (t *TxBuilder) InteractWithContract(
 	accountID int,
 	value *big.Int,
 	message string,
-	args ...interface{},
+	args ...any,
 ) (string, error) {
 	wallet, account, err := WalletFromMnemonicWithAccountID(t.mnemonic, accountID)
 	if err != nil {

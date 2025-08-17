@@ -4,14 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// tokenPairsCmd represents the tokenPairs command
+// tokenPairsCmd represents the tokenPairs command.
 var tokenPairsCmd = &cobra.Command{
 	Use:   "token-pairs",
 	Short: "Get the network registered token-pairs",
@@ -23,7 +24,8 @@ var tokenPairsCmd = &cobra.Command{
 		}
 
 		e := evmos.NewEvmosFromDB(queries, nodeID)
-		client := requester.NewClient().WithUnsecureRestEndpoint(fmt.Sprintf("http://localhost:%d", e.Ports.P1317))
+		client := requester.NewClient().
+			WithUnsecureRestEndpoint(fmt.Sprintf("http://localhost:%d", e.Ports.P1317))
 		pairs, err := client.GetEvmosERC20TokenPairs()
 		if err != nil {
 			utils.ExitError(fmt.Errorf("could not get the tokenPairs: %w", err))

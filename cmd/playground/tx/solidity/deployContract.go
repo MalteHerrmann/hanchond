@@ -4,15 +4,16 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/smartcontract"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// deployContractCmd represents the deploy command
+// deployContractCmd represents the deploy command.
 var deployContractCmd = &cobra.Command{
 	Use:     "deploy-contract [path_to_bin_file]",
 	Args:    cobra.ExactArgs(1),
@@ -88,7 +89,10 @@ var deployContractCmd = &cobra.Command{
 
 func init() {
 	SolidityCmd.AddCommand(deployContractCmd)
-	deployContractCmd.Flags().Int("gas-limit", 2_000_000, "GasLimit to be used to deploy the transaction")
-	deployContractCmd.Flags().String("abi", "", "ABI file if the contract has a contronstructor that needs params")
-	deployContractCmd.Flags().StringSliceVarP(&params, "params", "p", []string{}, "A list of params. If the param is an address, prefix with `a:0x123...`")
+	deployContractCmd.Flags().
+		Int("gas-limit", 2_000_000, "GasLimit to be used to deploy the transaction")
+	deployContractCmd.Flags().
+		String("abi", "", "ABI file if the contract has a contronstructor that needs params")
+	deployContractCmd.Flags().
+		StringSliceVarP(&params, "params", "p", []string{}, "A list of params. If the param is an address, prefix with `a:0x123...`")
 }

@@ -4,14 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// ethReceiptCmd represents the ethReceipt command
+// ethReceiptCmd represents the ethReceipt command.
 var ethReceiptCmd = &cobra.Command{
 	Use:   "eth-receipt [tx_hash]",
 	Args:  cobra.ExactArgs(1),

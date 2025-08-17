@@ -31,5 +31,9 @@ func DownloadUniswapV2Periphery() (string, error) {
 }
 
 func DownloadUniswapV2Minified() (string, error) {
-	return DownloadDep("https://github.com/casweeney/minified-uniswapv2-contracts", "main", "v2-minified")
+	return DownloadDep(
+		"https://github.com/casweeney/minified-uniswapv2-contracts",
+		"main",
+		"v2-minified",
+	)
 }

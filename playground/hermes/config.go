@@ -15,10 +15,14 @@ func LocalEndpoint(port int64) string {
 func (h *Hermes) GetConfigFile() string {
 	// If the dir already existed it will return error, but that is fine
 	_ = filesmanager.CreateHermesFolder()
+
 	return filesmanager.GetHermesPath() + "/config.toml"
 }
 
-func (h *Hermes) AddCosmosChain(chainInfo types.ChainInfo, chainID, p26657, p9090, keyname, mnemonic string) error {
+func (h *Hermes) AddCosmosChain(
+	chainInfo types.ChainInfo,
+	chainID, p26657, p9090, keyname, mnemonic string,
+) error {
 	configFile, err := filesmanager.ReadFile(h.GetConfigFile())
 	if err != nil {
 		return err
@@ -40,7 +44,8 @@ func (h *Hermes) AddCosmosChain(chainInfo types.ChainInfo, chainID, p26657, p909
 
 	err = h.AddRelayerKeyIfMissing(chainID, mnemonic, chainInfo.GetHDPath())
 	if err != nil {
-		// NOTE: if we had a problem adding the relayer key we are overwriting the changes made to the relayer config
+		// NOTE: if we had a problem adding the relayer key we are overwriting the changes made to
+		// the relayer config
 		_ = filesmanager.SaveFile(configFile, h.GetConfigFile())
 		panic(err)
 	}
@@ -48,7 +53,10 @@ func (h *Hermes) AddCosmosChain(chainInfo types.ChainInfo, chainID, p26657, p909
 	return nil
 }
 
-func (h *Hermes) AddEVMChain(chainInfo types.ChainInfo, chainID, p26657, p9090, keyname, mnemonic string) error {
+func (h *Hermes) AddEVMChain(
+	chainInfo types.ChainInfo,
+	chainID, p26657, p9090, keyname, mnemonic string,
+) error {
 	configFile, err := filesmanager.ReadFile(h.GetConfigFile())
 	if err != nil {
 		return err
@@ -58,7 +66,8 @@ func (h *Hermes) AddEVMChain(chainInfo types.ChainInfo, chainID, p26657, p9090, 
 
 	// We only add the chain to the configuration if it had not been added already
 	//
-	// TODO: Maybe check if updates to ports are required? currently it's only either add fully or nothing at all
+	// TODO: Maybe check if updates to ports are required? currently it's only either add fully or
+	// nothing at all
 	if !strings.Contains(configFileString, chainID) {
 		configFileString += getEVMChainConfig(chainInfo, chainID, p26657, p9090, keyname)
 		err = filesmanager.SaveFile([]byte(configFileString), h.GetConfigFile())
@@ -69,10 +78,12 @@ func (h *Hermes) AddEVMChain(chainInfo types.ChainInfo, chainID, p26657, p9090, 
 
 	err = h.AddRelayerKeyIfMissing(chainID, mnemonic, chainInfo.GetHDPath())
 	if err != nil {
-		// NOTE: if we had a problem adding the relayer key we are overwriting the changes made to the relayer config
+		// NOTE: if we had a problem adding the relayer key we are overwriting the changes made to
+		// the relayer config
 		_ = filesmanager.SaveFile(configFile, h.GetConfigFile())
 		panic(err)
 	}
+
 	return nil
 }
 
@@ -120,7 +131,10 @@ port = 3001
 	}
 }
 
-func getCosmosChainConfig(chainInfo types.ChainInfo, chainID, p26657, p9090, keyname string) string {
+func getCosmosChainConfig(
+	chainInfo types.ChainInfo,
+	chainID, p26657, p9090, keyname string,
+) string {
 	return fmt.Sprintf(`
 [[chains]]
 id = '%s'

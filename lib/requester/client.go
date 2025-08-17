@@ -3,8 +3,9 @@ package requester
 import (
 	"time"
 
-	"github.com/hanchon/hanchond/lib/smartcontract/erc20"
 	"github.com/valyala/fasthttp"
+
+	"github.com/hanchon/hanchond/lib/smartcontract/erc20"
 )
 
 type Client struct {
@@ -48,6 +49,7 @@ func NewClient() *Client {
 			DNSCacheDuration: time.Hour,
 		}).Dial,
 	}
+
 	return &Client{
 		Client: client,
 
@@ -66,35 +68,41 @@ func NewClient() *Client {
 func (c *Client) WithUnsecureWeb3Endpoint(endpoint string) *Client {
 	c.Web3Endpoint = endpoint
 	c.Web3Auth = ""
+
 	return c
 }
 
 func (c *Client) WithUnsecureRestEndpoint(endpoint string) *Client {
 	c.CosmosRestEndpoint = endpoint
 	c.CosmosRestAuth = ""
+
 	return c
 }
 
 func (c *Client) WithUnsecureTendermintEndpoint(endpoint string) *Client {
 	c.TendermintRestEndpoint = endpoint
 	c.TendermintRestAuth = ""
+
 	return c
 }
 
 func (c *Client) WithSecureWeb3Endpoint(endpoint string, auth string) *Client {
 	c.Web3Endpoint = endpoint
 	c.Web3Auth = auth
+
 	return c
 }
 
 func (c *Client) WithSecureRestEndpoint(endpoint string, auth string) *Client {
 	c.CosmosRestEndpoint = endpoint
 	c.CosmosRestAuth = auth
+
 	return c
 }
 
 func (c *Client) WithSecureTendermintEndpoint(endpoint string, auth string) *Client {
 	c.TendermintRestEndpoint = endpoint
 	c.TendermintRestAuth = auth
+
 	return c
 }

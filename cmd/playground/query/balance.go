@@ -3,13 +3,14 @@ package query
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// represents the query command
+// represents the query command.
 var balanceCmd = &cobra.Command{
 	Use:   "balance [wallet]",
 	Args:  cobra.ExactArgs(1),
@@ -23,7 +24,8 @@ var balanceCmd = &cobra.Command{
 
 		wallet := args[0]
 
-		// TODO: this should also check the node type of the running node and then use the correct daemon
+		// TODO: this should also check the node type of the running node and then use the correct
+		// daemon
 		e := evmos.NewEvmosFromDB(queries, nodeID)
 		balance, err := e.CheckBalance(wallet)
 		if err != nil {

@@ -32,6 +32,7 @@ func (d *Daemon) UpdateAppFile() error {
 	// No pruning to use archive queries
 	appFile = d.SetPruningInAppFile(false, appFile)
 	appFile = d.SetMinGasPricesInAppFile(appFile)
+
 	return d.SaveAppFile(appFile)
 }
 
@@ -46,6 +47,7 @@ func (d *Daemon) CreateGenTx() error {
 	if err := d.ValidatorGenTx(); err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -80,6 +82,7 @@ func (d *Daemon) allowDuplicateIP(configFile []byte) []byte {
 		"allow_duplicate_ip = true",
 		1,
 	)
+
 	return []byte(configValues)
 }
 
@@ -134,6 +137,7 @@ func (d *Daemon) enableSlowBlocks(configFile []byte) []byte {
 		"timeout_broadcast_tx_commit = \"15s\"",
 		1,
 	)
+
 	return []byte(configValues)
 }
 
@@ -146,6 +150,7 @@ enable = false`,
 		"enable = true",
 		1,
 	)
+
 	return []byte(configValues)
 }
 
@@ -157,6 +162,7 @@ func (d *Daemon) SetMinGasPricesInAppFile(config []byte) []byte {
 		"minimum-gas-prices = \"0.00001"+d.BaseDenom+"\"",
 		1,
 	)
+
 	return []byte(configValues)
 }
 
@@ -181,6 +187,7 @@ func (d *Daemon) SetPruningInAppFile(pruningEnabled bool, config []byte) []byte 
 			"pruning-interval = \"10\"",
 			1,
 		)
+
 		return []byte(configValues)
 	}
 
@@ -203,6 +210,7 @@ func (d *Daemon) SetPruningInAppFile(pruningEnabled bool, config []byte) []byte 
 		"pruning = \"nothing\"",
 		1,
 	)
+
 	return []byte(configValues)
 }
 

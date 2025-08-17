@@ -3,13 +3,14 @@ package playground
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/gaia"
-	"github.com/spf13/cobra"
 )
 
-// buildGaiadCmd represents the buildGaiad command
+// buildGaiadCmd represents the buildGaiad command.
 var buildGaiadCmd = &cobra.Command{
 	Use:   "build-gaiad",
 	Short: "Get the Gaiad binary from the github releases",

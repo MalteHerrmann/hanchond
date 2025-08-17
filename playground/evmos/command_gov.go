@@ -12,6 +12,9 @@ import (
 	"github.com/hanchon/hanchond/playground/filesmanager"
 )
 
+// tmpMetadataPath is used to create a temporary location for proposal metadata to be stored.
+const tmpMetadataPath = "/tmp/metadata.json"
+
 type STRv1 struct {
 	Denom    string
 	Exponent int
@@ -55,9 +58,8 @@ func (e *Evmos) CreateSTRv1Proposal(params STRv1) (string, error) {
   "summary": "Registering a new coin."
 }`, params.Denom, params.Exponent, params.Alias, params.Denom, params.Alias, params.Name, params.Symbol)
 
-	path := "/tmp/metadata.json"
-	filesmanager.DoesFileExist(path)
-	if err := filesmanager.SaveFile([]byte(metadata), path); err != nil {
+	filesmanager.DoesFileExist(tmpMetadataPath)
+	if err := filesmanager.SaveFile([]byte(metadata), tmpMetadataPath); err != nil {
 		return "", fmt.Errorf("could not save the proposal to disk:%s", err.Error())
 	}
 
@@ -66,7 +68,7 @@ func (e *Evmos) CreateSTRv1Proposal(params STRv1) (string, error) {
 		"tx",
 		"gov",
 		"submit-proposal",
-		path,
+		tmpMetadataPath,
 		"--keyring-backend",
 		e.KeyringBackend,
 		"--home",
@@ -85,6 +87,7 @@ func (e *Evmos) CreateSTRv1Proposal(params STRv1) (string, error) {
 	)
 
 	out, err := command.CombinedOutput()
+
 	return string(out), err
 }
 
@@ -113,16 +116,22 @@ func (e *Evmos) VoteOnProposal(proposalID string, option string) (string, error)
 
 	out, err := command.CombinedOutput()
 	if !strings.Contains(string(out), "code: 0") {
-		return string(out), fmt.Errorf("transaction failed with code different than 0:%s", string(out))
+		return string(
+				out,
+			), fmt.Errorf(
+				"transaction failed with code different than 0:%s",
+				string(out),
+			)
 	}
 	hash := strings.Split(string(out), "txhash: ")
 	if len(hash) > 1 {
 		hash[1] = strings.TrimSpace(hash[1])
 	}
+
 	return hash[1], err
 }
 
-// VoteOnAllTheProposals returns a list of transactions hashes
+// VoteOnAllTheProposals returns a list of transactions hashes.
 func (e *Evmos) VoteOnAllTheProposals(option string) ([]string, error) {
 	type ProposalsResponse struct {
 		Proposals []struct {
@@ -144,7 +153,7 @@ func (e *Evmos) VoteOnAllTheProposals(option string) ([]string, error) {
 	if err != nil {
 		return []string{}, err
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck
 	var data ProposalsResponse
 	if err := json.Unmarshal(respbytes, &data); err != nil {
 		return []string{}, err
@@ -160,6 +169,7 @@ func (e *Evmos) VoteOnAllTheProposals(option string) ([]string, error) {
 			res = append(res, out)
 		}
 	}
+
 	return res, nil
 }
 
@@ -210,6 +220,7 @@ func (e *Evmos) CreateUpgradeProposal(versionName string, upgradeHeight string) 
 	if len(hash) > 1 {
 		hash[1] = strings.TrimSpace(hash[1])
 	}
+
 	return hash[1], nil
 }
 
@@ -240,12 +251,11 @@ func (e *Evmos) CreateRateLimitProposal(params RateLimitParams) (string, error) 
     "summary": "add rate limit"
 }`, params.Denom, params.Channel, params.MaxSend, params.MaxRecv, params.Duration)
 
-	path := "/tmp/metadata.json"
-	if filesmanager.DoesFileExist(path) {
-		_ = os.RemoveAll(path)
+	if filesmanager.DoesFileExist(tmpMetadataPath) {
+		_ = os.RemoveAll(tmpMetadataPath)
 	}
 
-	if err := filesmanager.SaveFile([]byte(metadata), path); err != nil {
+	if err := filesmanager.SaveFile([]byte(metadata), tmpMetadataPath); err != nil {
 		return "", fmt.Errorf("could not save the proposal to disk:%s", err.Error())
 	}
 
@@ -254,7 +264,7 @@ func (e *Evmos) CreateRateLimitProposal(params RateLimitParams) (string, error) 
 		"tx",
 		"gov",
 		"submit-proposal",
-		path,
+		tmpMetadataPath,
 		"--keyring-backend",
 		e.KeyringBackend,
 		"--home",
@@ -283,5 +293,6 @@ func (e *Evmos) CreateRateLimitProposal(params RateLimitParams) (string, error) 
 	if len(hash) > 1 {
 		hash[1] = strings.TrimSpace(hash[1])
 	}
+
 	return hash[1], nil
 }

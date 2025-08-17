@@ -1,18 +1,20 @@
 package main
 
 import (
-	_ "embed"
 	"fmt"
 	"math/big"
 	"os"
 
 	"github.com/ethereum/go-ethereum/common"
+	"golang.org/x/exp/rand"
+
+	_ "embed"
+
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/txbuilder"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/solidity"
-	"golang.org/x/exp/rand"
 )
 
 // REQUIREMENTS: solc0.8.25. `hanchond p build-solc --version 0.8.25`
@@ -24,10 +26,14 @@ func randString(n int) string {
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]
 	}
+
 	return string(b)
 }
 
-func sendRandomTransaction(erc20Address []string, wallets []*txbuilder.SimpleWeb3Wallet) (string, error) {
+func sendRandomTransaction(
+	erc20Address []string,
+	wallets []*txbuilder.SimpleWeb3Wallet,
+) (string, error) {
 	from := wallets[rand.Intn(len(wallets))]
 	toWallet := wallets[rand.Intn(len(wallets))]
 	erc20 := erc20Address[rand.Intn(len(erc20Address))]
@@ -38,6 +44,7 @@ func sendRandomTransaction(erc20Address []string, wallets []*txbuilder.SimpleWeb
 	}
 
 	to := common.HexToAddress(erc20)
+
 	return from.TxBuilder.SendTx(from.Address, &to, big.NewInt(0), 200_000, callData, from.PrivKey)
 }
 
@@ -48,7 +55,8 @@ func main() {
 	mnemonic := os.Args[1]
 	web3Endpoint := os.Args[2]
 	homeDir := os.Args[3]
-	// This is needed because it will build the erc20 contract with the solc version downloaded with `build-solc`
+	// This is needed because it will build the erc20 contract with the solc version downloaded with
+	// `build-solc`
 	filesmanager.SetBaseDir(homeDir)
 
 	valWallet := txbuilder.NewSimpleWeb3WalletFromMnemonic(mnemonic, web3Endpoint)
@@ -56,10 +64,18 @@ func main() {
 
 	erc20sAddress := []string{}
 
-	// Create some erc20s. Every deployment will wait until the tx is included in a block to ensure the correct deployment of the contract
+	// Create some erc20s. Every deployment will wait until the tx is included in a block to ensure
+	// the correct deployment of the contract
 	for range 15 {
 		initialAmount := "1000000"
-		txHash, err := solidity.BuildAndDeployERC20Contract(randString(7), randString(3), initialAmount, false, valWallet.TxBuilder, 1_000_000)
+		txHash, err := solidity.BuildAndDeployERC20Contract(
+			randString(7),
+			randString(3),
+			initialAmount,
+			false,
+			valWallet.TxBuilder,
+			1_000_000,
+		)
 		if err != nil {
 			utils.ExitError(err)
 		}

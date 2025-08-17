@@ -4,12 +4,13 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/tx"
-	protocoltypes "github.com/hanchon/hanchond/lib/types/protocol"
-
 	ethtypes "github.com/ethereum/go-ethereum/core/types"
 	evmtypes "github.com/evmos/evmos/v18/x/evm/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/tx"
+
+	protocoltypes "github.com/hanchon/hanchond/lib/types/protocol"
 )
 
 func BytesToTx(txBytes []byte) (*protocoltypes.CosmosTx, error) {
@@ -33,6 +34,7 @@ func BytesToTx(txBytes []byte) (*protocoltypes.CosmosTx, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return &protocoltypes.CosmosTx{
 		Body:     body,
 		AuthInfo: authInfo,
@@ -44,6 +46,7 @@ func Base64ToTx(txInBase64 string) (*protocoltypes.CosmosTx, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error decoding the tx base64: %s", err.Error())
 	}
+
 	return BytesToTx(txBytes)
 }
 
@@ -70,5 +73,6 @@ func ConvertEvmosTxToEthTx(txBase64 string) (*ethtypes.Transaction, *sdk.AccAddr
 		return nil, nil, fmt.Errorf("the transaction has not signers")
 	}
 	from := m.GetSigners()[0]
+
 	return m.AsTransaction(), &from, nil
 }

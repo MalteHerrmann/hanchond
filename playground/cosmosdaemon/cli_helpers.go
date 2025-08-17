@@ -6,10 +6,11 @@ import (
 	"path/filepath"
 	"strconv"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/filesmanager"
-	"github.com/spf13/cobra"
 )
 
 func InitMultiNodeChain(nodes []*Daemon, queries *database.Queries) (int64, error) {
@@ -26,6 +27,7 @@ func InitMultiNodeChain(nodes []*Daemon, queries *database.Queries) (int64, erro
 	if err := UpdatePeers(nodes, queries); err != nil {
 		return 0, err
 	}
+
 	return chainID, nil
 }
 
@@ -78,6 +80,7 @@ func InitFilesAndDB(nodes []*Daemon, queries *database.Queries) (int64, error) {
 
 		utils.Log("node added with ID: %d", nodeID)
 	}
+
 	return chainDB.ID, nil
 }
 
@@ -110,6 +113,7 @@ func JoinGenesisTransactions(nodes []*Daemon, queries *database.Queries) error {
 			return err
 		}
 	}
+
 	return nil
 }
 
@@ -121,6 +125,7 @@ func CollectGenTxns(nodes []*Daemon, queries *database.Queries) error {
 	if err := nodes[0].ValidateGenesis(); err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -149,6 +154,7 @@ func UpdatePeers(nodes []*Daemon, queries *database.Queries) error {
 			return err
 		}
 	}
+
 	return nil
 }
 
@@ -177,6 +183,7 @@ func GetWeb3Endpoint(queries *database.Queries, cmd *cobra.Command) (string, err
 		}
 		endpoint = fmt.Sprintf("http://localhost:%d", ports.P8545)
 	}
+
 	return endpoint, nil
 }
 
@@ -205,5 +212,6 @@ func GetCosmosEndpoint(queries *database.Queries, cmd *cobra.Command) (string, e
 		}
 		endpoint = fmt.Sprintf("http://localhost:%d", ports.P1317)
 	}
+
 	return endpoint, nil
 }

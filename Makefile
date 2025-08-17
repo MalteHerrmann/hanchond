@@ -1,10 +1,10 @@
-.phony: format install docs-dev docs-build generate generate-explorer install-deps lint release-dry release
+.phony: format install docs-dev docs-build generate generate-explorer lint
 
 format:
-	@gofumpt -l -w .
+	@nix develop -c golangci-lint fmt -c .golangci.yml
 
 install:
-	@go install
+	@nix develop -c go install
 
 docs-dev:
 	@bun i && bun run docs:dev
@@ -13,19 +13,10 @@ docs-build:
 	@bun i && bun run docs:build
 
 generate:
-	@sqlc generate
+	@nix develop -c sqlc generate
 
 generate-explorer:
-	@sqlc generate -f ./playground/explorer/database/sqlc.yaml
-
-install-deps:
-	@go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+	@nix develop -c sqlc generate -f ./playground/explorer/database/sqlc.yaml
 
 lint:
-	@golangci-lint run --fix --out-format=line-number --issues-exit-code=0 --config .golangci.yml --color always ./...
-
-release-dry:
-	@goreleaser release --snapshot --clean
-
-release:
-	@goreleaser release --skip-validate --clean
+	@nix develop -c golangci-lint run -c .golangci.yml

@@ -5,16 +5,17 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/converter"
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/smartcontract/erc20"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// balanceCmd represents the balance command
+// balanceCmd represents the balance command.
 var balanceCmd = &cobra.Command{
 	Use:   "balance [contract] [wallet]",
 	Args:  cobra.ExactArgs(2),

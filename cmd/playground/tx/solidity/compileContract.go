@@ -4,14 +4,15 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/solidity"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// compileContractCmd represents the compile command
+// compileContractCmd represents the compile command.
 var compileContractCmd = &cobra.Command{
 	Use:     "compile-contract [path_to_solidity_file]",
 	Args:    cobra.ExactArgs(1),
@@ -45,7 +46,11 @@ var compileContractCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("could not create up temp folder: %w", err))
 		}
 
-		err = solidity.CompileWithSolc(solcVersion, pathToSolidityCode, filesmanager.GetBranchFolder(folderName))
+		err = solidity.CompileWithSolc(
+			solcVersion,
+			pathToSolidityCode,
+			filesmanager.GetBranchFolder(folderName),
+		)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("could not compile the contract: %w", err))
 		}
@@ -69,8 +74,10 @@ var compileContractCmd = &cobra.Command{
 
 func init() {
 	SolidityCmd.AddCommand(compileContractCmd)
-	compileContractCmd.Flags().StringP("output-folder", "o", "./", "Output folder where the compile code will be saved")
-	compileContractCmd.Flags().StringP("solc-version", "v", "0.8.0", "Solc version used to compile the code")
+	compileContractCmd.Flags().
+		StringP("output-folder", "o", "./", "Output folder where the compile code will be saved")
+	compileContractCmd.Flags().
+		StringP("solc-version", "v", "0.8.0", "Solc version used to compile the code")
 }
 
 func moveFiles(in, out, extension string) error {

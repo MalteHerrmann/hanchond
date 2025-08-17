@@ -6,13 +6,14 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// stopHermesCmd represents the stop-hermes command
+// stopHermesCmd represents the stop-hermes command.
 var stopHermesCmd = &cobra.Command{
 	Use:   "stop-hermes",
 	Short: "Stop the relayer",

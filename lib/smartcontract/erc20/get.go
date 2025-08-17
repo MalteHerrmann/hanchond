@@ -18,10 +18,10 @@ func (e *ERC20) GetTotalSupply(contractAddress string, height int) (*big.Int, er
 	req := Request{"0x" + contractAddress, method}
 	var result string
 
-	var args []interface{}
+	var args []any
 	args = append(args, req)
 
-	heightInHex := "latest"
+	heightInHex := "latest" //nolint:goconst // no need to add const for "latest"
 	if height != Latest {
 		heightInHex = fmt.Sprintf("0x%x", height)
 	}
@@ -33,6 +33,7 @@ func (e *ERC20) GetTotalSupply(contractAddress string, height int) (*big.Int, er
 
 	supply := new(big.Int)
 	supply.SetString(result[2:], 16)
+
 	return supply, nil
 }
 
@@ -46,7 +47,7 @@ func (e *ERC20) GetBalance(contractAddress string, wallet string, height int) (*
 	req := Request{"0x" + contractAddress, "0x" + params}
 	var result string
 
-	var args []interface{}
+	var args []any
 	args = append(args, req)
 
 	heightInHex := "latest"
@@ -61,5 +62,6 @@ func (e *ERC20) GetBalance(contractAddress string, wallet string, height int) (*
 
 	balance := new(big.Int)
 	balance.SetString(result[2:], 16)
+
 	return balance, nil
 }

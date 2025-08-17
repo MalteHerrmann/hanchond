@@ -3,12 +3,13 @@ package playground
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
-	"github.com/spf13/cobra"
 )
 
-// listBinariesCmd represents the list-binaries command
+// listBinariesCmd represents the list-binaries command.
 var listBinariesCmd = &cobra.Command{
 	Use:   "list-binaries",
 	Short: "List of all the binaries that are available",

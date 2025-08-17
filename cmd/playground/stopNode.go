@@ -7,13 +7,14 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// stopNodeCmd represents the stopNode command
+// stopNodeCmd represents the stopNode command.
 var stopNodeCmd = &cobra.Command{
 	Use:   "stop-node id",
 	Args:  cobra.ExactArgs(1),

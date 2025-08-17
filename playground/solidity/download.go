@@ -37,7 +37,7 @@ func DownloadSolcBinary(isDarwin bool, version string) error {
 	if err != nil {
 		return err
 	}
-	defer list.Body.Close()
+	defer list.Body.Close() //nolint:errcheck
 
 	var v versionList
 	if err := json.Unmarshal(listContent, &v); err != nil {
@@ -48,6 +48,7 @@ func DownloadSolcBinary(isDarwin bool, version string) error {
 	for _, v := range v.Builds {
 		if v.Version == version {
 			binaryURL = (baseURL + v.Path)
+
 			break
 		}
 	}
@@ -56,16 +57,19 @@ func DownloadSolcBinary(isDarwin bool, version string) error {
 	}
 
 	filePathInDisk := filesmanager.GetSolcPath(version)
+
+	//nolint:gosec // okay to create file here
 	file, err := os.Create(filePathInDisk)
 	if err != nil {
-		return fmt.Errorf("could ot create file:%s", err.Error())
+		return fmt.Errorf("could not create file:%s", err.Error())
 	}
+	defer file.Close() //nolint:errcheck
 
 	resp, err := http.Get(binaryURL)
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck
 
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("error requesting the binary file: %d", resp.StatusCode)
@@ -75,8 +79,6 @@ func DownloadSolcBinary(isDarwin bool, version string) error {
 	if err != nil {
 		return fmt.Errorf("could not save the binary file:%s", err.Error())
 	}
-
-	file.Close()
 
 	// Executable
 	info, err := os.Stat(filePathInDisk)

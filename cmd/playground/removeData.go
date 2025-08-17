@@ -6,13 +6,14 @@ import (
 	"os/exec"
 	"time"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// removeDataCmd represents the removeData command
+// removeDataCmd represents the removeData command.
 var removeDataCmd = &cobra.Command{
 	Use:   "remove-data",
 	Short: "Removes the data folder, deleting the configuration and data for all the networks and relayers",
@@ -51,7 +52,8 @@ var removeDataCmd = &cobra.Command{
 			}
 		}
 
-		// If we killed a process, wait 2 secods before deleting the files so the directory is not being used
+		// If we killed a process, wait 2 secods before deleting the files so the directory is not
+		// being used
 		if stopping {
 			time.Sleep(2 * time.Second)
 		}

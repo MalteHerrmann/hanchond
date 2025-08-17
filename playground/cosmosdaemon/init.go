@@ -16,5 +16,6 @@ func (d *Daemon) InitNode() error {
 	if err := d.AddValidatorKey(); err != nil {
 		return err
 	}
+
 	return nil
 }

@@ -11,7 +11,8 @@ func (d *Daemon) AddValidatorKey() error {
 }
 
 func (d *Daemon) KeyAdd(name string, mnemonic string) error {
-	cmd := fmt.Sprintf("echo \"%s\" | %s keys add %s --recover --keyring-backend %s --home %s --key-type %s",
+	cmd := fmt.Sprintf(
+		"echo \"%s\" | %s keys add %s --recover --keyring-backend %s --home %s --key-type %s",
 		mnemonic,
 		d.GetVersionedBinaryPath(),
 		name,
@@ -19,10 +20,13 @@ func (d *Daemon) KeyAdd(name string, mnemonic string) error {
 		d.HomeDir,
 		d.chainInfo.GetKeyAlgo(),
 	)
+
+	//nolint:gosec // okay to launch subcommand here
 	command := exec.Command("bash", "-c", cmd)
 	o, err := command.CombinedOutput()
 	if strings.Contains(string(o), "duplicated") {
 		return fmt.Errorf("duplicated address")
 	}
+
 	return err
 }

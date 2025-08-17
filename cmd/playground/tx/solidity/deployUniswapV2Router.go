@@ -5,16 +5,17 @@ import (
 	"fmt"
 	"regexp"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/smartcontract"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/solidity"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// deployUniswapV2RouteryCmd represents the deploy command
+// deployUniswapV2RouteryCmd represents the deploy command.
 var deployUniswapV2RouteryCmd = &cobra.Command{
 	Use:   "deploy-uniswap-v2-router [factory_address] [wrapped_coin_address]",
 	Args:  cobra.ExactArgs(2),
@@ -81,7 +82,9 @@ var deployUniswapV2RouteryCmd = &cobra.Command{
 
 		contractName = "/UniswapV2Router02"
 
-		bytecode, err := filesmanager.ReadFile(filesmanager.GetBranchFolder(folderName) + contractName + ".bin")
+		bytecode, err := filesmanager.ReadFile(
+			filesmanager.GetBranchFolder(folderName) + contractName + ".bin",
+		)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error reading the bytecode file: %w", err))
 		}
@@ -92,7 +95,9 @@ var deployUniswapV2RouteryCmd = &cobra.Command{
 		}
 
 		// Generate the constructor
-		abiBytes, err := filesmanager.ReadFile(filesmanager.GetBranchFolder(folderName) + contractName + ".abi")
+		abiBytes, err := filesmanager.ReadFile(
+			filesmanager.GetBranchFolder(folderName) + contractName + ".abi",
+		)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error reading the abi file: %w", err))
 		}
@@ -129,7 +134,12 @@ var deployUniswapV2RouteryCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("failed to get the eth code: %w", err))
 		}
 
-		fmt.Printf("{\"contract_address\":\"%s\", \"code_hash\":\"%s\", \"tx_hash\":\"%s\"}\n", contractAddress, "0x"+codeHash, txHash)
+		fmt.Printf(
+			"{\"contract_address\":\"%s\", \"code_hash\":\"%s\", \"tx_hash\":\"%s\"}\n",
+			contractAddress,
+			"0x"+codeHash,
+			txHash,
+		)
 
 		// Clean up files
 		if err := filesmanager.CleanUpTempFolder(); err != nil {
@@ -141,5 +151,6 @@ var deployUniswapV2RouteryCmd = &cobra.Command{
 
 func init() {
 	SolidityCmd.AddCommand(deployUniswapV2RouteryCmd)
-	deployUniswapV2RouteryCmd.Flags().Int("gas-limit", 20_000_000, "GasLimit to be used to deploy the transaction")
+	deployUniswapV2RouteryCmd.Flags().
+		Int("gas-limit", 20_000_000, "GasLimit to be used to deploy the transaction")
 }

@@ -18,6 +18,7 @@ func (d *Daemon) ConfigKeyring() error {
 	if err != nil {
 		err = fmt.Errorf("error %s: %s", err.Error(), string(out))
 	}
+
 	return err
 }
 
@@ -34,6 +35,7 @@ func (d *Daemon) ConfigChainID() error {
 	if err != nil {
 		err = fmt.Errorf("error %s: %s", err.Error(), string(out))
 	}
+
 	return err
 }
 
@@ -51,5 +53,6 @@ func (d *Daemon) NodeInit() error {
 	if err != nil {
 		err = fmt.Errorf("error %s: %s", err.Error(), string(out))
 	}
+
 	return err
 }

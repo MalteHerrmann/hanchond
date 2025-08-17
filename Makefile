@@ -1,4 +1,7 @@
-.phony: format install docs-dev docs-build generate generate-explorer lint
+.phony: build format install docs-dev docs-build generate generate-explorer lint
+
+build:
+	@nix develop -c go build -o build/
 
 format:
 	@nix develop -c golangci-lint fmt -c .golangci.yml

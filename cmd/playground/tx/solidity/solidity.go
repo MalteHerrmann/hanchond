@@ -1,12 +1,13 @@
 package solidity
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
-	"github.com/spf13/cobra"
 )
 
-// SolidityCmd represents the solidity command
+// SolidityCmd represents the solidity command.
 var SolidityCmd = &cobra.Command{
 	Use:     "solidity",
 	Aliases: []string{"s"},

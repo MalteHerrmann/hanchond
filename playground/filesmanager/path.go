@@ -5,9 +5,10 @@ import (
 	"os"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/types"
-	"github.com/spf13/cobra"
 )
 
 var baseDir = "/tmp"
@@ -25,11 +26,13 @@ func SetHomeFolderFromCobraFlags(cmd *cobra.Command) string {
 	SetBaseDir(home)
 	// Ensure that the folder exists
 	if _, err := os.Stat(home); os.IsNotExist(err) {
+		//nolint:gosec // file operation is fine here
 		if err := os.Mkdir(home, os.ModePerm); err != nil {
 			// We panic here because if we can not create the folder we should inmediately stop
 			panic(err)
 		}
 	}
+
 	return home
 }
 
@@ -47,11 +50,13 @@ func getNodeHomePath(chainID int64, nodeID int64) string {
 
 func GetNodeHomeFolder(chainID, nodeID int64) string {
 	if _, err := os.Stat(GetDataFolder()); os.IsNotExist(err) {
+		//nolint:gosec // file operation is fine here
 		if err := os.Mkdir(GetDataFolder(), os.ModePerm); err != nil {
 			// We panic here because if we can not create the folder we should inmediately stop
 			panic(err)
 		}
 	}
+
 	return getNodeHomePath(chainID, nodeID)
 }
 
@@ -83,7 +88,7 @@ func GetDaemondPathWithVersion(ci types.ChainInfo, version string) string {
 	return fmt.Sprintf("%s/%s", GetBuildsDir(), ci.GetVersionedBinaryName(version))
 }
 
-// TODO: also remove and turn ChainInfo into BinaryInfo to also support hermes here
+// TODO: also remove and turn ChainInfo into BinaryInfo to also support hermes here.
 func GetHermesBinary() string {
 	return GetBuildsDir() + "/hermes"
 }
@@ -94,20 +99,25 @@ func GetHermesPath() string {
 
 func CreateBuildsDir() error {
 	if _, err := os.Stat(GetBuildsDir()); os.IsNotExist(err) {
+		//nolint:gosec // file operation is fine here
 		return os.Mkdir(GetBuildsDir(), os.ModePerm)
 	}
+
 	return nil
 }
 
 func CreateDepsFolder() error {
+	//nolint:gosec // file operation is fine here
 	return os.MkdirAll(baseDir+"/builds/deps/", os.ModePerm)
 }
 
 func CreateTempFolder(version string) error {
+	//nolint:gosec // file operation is fine here
 	return os.MkdirAll(GetBranchFolder(version), os.ModePerm)
 }
 
 func CreateHermesFolder() error {
+	//nolint:gosec // file operation is fine here
 	return os.MkdirAll(GetHermesPath(), os.ModePerm)
 }
 
@@ -117,6 +127,7 @@ func CleanUpTempFolder() error {
 
 func CleanUpData() error {
 	_ = os.RemoveAll(GetDatabaseFile())
+
 	return os.RemoveAll(GetDataFolder())
 }
 

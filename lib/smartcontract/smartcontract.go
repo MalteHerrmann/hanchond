@@ -10,8 +10,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
-// ABIPackRaw returns []byte instead of string
-func ABIPackRaw(abiBytes []byte, method string, args ...interface{}) ([]byte, error) {
+// ABIPackRaw returns []byte instead of string.
+func ABIPackRaw(abiBytes []byte, method string, args ...any) ([]byte, error) {
 	parsedABI, err := abi.JSON(strings.NewReader(string(abiBytes)))
 	if err != nil {
 		return []byte{}, fmt.Errorf("failed to parse the ABI: %s", err.Error())
@@ -25,16 +25,17 @@ func ABIPackRaw(abiBytes []byte, method string, args ...interface{}) ([]byte, er
 	return callData, nil
 }
 
-func ABIPack(abiBytes []byte, method string, args ...interface{}) (string, error) {
+func ABIPack(abiBytes []byte, method string, args ...any) (string, error) {
 	callData, err := ABIPackRaw(abiBytes, method, args...)
 	if err != nil {
 		return "", err
 	}
+
 	return "0x" + hex.EncodeToString(callData), nil
 }
 
-func StringsToABIArguments(args []string) ([]interface{}, error) {
-	callArgs := []interface{}{}
+func StringsToABIArguments(args []string) ([]any, error) {
+	callArgs := []any{}
 	for _, v := range args {
 		value := strings.Split(v, ":")
 		switch value[0] {
@@ -46,12 +47,13 @@ func StringsToABIArguments(args []string) ([]interface{}, error) {
 			num := new(big.Int)
 			_, valid := num.SetString(value[1], 10)
 			if !valid {
-				return []interface{}{}, fmt.Errorf("error converting the number")
+				return []any{}, fmt.Errorf("error converting the number")
 			}
 			callArgs = append(callArgs, num)
 		default:
 			return callArgs, fmt.Errorf("invalid param type")
 		}
 	}
+
 	return callArgs, nil
 }

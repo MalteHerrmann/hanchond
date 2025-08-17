@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// rateLimitProposalCmd represents the rateLimit-proposal command
+// rateLimitProposalCmd represents the rateLimit-proposal command.
 var rateLimitProposalCmd = &cobra.Command{
 	Use:   "rate-limit-proposal [denom]",
 	Args:  cobra.ExactArgs(1),

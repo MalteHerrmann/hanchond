@@ -1,10 +1,21 @@
 package codec
 
 import (
+	cryptocodec "github.com/evmos/evmos/v18/crypto/codec"
+	evmostypes "github.com/evmos/evmos/v18/types"
+	erc20 "github.com/evmos/evmos/v18/x/erc20/types"
+	evm "github.com/evmos/evmos/v18/x/evm/types"
+	feemarket "github.com/evmos/evmos/v18/x/feemarket/types"
+	inflation "github.com/evmos/evmos/v18/x/inflation/v1/types"
+	revenue "github.com/evmos/evmos/v18/x/revenue/v1/types"
+	vesting "github.com/evmos/evmos/v18/x/vesting/types"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodecsdk "github.com/cosmos/cosmos-sdk/crypto/codec"
+	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	authTx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	auth "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authz "github.com/cosmos/cosmos-sdk/x/authz"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -24,18 +35,6 @@ import (
 	lightclientssolo "github.com/cosmos/ibc-go/v7/modules/light-clients/06-solomachine"
 	lightclientstendermint "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 	lightclientslocalhost "github.com/cosmos/ibc-go/v7/modules/light-clients/09-localhost"
-
-	cryptocodec "github.com/evmos/evmos/v18/crypto/codec"
-	evmostypes "github.com/evmos/evmos/v18/types"
-	erc20 "github.com/evmos/evmos/v18/x/erc20/types"
-	evm "github.com/evmos/evmos/v18/x/evm/types"
-	feemarket "github.com/evmos/evmos/v18/x/feemarket/types"
-	inflation "github.com/evmos/evmos/v18/x/inflation/v1/types"
-	revenue "github.com/evmos/evmos/v18/x/revenue/v1/types"
-	vesting "github.com/evmos/evmos/v18/x/vesting/types"
-
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-	authTx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 )
 
 var (

@@ -33,5 +33,6 @@ func NewGaia(moniker, homeDir, chainID, keyName string) *Gaia {
 		),
 	}
 	g.SetCustomConfig(g.UpdateGenesisFile)
+
 	return g
 }

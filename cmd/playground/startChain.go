@@ -6,19 +6,20 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/gaia"
 	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
 // startChainCmd represents the startChainCmd
 //
 // TODO: refactor all of the available commands to more layers for easier contextualization.
-// e.g. use `h p chain start` and `h p node info` instead of `h p start-chain` and `h p get-node`
+// e.g. use `h p chain start` and `h p node info` instead of `h p start-chain` and `h p get-node`.
 var startChainCmd = &cobra.Command{
 	Use:   "start-chain [chain_id]",
 	Args:  cobra.ExactArgs(1),
@@ -46,10 +47,22 @@ var startChainCmd = &cobra.Command{
 				d := gaia.NewGaia(v.Moniker, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
 				pID, err = d.Start()
 			case evmos.ChainInfo.GetBinaryName():
-				d := evmos.NewEvmos(v.Moniker, v.Version, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
+				d := evmos.NewEvmos(
+					v.Moniker,
+					v.Version,
+					v.ConfigFolder,
+					v.ChainID_2,
+					v.ValidatorKeyName,
+				)
 				pID, err = d.Start()
 			case sagaos.ChainInfo.GetBinaryName():
-				d := sagaos.NewSagaOS(v.Moniker, v.Version, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
+				d := sagaos.NewSagaOS(
+					v.Moniker,
+					v.Version,
+					v.ConfigFolder,
+					v.ChainID_2,
+					v.ValidatorKeyName,
+				)
 				pID, err = d.Start()
 			default:
 				utils.ExitError(fmt.Errorf("binary %s not configured", binaryName))

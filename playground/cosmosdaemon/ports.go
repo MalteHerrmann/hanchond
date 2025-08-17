@@ -33,8 +33,13 @@ func getAvailablePort() (int, error) {
 	if err != nil {
 		return 0, fmt.Errorf("could not find an available port: %w", err)
 	}
-	defer listener.Close()
-	addr := listener.Addr().(*net.TCPAddr)
+	defer listener.Close() //nolint:errcheck
+
+	addr, ok := listener.Addr().(*net.TCPAddr)
+	if !ok {
+		return 0, fmt.Errorf("retrieved address is not a TCP address")
+	}
+
 	return addr.Port, nil
 }
 
@@ -44,6 +49,7 @@ func (d *Daemon) AssignPorts(queries *database.Queries) error {
 		return err
 	}
 	d.Ports = ports
+
 	return nil
 }
 

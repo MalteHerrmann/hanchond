@@ -18,11 +18,11 @@ func (d *Daemon) getAppPath() string {
 	return d.HomeDir + "/config/app.toml"
 }
 
-func (d *Daemon) OpenGenesisFile() (map[string]interface{}, error) {
+func (d *Daemon) OpenGenesisFile() (map[string]any, error) {
 	return readJSONFile(d.getGenesisPath())
 }
 
-func (d *Daemon) SaveGenesisFile(genesis map[string]interface{}) error {
+func (d *Daemon) SaveGenesisFile(genesis map[string]any) error {
 	return saveJSONFile(genesis, d.getGenesisPath())
 }
 

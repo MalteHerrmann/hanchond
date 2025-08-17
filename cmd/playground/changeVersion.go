@@ -6,13 +6,14 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// changeVersionCmd represents the changeVersion command
+// changeVersionCmd represents the changeVersion command.
 var changeVersionCmd = &cobra.Command{
 	Use:   "change-version [id] [version]",
 	Args:  cobra.ExactArgs(2),
@@ -47,7 +48,8 @@ var changeVersionCmd = &cobra.Command{
 
 func init() {
 	PlaygroundCmd.AddCommand(changeVersionCmd)
-	changeVersionCmd.Flags().Bool("is-chain-id", false, "If the flag is yes, it will assume that the ID is the chain ID. If it is set as false, the ID will be used just for the node.")
+	changeVersionCmd.Flags().
+		Bool("is-chain-id", false, "If the flag is yes, it will assume that the ID is the chain ID. If it is set as false, the ID will be used just for the node.")
 }
 
 func updateNodeVersion(queries *database.Queries, nodeID int64, version string) {

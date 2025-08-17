@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/converter"
 	"github.com/hanchon/hanchond/lib/txbuilder"
 	"github.com/hanchon/hanchond/lib/utils"
@@ -13,10 +15,9 @@ import (
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/solidity"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// erc20TransferCmd represents the erc20Transfer command
+// erc20TransferCmd represents the erc20Transfer command.
 var erc20TransferCmd = &cobra.Command{
 	Use:   "erc20-transfer [contract] [wallet] [amount]",
 	Args:  cobra.ExactArgs(3),
@@ -52,7 +53,14 @@ var erc20TransferCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("error building the call data: %w", err))
 		}
 		to := common.HexToAddress(contract)
-		txhash, err := valWallet.TxBuilder.SendTx(valWallet.Address, &to, big.NewInt(0), 200_000, callData, valWallet.PrivKey)
+		txhash, err := valWallet.TxBuilder.SendTx(
+			valWallet.Address,
+			&to,
+			big.NewInt(0),
+			200_000,
+			callData,
+			valWallet.PrivKey,
+		)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error sending the transaction: %w", err))
 		}

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/bubbles/list"
+
 	"github.com/hanchon/hanchond/playground/explorer"
 	"github.com/hanchon/hanchond/playground/explorer/database"
 )
@@ -24,12 +25,17 @@ func BDBlockToItem(blocks []database.Block) []list.Item {
 	res := make([]list.Item, len(blocks))
 	for k := range res {
 		res[k] = Block{
-			text:   fmt.Sprintf("%d", blocks[k].Height),
-			desc:   fmt.Sprintf("%s...%s", blocks[k].Hash[0:4], blocks[k].Hash[len(blocks[k].Hash)-5:]),
+			text: fmt.Sprintf("%d", blocks[k].Height),
+			desc: fmt.Sprintf(
+				"%s...%s",
+				blocks[k].Hash[0:4],
+				blocks[k].Hash[len(blocks[k].Hash)-5:],
+			),
 			height: blocks[k].Height,
 			hash:   blocks[k].Hash,
 		}
 	}
+
 	return res
 }
 
@@ -44,7 +50,11 @@ func RenderBlock(b Block, client *explorer.Client) string {
 		return "# Error getting block info\n\n" + err.Error()
 	}
 
-	cosmosBlock := fmt.Sprintf("# Block %d\n\n## Cosmos Block\n\n```json\n%s\n```", b.height, processJSON(string(data)))
+	cosmosBlock := fmt.Sprintf(
+		"# Block %d\n\n## Cosmos Block\n\n```json\n%s\n```",
+		b.height,
+		processJSON(string(data)),
+	)
 
 	ethBlock, err := client.Client.GetBlockByNumber(fmt.Sprintf("%d", b.height), true)
 	if err != nil {
@@ -56,5 +66,8 @@ func RenderBlock(b Block, client *explorer.Client) string {
 		return "# Error getting block info\n\n" + err.Error()
 	}
 
-	return cosmosBlock + fmt.Sprintf("\n\n## Ethereum Block\n\n```json\n%s\n```", processJSON(string(data)))
+	return cosmosBlock + fmt.Sprintf(
+		"\n\n## Ethereum Block\n\n```json\n%s\n```",
+		processJSON(string(data)),
+	)
 }

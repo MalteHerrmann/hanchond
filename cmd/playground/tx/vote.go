@@ -3,13 +3,14 @@ package tx
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// vote represents the vote command
+// vote represents the vote command.
 var voteCmd = &cobra.Command{
 	Use:   "vote",
 	Short: "Vote on all the active proposals",

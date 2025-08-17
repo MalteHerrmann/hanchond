@@ -9,7 +9,11 @@ import (
 )
 
 func GitCloneHermesBranch(version string) error {
-	return GitCloneBranch(version, GetBranchFolder(version), "https://github.com/informalsystems/hermes")
+	return GitCloneBranch(
+		version,
+		GetBranchFolder(version),
+		"https://github.com/informalsystems/hermes",
+	)
 }
 
 func GitCloneGitHubBranch(chainInfo types.ChainInfo, version string) error {
@@ -21,7 +25,16 @@ func GitCloneBranch(version string, dstFolder string, repoURL string) error {
 		panic("repoURL must start with 'https://github.com/'; got: " + repoURL)
 	}
 
-	_, err := utils.ExecCommand("git", "clone", "--depth", "1", "--branch", version, repoURL, dstFolder)
+	_, err := utils.ExecCommand(
+		"git",
+		"clone",
+		"--depth",
+		"1",
+		"--branch",
+		version,
+		repoURL,
+		dstFolder,
+	)
 	if err != nil {
 		return fmt.Errorf("failed to clone repository; error: %w", err)
 	}

@@ -3,15 +3,16 @@ package solidity
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/solidity"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// deployERC20Cmd represents the deploy command
+// deployERC20Cmd represents the deploy command.
 var deployERC20Cmd = &cobra.Command{
 	Use:   "deploy-erc20 [name] [symbol]",
 	Args:  cobra.ExactArgs(2),
@@ -45,7 +46,14 @@ var deployERC20Cmd = &cobra.Command{
 		e := evmos.NewEvmosFromDB(queries, nodeID)
 		builder := e.NewTxBuilder(gasLimit)
 
-		txHash, err := solidity.BuildAndDeployERC20Contract(name, symbol, initialAmount, isWrapped, builder, gasLimit)
+		txHash, err := solidity.BuildAndDeployERC20Contract(
+			name,
+			symbol,
+			initialAmount,
+			isWrapped,
+			builder,
+			gasLimit,
+		)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error building and deploying the erc20 contract: %w", err))
 		}
@@ -67,7 +75,10 @@ var deployERC20Cmd = &cobra.Command{
 
 func init() {
 	SolidityCmd.AddCommand(deployERC20Cmd)
-	deployERC20Cmd.Flags().Uint64("gas-limit", 2_000_000, "GasLimit to be used to deploy the transaction")
-	deployERC20Cmd.Flags().String("initial-amount", "1000000", "Initial amout of coins sent to the deployer address")
-	deployERC20Cmd.Flags().Bool("is-wrapped-coin", false, "Flag used to indenfity if the contract is representing the base denom. It uses WETH9 instead of OpenZeppelin contracts")
+	deployERC20Cmd.Flags().
+		Uint64("gas-limit", 2_000_000, "GasLimit to be used to deploy the transaction")
+	deployERC20Cmd.Flags().
+		String("initial-amount", "1000000", "Initial amout of coins sent to the deployer address")
+	deployERC20Cmd.Flags().
+		Bool("is-wrapped-coin", false, "Flag used to indenfity if the contract is representing the base denom. It uses WETH9 instead of OpenZeppelin contracts")
 }

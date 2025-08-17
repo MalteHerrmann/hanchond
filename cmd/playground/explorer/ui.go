@@ -3,15 +3,16 @@ package explorer
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/explorer"
 	"github.com/hanchon/hanchond/playground/explorer/explorerui"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// ui represents the query command
+// ui represents the query command.
 var uiCmd = &cobra.Command{
 	Use:   "ui",
 	Args:  cobra.ExactArgs(0),

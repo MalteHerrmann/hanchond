@@ -4,13 +4,14 @@ import (
 	"os"
 )
 
-// TODO: rename to make more general
+// TODO: rename to make more general.
 func GetAllEvmosdVersions() ([]string, error) {
 	files, err := os.Open(GetBuildsDir())
 	if err != nil {
 		return []string{}, err
 	}
-	defer files.Close()
+	defer files.Close() //nolint:errcheck
+
 	fileInfos, err := files.Readdir(-1)
 	if err != nil {
 		return []string{}, err
@@ -19,5 +20,6 @@ func GetAllEvmosdVersions() ([]string, error) {
 	for i, fileInfos := range fileInfos {
 		res[i] = fileInfos.Name()
 	}
+
 	return res, nil
 }

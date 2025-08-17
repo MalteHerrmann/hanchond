@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/evmos"
@@ -12,10 +14,9 @@ import (
 	"github.com/hanchon/hanchond/playground/hermes"
 	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// hermesAddChannelCmd represents the hermesAddChannel command
+// hermesAddChannelCmd represents the hermesAddChannel command.
 var hermesAddChannelCmd = &cobra.Command{
 	Use:   "hermes-add-channel [chain_id] [chain_id]",
 	Args:  cobra.ExactArgs(2),
@@ -53,7 +54,13 @@ var hermesAddChannelCmd = &cobra.Command{
 
 		for i, v := range chains {
 			if v.IsRunning != 1 {
-				utils.ExitError(fmt.Errorf("node %d of chain %d is not running; start first", v.NodeID, v.ChainID))
+				utils.ExitError(
+					fmt.Errorf(
+						"node %d of chain %d is not running; start first",
+						v.NodeID,
+						v.ChainID,
+					),
+				)
 			}
 
 			chainInfo := v.MustParseChainInfo()
@@ -70,7 +77,9 @@ var hermesAddChannelCmd = &cobra.Command{
 					v.ValidatorKeyName,
 					v.ValidatorKey,
 				); err != nil {
-					utils.ExitError(fmt.Errorf("error adding chain %d to the relayer: %s", i, err.Error()))
+					utils.ExitError(
+						fmt.Errorf("error adding chain %d to the relayer: %s", i, err.Error()),
+					)
 				}
 			case evmos.ChainInfo.GetBinaryName(), sagaos.ChainInfo.GetBinaryName():
 				utils.Log("Adding chain %d: %s", i, binaryName)
@@ -82,7 +91,9 @@ var hermesAddChannelCmd = &cobra.Command{
 					v.ValidatorKeyName,
 					v.ValidatorKey,
 				); err != nil {
-					utils.ExitError(fmt.Errorf("error adding chain %d to the relayer: %s", i, err.Error()))
+					utils.ExitError(
+						fmt.Errorf("error adding chain %d to the relayer: %s", i, err.Error()),
+					)
 				}
 			default:
 				utils.ExitError(fmt.Errorf("incorrect binary name: %s", binaryName))

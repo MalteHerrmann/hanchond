@@ -1,11 +1,12 @@
 package repo
 
 import (
-	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/spf13/cobra"
+
+	"github.com/hanchon/hanchond/lib/utils"
 )
 
-// RepoCmd represents the repo command
+// RepoCmd represents the repo command.
 var RepoCmd = &cobra.Command{
 	Use:     "repo",
 	Aliases: []string{"r"},

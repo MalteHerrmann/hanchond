@@ -3,14 +3,15 @@ package evmos
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// ethCodeCmd represents the ethCode command
+// ethCodeCmd represents the ethCode command.
 var ethCodeCmd = &cobra.Command{
 	Use:   "eth-code [address]",
 	Args:  cobra.ExactArgs(1),

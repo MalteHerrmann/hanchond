@@ -7,12 +7,13 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
-	"github.com/spf13/cobra"
 )
 
-// BumpModuleVersionCmd represents the query command
+// BumpModuleVersionCmd represents the query command.
 var BumpModuleVersionCmd = &cobra.Command{
 	Use:   "bump-module-version [path] [version]",
 	Args:  cobra.ExactArgs(2),
@@ -45,12 +46,14 @@ var BumpModuleVersionCmd = &cobra.Command{
 		currentVersion := modules[0][1]
 		utils.Log("the current version is: %s", currentVersion)
 
-		// Create the new version with all the parts of the currentVersion but overwritting the last segment
+		// Create the new version with all the parts of the currentVersion but overwritting the last
+		// segment
 		newVersion := ""
 		parts := strings.Split(currentVersion, "/")
 		for k, v := range parts {
 			if k == len(parts)-1 {
 				newVersion += version
+
 				break
 			}
 			newVersion += v + "/"

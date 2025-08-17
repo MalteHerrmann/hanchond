@@ -3,16 +3,17 @@ package sql
 import (
 	"context"
 	"database/sql"
-	_ "embed"
 	"fmt"
 
-	// blank import to support sqlite3
+	"github.com/spf13/cobra"
+
+	_ "embed"
+	// blank import to support sqlite3.
 	_ "modernc.org/sqlite"
 
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/filesmanager"
-	"github.com/spf13/cobra"
 )
 
 //go:embed schema.sql
@@ -37,6 +38,7 @@ func initDB(dbPath string) (*database.Queries, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return database.New(db), nil
 }
 
@@ -46,5 +48,6 @@ func InitDBFromCmd(cmd *cobra.Command) *database.Queries {
 	if err != nil {
 		utils.ExitError(fmt.Errorf("could not init database: %w", err))
 	}
+
 	return queries
 }

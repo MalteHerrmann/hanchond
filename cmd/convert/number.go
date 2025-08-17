@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"strings"
 
-	converterutil "github.com/hanchon/hanchond/lib/converter"
 	"github.com/spf13/cobra"
+
+	converterutil "github.com/hanchon/hanchond/lib/converter"
 )
 
-// numberCmd represents the number command
+// numberCmd represents the number command.
 var numberCmd = &cobra.Command{
 	Use:   "number",
 	Args:  cobra.ExactArgs(1),

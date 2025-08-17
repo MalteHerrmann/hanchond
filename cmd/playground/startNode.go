@@ -5,16 +5,17 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/gaia"
 	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
-// startNodeCmd represents the startNode command
+// startNodeCmd represents the startNode command.
 var startNodeCmd = &cobra.Command{
 	Use:   "start-node [node_id]",
 	Args:  cobra.ExactArgs(1),

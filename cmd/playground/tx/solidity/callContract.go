@@ -4,18 +4,19 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/smartcontract"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/sql"
-	"github.com/spf13/cobra"
 )
 
 var params []string
 
-// callContractViewCmd represents the callContractView command
+// callContractViewCmd represents the callContractView command.
 var callContractViewCmd = &cobra.Command{
 	Use:   "call-contract-view [contract] [abi_path] [method]",
 	Args:  cobra.ExactArgs(3),
@@ -66,5 +67,6 @@ var callContractViewCmd = &cobra.Command{
 func init() {
 	SolidityCmd.AddCommand(callContractViewCmd)
 	callContractViewCmd.Flags().String("height", "latest", "Query at the given height.")
-	callContractViewCmd.Flags().StringSliceVarP(&params, "params", "p", []string{}, "A list of params. If the param is an address, prefix with `a:0x123...`")
+	callContractViewCmd.Flags().
+		StringSliceVarP(&params, "params", "p", []string{}, "A list of params. If the param is an address, prefix with `a:0x123...`")
 }

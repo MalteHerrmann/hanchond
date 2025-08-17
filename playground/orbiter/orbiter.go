@@ -31,6 +31,6 @@ func NewOrbiter(moniker, version, homeDir, chainID, keyName string) *Orbiter {
 			keyName,
 		),
 	}
-	o.SetCustomConfig(o.UpdateAppFile)
+	o.SetCustomConfig(o.UpdateOrbiterGenesisFile)
 	return o
 }

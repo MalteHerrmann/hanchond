@@ -1,4 +1,4 @@
-name: Lint
+name: Build
 
 on:
   pull_request:
@@ -6,8 +6,8 @@ on:
 permissions: read-all
 
 jobs:
-  golangci:
-    name: Run golangci-lint
+  build:
+    name: Build Go binary
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -22,6 +22,6 @@ jobs:
             go.mod
             go.sum
             flake.nix
-      - name: Run lint
-        run: make lint
+      - name: Build binary
+        run: make build
         if: "env.GIT_DIFF"

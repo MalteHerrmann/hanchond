@@ -3,7 +3,6 @@ package playground
 import (
 	"context"
 	"fmt"
-	"github.com/hanchon/hanchond/playground/orbiter"
 	"strconv"
 	"strings"
 
@@ -13,6 +12,7 @@ import (
 	"github.com/hanchon/hanchond/playground/database"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/gaia"
+	"github.com/hanchon/hanchond/playground/orbiter"
 	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
 )
@@ -65,9 +65,16 @@ var startChainCmd = &cobra.Command{
 					v.ValidatorKeyName,
 				)
 				pID, err = d.Start()
-			// TODO: instead of simd abstract this away to enable multiple things that are called simd
+			// TODO: instead of simd abstract this away to enable multiple things that are called
+			// simd
 			case orbiter.ChainInfo.GetBinaryName():
-				d := orbiter.NewOrbiter(v.Moniker, v.Version, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
+				d := orbiter.NewOrbiter(
+					v.Moniker,
+					v.Version,
+					v.ConfigFolder,
+					v.ChainID_2,
+					v.ValidatorKeyName,
+				)
 				pID, err = d.Start()
 			default:
 				utils.ExitError(fmt.Errorf("binary %s not configured", binaryName))

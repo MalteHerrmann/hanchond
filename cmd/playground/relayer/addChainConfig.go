@@ -65,10 +65,12 @@ var addChainConfigCmd = &cobra.Command{
 		}
 
 		hdPath := types.CosmosHDPath
+		algo := types.CosmosAlgo
 		if isEvm {
 			// TODO: maybe check here if that's the right hd path to use? could e.g. get user
 			// confirmation
 			hdPath = types.EthHDPath
+			algo = types.EthAlgo
 		}
 
 		defaultChainInfo := types.NewChainInfo(
@@ -79,37 +81,18 @@ var addChainConfigCmd = &cobra.Command{
 			denom,
 			"external",
 			hdPath,
-			types.CosmosAlgo,
+			algo,
 		)
 
-		switch isEvm {
-		case false:
-			utils.Log("adding a non-EVM chain")
-			if err := h.AddCosmosChain(
-				defaultChainInfo,
-				chainID,
-				p26657,
-				p9090,
-				keyname,
-				keymnemonic,
-			); err != nil {
-				utils.ExitError(fmt.Errorf("error adding first chain to the relayer: %w", err))
-			}
-		case true:
-			chainInfo := defaultChainInfo
-			chainInfo.KeyAlgo = types.EthAlgo
-
-			utils.Log("adding a EVM chain")
-			if err := h.AddEVMChain(
-				chainInfo,
-				chainID,
-				p26657,
-				p9090,
-				keyname,
-				keymnemonic,
-			); err != nil {
-				utils.ExitError(fmt.Errorf("error adding first chain to the relayer: %w", err))
-			}
+		if err := h.AddChain(
+			defaultChainInfo,
+			chainID,
+			p26657,
+			p9090,
+			keyname,
+			keymnemonic,
+		); err != nil {
+			utils.ExitError(fmt.Errorf("error adding first chain to the relayer: %w", err))
 		}
 	},
 }

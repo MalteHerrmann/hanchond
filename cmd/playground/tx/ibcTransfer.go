@@ -79,6 +79,4 @@ var ibcTransferCmd = &cobra.Command{
 func init() {
 	TxCmd.AddCommand(ibcTransferCmd)
 	ibcTransferCmd.Flags().StringP("channel", "c", "channel-0", "IBC channel")
-	ibcTransferCmd.Flags().
-		StringP("memo", "m", "", "An optional memo to send along with the IBC transfer")
 }

@@ -81,6 +81,9 @@ SELECT * FROM node;
 -- name: GetAllChainNodes :many
 SELECT * FROM node n join ports p on p.node_id == n.id join chain c on n.chain_id == c.id where n.chain_id = ?;
 
+-- name: GetChainNode :one
+SELECT * FROM node n join ports p on p.node_id == n.id join chain c on n.chain_id == c.id where n.id = ? LIMIT 1;
+
 -- name: InitRelayer :exec
 INSERT INTO relayer(
     process_id, is_running

@@ -8,12 +8,9 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/hanchon/hanchond/cmd/playground/common"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
-	"github.com/hanchon/hanchond/playground/evmos"
-	"github.com/hanchon/hanchond/playground/gaia"
-	"github.com/hanchon/hanchond/playground/orbiter"
-	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
 )
 
@@ -39,52 +36,20 @@ var startChainCmd = &cobra.Command{
 		}
 
 		for _, v := range nodes {
-			binaryName := v.MustParseChainInfo().GetBinaryName()
+			di := v.GetDaemonInfo()
+			ports := v.GetPorts()
 
-			var pID int
-			var err error
-			switch binaryName {
-			case gaia.ChainInfo.GetBinaryName():
-				d := gaia.NewGaia(v.Moniker, v.ConfigFolder, v.ChainID_2, v.ValidatorKeyName)
-				pID, err = d.Start()
-			case evmos.ChainInfo.GetBinaryName():
-				d := evmos.NewEvmos(
-					v.Moniker,
-					v.Version,
-					v.ConfigFolder,
-					v.ChainID_2,
-					v.ValidatorKeyName,
-				)
-				pID, err = d.Start()
-			case sagaos.ChainInfo.GetBinaryName():
-				d := sagaos.NewSagaOS(
-					v.Moniker,
-					v.Version,
-					v.ConfigFolder,
-					v.ChainID_2,
-					v.ValidatorKeyName,
-				)
-				pID, err = d.Start()
-			// TODO: instead of simd abstract this away to enable multiple things that are called
-			// simd
-			case orbiter.ChainInfo.GetBinaryName():
-				d := orbiter.NewOrbiter(
-					v.Moniker,
-					v.Version,
-					v.ConfigFolder,
-					v.ChainID_2,
-					v.ValidatorKeyName,
-				)
-				pID, err = d.Start()
-			default:
-				utils.ExitError(fmt.Errorf("binary %s not configured", binaryName))
-			}
-
+			node, err := common.GetDaemonForNode(di, &ports)
 			if err != nil {
-				utils.ExitError(fmt.Errorf("could not start the node: %w", err))
+				utils.ExitError(fmt.Errorf("failed to get node daemon: %w", err))
 			}
 
-			utils.Log("Node is running with pID: %d", pID)
+			pID, err := node.Start()
+			if err != nil {
+				utils.ExitError(fmt.Errorf("could not start node: %w", err))
+			}
+
+			utils.Log(fmt.Sprintf("node running with pID: %d", pID))
 			err = queries.SetProcessID(context.Background(), database.SetProcessIDParams{
 				ProcessID: int64(pID),
 				IsRunning: 1,

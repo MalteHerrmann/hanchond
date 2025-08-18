@@ -73,6 +73,7 @@ var initChainCmd = &cobra.Command{
 					path,
 					chainID,
 					fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
+					nil,
 				).Daemon
 			}
 		case "gaia":
@@ -84,6 +85,7 @@ var initChainCmd = &cobra.Command{
 					path,
 					chainID,
 					fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
+					nil,
 				).Daemon
 			}
 		case "sagaos":
@@ -96,8 +98,10 @@ var initChainCmd = &cobra.Command{
 					path,
 					chainID,
 					fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
+					nil,
 				).Daemon
 			}
+		// TODO: refactor to use common method
 		case "orbiter":
 			chainInfo = orbiter.ChainInfo
 
@@ -108,6 +112,7 @@ var initChainCmd = &cobra.Command{
 					path,
 					chainID,
 					fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
+					nil,
 				).Daemon
 			}
 		default:

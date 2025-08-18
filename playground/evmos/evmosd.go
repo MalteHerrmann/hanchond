@@ -16,19 +16,22 @@ var ChainInfo = types.NewChainInfo(
 	types.EthAlgo,
 )
 
+var _ cosmosdaemon.IDaemon = &Evmos{}
+
 type Evmos struct {
 	*cosmosdaemon.Daemon
 }
 
-func NewEvmos(moniker, version, homeDir, chainID, keyName string) *Evmos {
+func NewEvmos(moniker, version, homeDir, chainID, keyName string, ports *types.Ports) *Evmos {
 	e := &Evmos{
-		Daemon: cosmosdaemon.NewDameon(
+		Daemon: cosmosdaemon.NewDaemon(
 			ChainInfo,
 			moniker,
 			version,
 			homeDir,
 			chainID,
 			keyName,
+			ports,
 		),
 	}
 	e.SetCustomConfig(e.UpdateAppFile)

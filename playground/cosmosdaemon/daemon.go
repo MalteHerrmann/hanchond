@@ -10,6 +10,13 @@ import (
 	"github.com/hanchon/hanchond/playground/types"
 )
 
+// IDaemon defines the interface that all Cosmos SDK-based binaries
+// that are configured in this tool should fulfill.
+type IDaemon interface {
+	Start() (pid int, err error)
+	SendIBC(port, channel, recipient string, amount types.Coin) (string, error)
+}
+
 type Daemon struct {
 	chainInfo   types.ChainInfo
 	ValKeyName  string
@@ -29,18 +36,19 @@ type Daemon struct {
 
 	ValidatorInitialSupply string
 
-	Ports *Ports
+	Ports *types.Ports
 
 	CustomConfig func() error
 }
 
-func NewDameon(
+func NewDaemon(
 	chainInfo types.ChainInfo,
 	moniker string,
 	version string,
 	homeDir string,
 	chainID string,
 	keyName string,
+	ports *types.Ports,
 ) *Daemon {
 	mnemonic, _ := txbuilder.NewMnemonic()
 	wallet := ""
@@ -73,7 +81,7 @@ func NewDameon(
 		GasLimit: "1000000000",
 		BaseFee:  "1000000000",
 
-		Ports: nil,
+		Ports: ports,
 	}
 }
 
@@ -81,7 +89,7 @@ func (d *Daemon) GetVersionedBinaryPath() string {
 	return filesmanager.GetDaemondPathWithVersion(d.chainInfo, d.Version)
 }
 
-// This is used to change the config files that are specific to a client.
+// SetCustomConfig is used to change the config files that are specific to a client.
 func (d *Daemon) SetCustomConfig(configurator func() error) {
 	d.CustomConfig = configurator
 }

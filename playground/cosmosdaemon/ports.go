@@ -8,25 +8,8 @@ import (
 	"slices"
 
 	"github.com/hanchon/hanchond/playground/database"
+	"github.com/hanchon/hanchond/playground/types"
 )
-
-type Ports struct {
-	// APP Ports
-	P1317 int
-	P8080 int
-	P9090 int
-	P9091 int
-	P8545 int
-	P8546 int
-	P6065 int
-
-	// Config Ports
-	P26658 int
-	P26657 int
-	P6060  int
-	P26656 int
-	P26660 int
-}
 
 func getAvailablePort() (int, error) {
 	listener, err := net.Listen("tcp", ":0") //nolint:gosec
@@ -53,7 +36,7 @@ func (d *Daemon) AssignPorts(queries *database.Queries) error {
 	return nil
 }
 
-func newPorts(queries *database.Queries) (*Ports, error) {
+func newPorts(queries *database.Queries) (*types.Ports, error) {
 	dbPorts, err := queries.GetAllPorts(context.Background())
 	if err != nil {
 		return nil, err
@@ -117,7 +100,7 @@ OUTER:
 		}
 	}
 
-	return &Ports{
+	return &types.Ports{
 		P1317:  ports[0],
 		P8080:  ports[1],
 		P9090:  ports[2],
@@ -134,7 +117,7 @@ OUTER:
 }
 
 func (d *Daemon) RestorePortsFromDB(port database.Port) {
-	d.Ports = &Ports{
+	d.Ports = &types.Ports{
 		P1317:  int(port.P1317),
 		P8080:  int(port.P8080),
 		P9090:  int(port.P9090),

@@ -7,11 +7,9 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/hanchon/hanchond/cmd/playground/common"
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
-	"github.com/hanchon/hanchond/playground/evmos"
-	"github.com/hanchon/hanchond/playground/gaia"
-	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
 )
 
@@ -30,49 +28,18 @@ var startNodeCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("could not parse the ID: %w", err))
 		}
 
-		node, err := queries.GetNode(context.Background(), idNumber)
+		node, err := queries.GetChainNode(context.Background(), idNumber)
 		if err != nil {
-			utils.ExitError(fmt.Errorf("could not get the node: %w", err))
+			utils.ExitError(fmt.Errorf("could not get chain node: %w", err))
 		}
 
-		chain, err := queries.GetChain(context.Background(), node.ChainID)
+		ports := node.GetPorts()
+		d, err := common.GetDaemonForNode(node.GetDaemonInfo(), &ports)
 		if err != nil {
-			utils.ExitError(fmt.Errorf("could not get the chain: %w", err))
+			utils.ExitError(fmt.Errorf("could not get daemon info: %w", err))
 		}
 
-		ci := chain.MustParseChainInfo()
-
-		var pID int
-		switch ci.GetBinaryName() {
-		case evmos.ChainInfo.GetBinaryName():
-			d := evmos.NewEvmos(
-				node.Moniker,
-				node.Version,
-				node.ConfigFolder,
-				chain.ChainID,
-				node.ValidatorKeyName,
-			)
-			pID, err = d.Start()
-		case gaia.ChainInfo.GetBinaryName():
-			d := gaia.NewGaia(
-				node.Moniker,
-				node.ConfigFolder,
-				chain.ChainID,
-				node.ValidatorKeyName,
-			)
-			pID, err = d.Start()
-		case sagaos.ChainInfo.GetBinaryName():
-			d := sagaos.NewSagaOS(
-				node.Moniker,
-				node.Version,
-				node.ConfigFolder,
-				chain.ChainID,
-				node.ValidatorKeyName,
-			)
-			pID, err = d.Start()
-		default:
-			panic("invalid binary name: " + ci.GetBinaryName())
-		}
+		pID, err := d.Start()
 		if err != nil {
 			utils.ExitError(fmt.Errorf("could not start the node: %w", err))
 		}

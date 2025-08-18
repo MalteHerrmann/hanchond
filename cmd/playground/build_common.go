@@ -2,6 +2,7 @@ package playground
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -23,8 +24,14 @@ func BuildLocalEVMBinary(chainInfo types.ChainInfo, path string) error {
 	}
 
 	utils.Log("Moving built binary...")
-	buildPath := fmt.Sprintf("%s/build/%s", path, chainInfo.GetBinaryName())
-	if err := filesmanager.MoveFile(buildPath, filesmanager.GetDaemondPathWithVersion(chainInfo, version)); err != nil {
+	// TODO: have this be part of the ChainInfo?
+	binName := chainInfo.GetBinaryName()
+	relBuildPath := filepath.Join("build", binName)
+	if binName == "simd" {
+		relBuildPath = filepath.Join("simapp", relBuildPath)
+	}
+	fullBuildPath := filepath.Join(path, relBuildPath)
+	if err := filesmanager.MoveFile(fullBuildPath, filesmanager.GetDaemondPathWithVersion(chainInfo, version)); err != nil {
 		utils.Log("could not move the built binary: %s", err)
 
 		return err

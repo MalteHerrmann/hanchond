@@ -18,6 +18,10 @@ func (d *Daemon) getAppPath() string {
 	return d.HomeDir + "/config/app.toml"
 }
 
+func (d *Daemon) GetLogPath() string {
+	return d.HomeDir + "/run.log"
+}
+
 func (d *Daemon) OpenGenesisFile() (map[string]any, error) {
 	return readJSONFile(d.getGenesisPath())
 }
@@ -38,6 +42,7 @@ func (d *Daemon) saveConfigFile(configFile []byte) error {
 	return filesmanager.SaveFile(configFile, d.getConfigPath())
 }
 
+// OpenAppFile returns the contents of the given binary's app.toml.
 func (d *Daemon) OpenAppFile() ([]byte, error) {
 	return filesmanager.ReadFile(d.getAppPath())
 }

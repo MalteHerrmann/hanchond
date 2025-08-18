@@ -9,10 +9,7 @@ import (
 
 	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/database"
-	"github.com/hanchon/hanchond/playground/evmos"
-	"github.com/hanchon/hanchond/playground/gaia"
 	"github.com/hanchon/hanchond/playground/hermes"
-	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
 )
 
@@ -66,39 +63,19 @@ var hermesAddChannelCmd = &cobra.Command{
 			chainInfo := v.MustParseChainInfo()
 			binaryName := chainInfo.GetBinaryName()
 
-			switch binaryName {
-			case gaia.ChainInfo.GetBinaryName():
-				utils.Log("Adding %s chain", binaryName)
-				if err := h.AddCosmosChain(
-					chainInfo,
-					v.ChainID_2,
-					hermes.LocalEndpoint(v.P26657),
-					hermes.LocalEndpoint(v.P9090),
-					v.ValidatorKeyName,
-					v.ValidatorKey,
-				); err != nil {
-					utils.ExitError(
-						fmt.Errorf("error adding chain %d to the relayer: %s", i, err.Error()),
-					)
-				}
-			case evmos.ChainInfo.GetBinaryName(), sagaos.ChainInfo.GetBinaryName():
-				utils.Log("Adding chain %d: %s", i, binaryName)
-				if err := h.AddEVMChain(
-					chainInfo,
-					v.ChainID_2,
-					hermes.LocalEndpoint(v.P26657),
-					hermes.LocalEndpoint(v.P9090),
-					v.ValidatorKeyName,
-					v.ValidatorKey,
-				); err != nil {
-					utils.ExitError(
-						fmt.Errorf("error adding chain %d to the relayer: %s", i, err.Error()),
-					)
-				}
-			default:
-				utils.ExitError(fmt.Errorf("incorrect binary name: %s", binaryName))
+			utils.Log("Adding chain %d: %s", i, binaryName)
+			if err := h.AddChain(
+				chainInfo,
+				v.ChainID_2,
+				hermes.LocalEndpoint(v.P26657),
+				hermes.LocalEndpoint(v.P9090),
+				v.ValidatorKeyName,
+				v.ValidatorKey,
+			); err != nil {
+				utils.ExitError(
+					fmt.Errorf("error adding chain %d to the relayer: %s", i, err.Error()),
+				)
 			}
-
 		}
 
 		utils.Log("Calling create channel")

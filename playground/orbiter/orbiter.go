@@ -6,7 +6,7 @@ import (
 )
 
 var ChainInfo = types.NewChainInfo(
-	"cosmos",
+	"noble",
 	"simd",
 	"orbiter-",
 	"simd",

@@ -58,7 +58,12 @@ var ibcTransferCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("could not get the for node: %w", err))
 		}
 
-		out, err := d.SendIBC("transfer", channel, dstWallet, sentFunds)
+		memo, err := cmd.Flags().GetString("memo")
+		if err != nil {
+			utils.ExitError(fmt.Errorf("could not get the memo: %w", err))
+		}
+
+		out, err := d.SendIBC("transfer", channel, dstWallet, sentFunds, memo)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error sending the transaction: %w", err))
 		}
@@ -79,4 +84,5 @@ var ibcTransferCmd = &cobra.Command{
 func init() {
 	TxCmd.AddCommand(ibcTransferCmd)
 	ibcTransferCmd.Flags().StringP("channel", "c", "channel-0", "IBC channel")
+	ibcTransferCmd.Flags().StringP("memo", "m", "", "Optional field to pass an IBC memo along with the transfer")
 }

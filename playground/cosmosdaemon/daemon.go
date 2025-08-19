@@ -14,7 +14,7 @@ import (
 // that are configured in this tool should fulfill.
 type IDaemon interface {
 	Start() (pid int, err error)
-	SendIBC(port, channel, recipient string, amount types.Coin) (string, error)
+	SendIBC(port, channel, recipient string, amount types.Coin, memo string) (string, error)
 }
 
 type Daemon struct {

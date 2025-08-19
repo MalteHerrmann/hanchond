@@ -165,9 +165,8 @@ func (d *Daemon) Start(startCmd string) (int, error) {
 
 // SendIBC send a simple IBC transfer using the CLI.
 //
-// TODO: implement custom memos.
 // TODO: simulate maybe? to avoid hardcoding fees.
-func (d *Daemon) SendIBC(port, channel, recipient string, amount types.Coin) (string, error) {
+func (d *Daemon) SendIBC(port, channel, recipient string, amount types.Coin, memo string) (string, error) {
 	feeAmount := 1000
 	// if the base denom is an atto unit, use a higher amount of fees to send with the transaction.
 	if strings.HasPrefix(d.BaseDenom, "a") {
@@ -178,8 +177,7 @@ func (d *Daemon) SendIBC(port, channel, recipient string, amount types.Coin) (st
 		return "", errors.New("ports are not set")
 	}
 
-	command := exec.Command( //nolint:gosec
-		d.GetVersionedBinaryPath(),
+	commandSlice := []string{
 		"tx",
 		"ibc-transfer",
 		"transfer",
@@ -200,6 +198,15 @@ func (d *Daemon) SendIBC(port, channel, recipient string, amount types.Coin) (st
 		"--fees",
 		fmt.Sprintf("%d%s", feeAmount, d.BaseDenom),
 		"-y",
+	}
+
+	if memo != "" {
+		commandSlice = append(commandSlice, "--memo", memo)
+	}
+
+	command := exec.Command( //nolint:gosec
+		d.GetVersionedBinaryPath(),
+		commandSlice...,
 	)
 
 	out, err := command.CombinedOutput()

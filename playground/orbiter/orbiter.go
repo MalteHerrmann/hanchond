@@ -16,21 +16,25 @@ var ChainInfo = types.NewChainInfo(
 	types.CosmosAlgo,
 )
 
+var _ cosmosdaemon.IDaemon = &Orbiter{}
+
 type Orbiter struct {
 	*cosmosdaemon.Daemon
 }
 
-func NewOrbiter(moniker, version, homeDir, chainID, keyName string) *Orbiter {
+func NewOrbiter(moniker, version, homeDir, chainID, keyName string, ports *types.Ports) *Orbiter {
 	o := &Orbiter{
-		Daemon: cosmosdaemon.NewDameon(
+		Daemon: cosmosdaemon.NewDaemon(
 			ChainInfo,
 			moniker,
 			version,
 			homeDir,
 			chainID,
 			keyName,
+			ports,
 		),
 	}
+
 	o.SetCustomConfig(o.UpdateOrbiterGenesisFile)
 
 	return o

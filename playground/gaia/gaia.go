@@ -16,13 +16,15 @@ var ChainInfo = types.NewChainInfo(
 	types.CosmosAlgo,
 )
 
+var _ cosmosdaemon.IDaemon = &Gaia{}
+
 type Gaia struct {
 	*cosmosdaemon.Daemon
 }
 
-func NewGaia(moniker, homeDir, chainID, keyName string) *Gaia {
+func NewGaia(moniker, homeDir, chainID, keyName string, ports *types.Ports) *Gaia {
 	g := &Gaia{
-		Daemon: cosmosdaemon.NewDameon(
+		Daemon: cosmosdaemon.NewDaemon(
 			ChainInfo,
 			moniker,
 			// TODO: enable using different versions in Gaia?
@@ -30,6 +32,7 @@ func NewGaia(moniker, homeDir, chainID, keyName string) *Gaia {
 			homeDir,
 			chainID,
 			keyName,
+			ports,
 		),
 	}
 	g.SetCustomConfig(g.UpdateGenesisFile)

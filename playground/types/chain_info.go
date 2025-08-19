@@ -9,7 +9,7 @@ type ChainInfo struct {
 	AccountPrefix string `json:"account_prefix"`
 	BinaryName    string `json:"binary_name"`
 	ChainIDBase   string `json:"chain_id_base"`
-	// TODO: is this even used somewhere? maybe remove
+	// TODO: is this even used somewhere? maybe remove or repurpose
 	ClientName string        `json:"client_name"`
 	Denom      string        `json:"denom"`
 	HDPath     HDPath        `json:"hd_path,omitempty"`

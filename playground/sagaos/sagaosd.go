@@ -17,20 +17,25 @@ var ChainInfo = types.NewChainInfo(
 	types.EthAlgo,
 )
 
+var _ cosmosdaemon.IDaemon = &SagaOS{}
+
 type SagaOS struct {
 	*cosmosdaemon.Daemon
 }
 
-func NewSagaOS(moniker, version, homeDir, chainID, keyName string) *SagaOS {
+func NewSagaOS(moniker, version, homeDir, chainID, keyName string, ports *types.Ports) *SagaOS {
+	daemon := cosmosdaemon.NewDaemon(
+		ChainInfo,
+		moniker,
+		version,
+		homeDir,
+		chainID,
+		keyName,
+		ports,
+	)
+
 	s := &SagaOS{
-		Daemon: cosmosdaemon.NewDameon(
-			ChainInfo,
-			moniker,
-			version,
-			homeDir,
-			chainID,
-			keyName,
-		),
+		Daemon: daemon,
 	}
 	s.SetCustomConfig(s.UpdateAppFile)
 

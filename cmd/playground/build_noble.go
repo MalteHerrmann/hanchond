@@ -1,8 +1,9 @@
 package playground
 
 import (
-	"github.com/hanchon/hanchond/playground/noble"
 	"github.com/spf13/cobra"
+
+	"github.com/hanchon/hanchond/playground/noble"
 )
 
 var buildNobleCmd = &cobra.Command{
@@ -21,6 +22,7 @@ var buildNobleCmd = &cobra.Command{
 func init() {
 	PlaygroundCmd.AddCommand(buildNobleCmd)
 	// TODO: move this into global flags? Or at least unify with other occurrences
-	// TODO: refactor to have build subcommand and then per chain another subcommand where the --path stuff is common for all build subcommands
+	// TODO: refactor to have build subcommand and then per chain another subcommand where the
+	// --path stuff is common for all build subcommands
 	buildNobleCmd.Flags().StringP("path", "p", "", "Path to your local copy of the repository")
 }

@@ -70,5 +70,6 @@ var startChainCmd = &cobra.Command{
 func init() {
 	PlaygroundCmd.AddCommand(startChainCmd)
 
-	startChainCmd.Flags().String(commoncmd.LogLevelFlag, "info", "applied log level for the started nodes")
+	startChainCmd.Flags().
+		String(commoncmd.LogLevelFlag, "info", "applied log level for the started nodes")
 }

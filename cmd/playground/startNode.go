@@ -64,5 +64,6 @@ var startNodeCmd = &cobra.Command{
 func init() {
 	PlaygroundCmd.AddCommand(startNodeCmd)
 
-	startNodeCmd.Flags().String(commoncmd.LogLevelFlag, "info", "applied log level for the started node")
+	startNodeCmd.Flags().
+		String(commoncmd.LogLevelFlag, "info", "applied log level for the started node")
 }

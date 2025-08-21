@@ -11,9 +11,19 @@ import (
 // and returns an error message, that's printing the full
 // contents of stderr on top of the error message itself.
 func ExecCommand(name string, args ...string) (string, error) {
+	return ExecCommandInDir("", name, args...)
+}
+
+// ExecCommandInDir runs the given command within the specified working directory.
+func ExecCommandInDir(wd string, name string, args ...string) (string, error) {
 	var stdout, stderr bytes.Buffer
 
 	command := exec.Command(name, args...)
+
+	if wd != "" {
+		command.Dir = wd
+	}
+
 	command.Stdout = &stdout
 	command.Stderr = &stderr
 

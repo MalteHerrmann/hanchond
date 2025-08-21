@@ -154,7 +154,17 @@ func setStakingDenom(genState map[string]any) (map[string]any, error) {
 		return nil, errors.New("unexpected staking")
 	}
 
-	stakingGen["bond_denom"] = "ustake"
+	params, found := stakingGen["params"]
+	if !found {
+		return nil, errors.New("staking params not found")
+	}
+
+	stakingParams, ok := params.(map[string]any)
+	if !ok {
+		return nil, errors.New("unexpected staking params")
+	}
+
+	stakingParams["bond_denom"] = "ustake"
 
 	return genState, nil
 }
@@ -175,8 +185,9 @@ func setAuthority(genState map[string]any) (map[string]any, error) {
 		return nil, errors.New("unexpected authority")
 	}
 
-	// TODO: set authority here
-	authorityGen["owner"] = ""
+	// NOTE: this is a dummy account used for testing; mnemonic:
+	// occur subway woman achieve deputy rapid museum point usual appear oil blue rate title claw debate flag gallery level object baby winner erase carbon
+	authorityGen["owner"] = "noble1zw7vatnx0vla7gzxucgypz0kfr6965akpvzw69"
 
 	return genState, nil
 }

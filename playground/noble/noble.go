@@ -10,7 +10,7 @@ var ChainInfo = types.NewChainInfo(
 	"nobled",
 	"duke-",
 	"nobled",
-	"unoble",
+	"ustake",
 	"https://github.com/noble-assets/noble",
 	types.CosmosHDPath,
 	types.CosmosAlgo,

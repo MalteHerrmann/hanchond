@@ -17,21 +17,15 @@ func BuildEVMChainVersion(version string) error {
 }
 
 func BuildEVMBinary(path string) error {
-	if err := os.Chdir(path); err != nil {
-		return err
-	}
-
 	if _, err := utils.ExecCommand("rm", "-rf", path+"/build"); err != nil {
 		return err
 	}
 
-	_, err := utils.ExecCommand("make", "build", "COSMOS_BUILD_OPTIONS=nooptimization,nostrip")
+	_, err := utils.ExecCommandInDir(path, "make", "build", "COSMOS_BUILD_OPTIONS=nooptimization,nostrip")
 	if err != nil {
 		return err
 	}
 
-	// TODO: is build output required here? Could be removed just as well...
-	// utils.Log("build output: %s", out)
 	return nil
 }
 

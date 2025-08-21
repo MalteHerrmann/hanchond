@@ -6,6 +6,7 @@ import (
 	"github.com/hanchon/hanchond/playground/cosmosdaemon"
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/gaia"
+	"github.com/hanchon/hanchond/playground/noble"
 	"github.com/hanchon/hanchond/playground/orbiter"
 	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/types"
@@ -46,6 +47,15 @@ func GetDaemonForNode(n types.DaemonInfo, ports *types.Ports) (cosmosdaemon.IDae
 	// simd
 	case orbiter.ChainInfo.GetBinaryName():
 		d = orbiter.NewOrbiter(
+			n.GetMoniker(),
+			n.GetVersion(),
+			n.GetConfigFolder(),
+			n.GetChainID(),
+			n.GetValidatorKeyName(),
+			ports,
+		)
+	case noble.ChainInfo.GetBinaryName():
+		d = noble.NewNoble(
 			n.GetMoniker(),
 			n.GetVersion(),
 			n.GetConfigFolder(),

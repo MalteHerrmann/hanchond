@@ -15,6 +15,7 @@ import (
 	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/gaia"
+	"github.com/hanchon/hanchond/playground/noble"
 	"github.com/hanchon/hanchond/playground/orbiter"
 	"github.com/hanchon/hanchond/playground/sagaos"
 	"github.com/hanchon/hanchond/playground/sql"
@@ -107,6 +108,19 @@ var initChainCmd = &cobra.Command{
 
 			createDaemonFunc = func(path string, k int) *cosmosdaemon.Daemon {
 				return orbiter.NewOrbiter(
+					fmt.Sprintf("moniker-%d-%d", chainNumber, k),
+					version,
+					path,
+					chainID,
+					fmt.Sprintf("validator-key-%d-%d", chainNumber, k),
+					nil,
+				).Daemon
+			}
+		case "noble":
+			chainInfo = noble.ChainInfo
+
+			createDaemonFunc = func(path string, k int) *cosmosdaemon.Daemon {
+				return noble.NewNoble(
 					fmt.Sprintf("moniker-%d-%d", chainNumber, k),
 					version,
 					path,

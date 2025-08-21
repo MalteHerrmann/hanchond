@@ -166,7 +166,11 @@ func (d *Daemon) Start(startCmd string) (int, error) {
 // SendIBC send a simple IBC transfer using the CLI.
 //
 // TODO: simulate maybe? to avoid hardcoding fees.
-func (d *Daemon) SendIBC(port, channel, recipient string, amount types.Coin, memo string) (string, error) {
+func (d *Daemon) SendIBC(
+	port, channel, recipient string,
+	amount types.Coin,
+	memo string,
+) (string, error) {
 	feeAmount := 1000
 	// if the base denom is an atto unit, use a higher amount of fees to send with the transaction.
 	if strings.HasPrefix(d.BaseDenom, "a") {

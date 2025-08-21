@@ -53,7 +53,7 @@ var ibcTransferCmd = &cobra.Command{
 
 		ports := node.GetPorts()
 
-		d, err := common.GetDaemonForNode(node.GetDaemonInfo(), &ports)
+		d, err := commoncmd.GetDaemonForNode(node.GetDaemonInfo(), &ports)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("could not get the for node: %w", err))
 		}

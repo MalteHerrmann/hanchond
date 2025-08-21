@@ -33,13 +33,18 @@ var startNodeCmd = &cobra.Command{
 			utils.ExitError(fmt.Errorf("could not get chain node: %w", err))
 		}
 
+		startOptions, err := commoncmd.GetStartOptionsFromCmd(cmd)
+		if err != nil {
+			utils.ExitError(fmt.Errorf("could not get start options: %w", err))
+		}
+
 		ports := node.GetPorts()
-		d, err := common.GetDaemonForNode(node.GetDaemonInfo(), &ports)
+		d, err := commoncmd.GetDaemonForNode(node.GetDaemonInfo(), &ports)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("could not get daemon info: %w", err))
 		}
 
-		pID, err := d.Start()
+		pID, err := d.Start(startOptions)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("could not start the node: %w", err))
 		}
@@ -58,4 +63,6 @@ var startNodeCmd = &cobra.Command{
 
 func init() {
 	PlaygroundCmd.AddCommand(startNodeCmd)
+
+	startNodeCmd.Flags().String(commoncmd.LogLevelFlag, "info", "applied log level for the started node")
 }

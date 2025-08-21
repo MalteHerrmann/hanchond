@@ -15,6 +15,7 @@ var ChainInfo = types.NewChainInfo(
 	"https://github.com/sagaxyz/sagaos",
 	types.CosmosHDPath,
 	types.EthAlgo,
+	" --json-rpc.enable true --json-rpc.api eth,txpool,personal,net,debug,web3",
 )
 
 var _ cosmosdaemon.IDaemon = &SagaOS{}

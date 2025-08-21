@@ -82,6 +82,7 @@ var addChainConfigCmd = &cobra.Command{
 			"external",
 			hdPath,
 			algo,
+			"",
 		)
 
 		if err := h.AddChain(

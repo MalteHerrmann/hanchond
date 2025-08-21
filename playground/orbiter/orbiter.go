@@ -14,6 +14,7 @@ var ChainInfo = types.NewChainInfo(
 	"https://github.com/noble-assets/orbiter",
 	types.CosmosHDPath,
 	types.CosmosAlgo,
+	"",
 )
 
 var _ cosmosdaemon.IDaemon = &Orbiter{}

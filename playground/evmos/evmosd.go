@@ -14,6 +14,7 @@ var ChainInfo = types.NewChainInfo(
 	"https://github.com/evmos/evmos",
 	types.EthHDPath,
 	types.EthAlgo,
+	"--json-rpc.api eth,txpool,personal,net,debug,web3 --json-rpc.enable",
 )
 
 var _ cosmosdaemon.IDaemon = &Evmos{}

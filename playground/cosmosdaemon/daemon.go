@@ -13,7 +13,7 @@ import (
 // IDaemon defines the interface that all Cosmos SDK-based binaries
 // that are configured in this tool should fulfill.
 type IDaemon interface {
-	Start() (pid int, err error)
+	Start(options StartOptions) (pid int, err error)
 	SendIBC(port, channel, recipient string, amount types.Coin, memo string) (string, error)
 }
 
@@ -83,6 +83,10 @@ func NewDaemon(
 
 		Ports: ports,
 	}
+}
+
+func (d *Daemon) GetChainInfo() types.ChainInfo {
+	return d.chainInfo
 }
 
 func (d *Daemon) GetVersionedBinaryPath() string {

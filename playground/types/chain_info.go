@@ -15,6 +15,7 @@ type ChainInfo struct {
 	HDPath     HDPath        `json:"hd_path,omitempty"`
 	KeyAlgo    SignatureAlgo `json:"key_algo"`
 	RepoURL    string        `json:"repo_url"`
+	StartFlags string        `json:"start_flags"`
 }
 
 func NewChainInfo(
@@ -26,6 +27,7 @@ func NewChainInfo(
 	repoURL string,
 	hdPath HDPath,
 	keyAlgo SignatureAlgo,
+	startFlags string,
 ) ChainInfo {
 	return ChainInfo{
 		AccountPrefix: accountPrefix,
@@ -36,6 +38,7 @@ func NewChainInfo(
 		HDPath:        hdPath,
 		RepoURL:       repoURL,
 		KeyAlgo:       keyAlgo,
+		StartFlags:    startFlags,
 	}
 }
 
@@ -56,6 +59,7 @@ func (ci ChainInfo) GetDenom() string          { return ci.Denom }
 func (ci ChainInfo) GetHDPath() HDPath         { return ci.HDPath }
 func (ci ChainInfo) GetKeyAlgo() SignatureAlgo { return ci.KeyAlgo }
 func (ci ChainInfo) GetRepoURL() string        { return ci.RepoURL }
+func (ci ChainInfo) GetStartFlags() string     { return ci.StartFlags }
 
 func (ci ChainInfo) IsEVMChain() bool {
 	return ci.KeyAlgo == EthAlgo

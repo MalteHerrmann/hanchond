@@ -144,7 +144,27 @@ func (d *Daemon) GetValidatorAddress() (string, error) {
 	return strings.TrimSpace(string(o)), nil
 }
 
-func (d *Daemon) Start(startCmd string) (int, error) {
+func (d *Daemon) Start(options StartOptions) (int, error) {
+	startCmd := d.GetVersionedBinaryPath() + " start --home " + d.HomeDir
+
+	if d.chainInfo.IsEVMChain() {
+		startCmd += " --chain-id=" + d.ChainID
+	}
+
+	startCmd += " --api.enable --grpc.enable"
+
+	if d.chainInfo.StartFlags != "" {
+		startCmd += " " + d.chainInfo.StartFlags
+	}
+
+	if options.LogLevel != "" {
+		startCmd += fmt.Sprintf(` --log_level "%s"`, options.LogLevel)
+	}
+
+	return d.RunStartCmd(startCmd)
+}
+
+func (d *Daemon) RunStartCmd(startCmd string) (int, error) {
 	command := exec.Command("bash", "-c", startCmd)
 	// Deattach the program
 	command.SysProcAttr = &syscall.SysProcAttr{

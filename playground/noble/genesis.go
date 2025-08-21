@@ -186,7 +186,8 @@ func setAuthority(genState map[string]any) (map[string]any, error) {
 	}
 
 	// NOTE: this is a dummy account used for testing; mnemonic:
-	// occur subway woman achieve deputy rapid museum point usual appear oil blue rate title claw debate flag gallery level object baby winner erase carbon
+	// occur subway woman achieve deputy rapid museum point usual appear oil blue rate title claw
+	// debate flag gallery level object baby winner erase carbon
 	authorityGen["owner"] = "noble1zw7vatnx0vla7gzxucgypz0kfr6965akpvzw69"
 
 	return genState, nil

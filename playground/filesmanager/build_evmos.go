@@ -21,7 +21,12 @@ func BuildEVMBinary(path string) error {
 		return err
 	}
 
-	_, err := utils.ExecCommandInDir(path, "make", "build", "COSMOS_BUILD_OPTIONS=nooptimization,nostrip")
+	_, err := utils.ExecCommandInDir(
+		path,
+		"make",
+		"build",
+		"COSMOS_BUILD_OPTIONS=nooptimization,nostrip",
+	)
 	if err != nil {
 		return err
 	}

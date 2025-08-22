@@ -158,15 +158,19 @@ func (d *Daemon) Start(options StartOptions) (int, error) {
 	}
 
 	if options.LogLevel != "" {
-		startCmd += fmt.Sprintf(` --log_level "%s"`, options.LogLevel)
+		startCmd += fmt.Sprintf(" --log_level %q", options.LogLevel)
 	}
+
+	// write output to log file
+	startCmd = fmt.Sprintf("%s >> %s 2>&1", startCmd, d.GetLogPath())
 
 	return d.RunStartCmd(startCmd)
 }
 
 func (d *Daemon) RunStartCmd(startCmd string) (int, error) {
 	command := exec.Command("bash", "-c", startCmd)
-	// Deattach the program
+
+	// Detach the program
 	command.SysProcAttr = &syscall.SysProcAttr{
 		Setpgid: true,
 	}
@@ -174,10 +178,19 @@ func (d *Daemon) RunStartCmd(startCmd string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	time.Sleep(2 * time.Second)
-	id, err := filesmanager.GetChildPID(command.Process.Pid)
+
+	// repeatedly check for the child process until it's found
+	var id int
+	for range 10 {
+		id, err = filesmanager.GetChildPID(command.Process.Pid)
+		if err == nil && id != 0 {
+			break
+		}
+
+		time.Sleep(1 * time.Second)
+	}
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("failed to find process after 10 seconds: %w", err)
 	}
 
 	return id, nil

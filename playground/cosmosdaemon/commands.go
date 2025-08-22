@@ -3,12 +3,13 @@ package cosmosdaemon
 import (
 	"errors"
 	"fmt"
-	"github.com/hanchon/hanchond/playground/filesmanager"
-	"github.com/hanchon/hanchond/playground/types"
 	"os/exec"
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/hanchon/hanchond/playground/filesmanager"
+	"github.com/hanchon/hanchond/playground/types"
 )
 
 func (d *Daemon) AddGenesisAccount(validatorAddr string) error {
@@ -180,7 +181,7 @@ func (d *Daemon) RunStartCmd(startCmd string) (int, error) {
 
 	// repeatedly check for the child process until it's found
 	var id int
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		id, err = filesmanager.GetChildPID(command.Process.Pid)
 		if err == nil && id != 0 {
 			break

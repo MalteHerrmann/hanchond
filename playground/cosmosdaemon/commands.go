@@ -215,7 +215,6 @@ func (d *Daemon) SendIBC(
 	}
 
 	commandSlice := []string{
-		"tx",
 		"ibc-transfer",
 		"transfer",
 		port,

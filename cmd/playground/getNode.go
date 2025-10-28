@@ -132,7 +132,8 @@ func init() {
 		BoolVarP(&getChainID, "chain-id", "c", false, "Get the chain ID of the node's network")
 	getNodeCmd.Flags().BoolVarP(&getHome, "node-home", "", false, "Get the node's home folder")
 	getNodeCmd.Flags().BoolVarP(&getVal, "val", "v", false, "Get the node's validator address")
-	getNodeCmd.Flags().BoolVarP(&getDenom, "denom", "d", false, "Get the node's used base denomination")
+	getNodeCmd.Flags().
+		BoolVarP(&getDenom, "denom", "d", false, "Get the node's used base denomination")
 	getNodeCmd.Flags().Uint16VarP(&retrievedPort, "port", "p", 0, "Get the node's remapped port")
 
 	PlaygroundCmd.AddCommand(getNodeCmd)

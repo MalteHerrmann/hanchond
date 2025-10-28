@@ -135,7 +135,8 @@ func init() {
 	getNodeCmd.Flags().BoolVarP(&getBinary, "bin", "b", false, "Get the node's running binary path")
 	getNodeCmd.Flags().
 		BoolVarP(&getChainID, "chain-id", "c", false, "Get the chain ID of the node's network")
-	getNodeCmd.Flags().BoolVarP(&getMnemonic, "mnemonic", "m", false, "Get the node's validator's mnemonic")
+	getNodeCmd.Flags().
+		BoolVarP(&getMnemonic, "mnemonic", "m", false, "Get the node's validator's mnemonic")
 	getNodeCmd.Flags().BoolVarP(&getHome, "node-home", "", false, "Get the node's home folder")
 	getNodeCmd.Flags().BoolVarP(&getVal, "val", "v", false, "Get the node's validator address")
 	getNodeCmd.Flags().

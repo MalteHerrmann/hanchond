@@ -15,8 +15,8 @@ import (
 
 // CLI flags.
 var (
-	getBinary, getChainID, getDenom, getHome, getVal bool
-	retrievedPort                                    uint16
+	getBinary, getChainID, getDenom, getHome, getMnemonic, getVal bool
+	retrievedPort                                                 uint16
 )
 
 // getNodeCmd represents the getNode command.
@@ -83,6 +83,11 @@ var getNodeCmd = &cobra.Command{
 			utils.ExitSuccess()
 		}
 
+		if getMnemonic {
+			fmt.Println(node.ValidatorKey)
+			utils.ExitSuccess()
+		}
+
 		hexWallet, err := converter.Bech32ToHex(node.ValidatorWallet)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("could not convert validator wallet to eth: %w", err))
@@ -130,6 +135,7 @@ func init() {
 	getNodeCmd.Flags().BoolVarP(&getBinary, "bin", "b", false, "Get the node's running binary path")
 	getNodeCmd.Flags().
 		BoolVarP(&getChainID, "chain-id", "c", false, "Get the chain ID of the node's network")
+	getNodeCmd.Flags().BoolVarP(&getMnemonic, "mnemonic", "m", false, "Get the node's validator's mnemonic")
 	getNodeCmd.Flags().BoolVarP(&getHome, "node-home", "", false, "Get the node's home folder")
 	getNodeCmd.Flags().BoolVarP(&getVal, "val", "v", false, "Get the node's validator address")
 	getNodeCmd.Flags().

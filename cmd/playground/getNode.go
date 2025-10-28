@@ -15,8 +15,8 @@ import (
 
 // CLI flags.
 var (
-	getBinary, getChainID, getHome, getVal bool
-	retrievedPort                          uint16
+	getBinary, getChainID, getDenom, getHome, getVal bool
+	retrievedPort                                    uint16
 )
 
 // getNodeCmd represents the getNode command.
@@ -78,6 +78,11 @@ var getNodeCmd = &cobra.Command{
 			utils.ExitSuccess()
 		}
 
+		if getDenom {
+			fmt.Println(chain.MustParseChainInfo().Denom)
+			utils.ExitSuccess()
+		}
+
 		hexWallet, err := converter.Bech32ToHex(node.ValidatorWallet)
 		if err != nil {
 			utils.ExitError(fmt.Errorf("could not convert validator wallet to eth: %w", err))
@@ -103,6 +108,7 @@ Ports:
     - 9090(grpc): %d
 `,
 			idNumber,
+			// TODO: print full chain config here?
 			chain.MustParseChainInfo().GetVersionedBinaryName(node.Version),
 			chain.ChainID,
 			node.ConfigFolder,
@@ -126,6 +132,7 @@ func init() {
 		BoolVarP(&getChainID, "chain-id", "c", false, "Get the chain ID of the node's network")
 	getNodeCmd.Flags().BoolVarP(&getHome, "node-home", "", false, "Get the node's home folder")
 	getNodeCmd.Flags().BoolVarP(&getVal, "val", "v", false, "Get the node's validator address")
+	getNodeCmd.Flags().BoolVarP(&getDenom, "denom", "d", false, "Get the node's used base denomination")
 	getNodeCmd.Flags().Uint16VarP(&retrievedPort, "port", "p", 0, "Get the node's remapped port")
 
 	PlaygroundCmd.AddCommand(getNodeCmd)

@@ -1,12 +1,15 @@
 package query
 
 import (
+	"context"
+	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/spf13/cobra"
 
+	commoncmd "github.com/hanchon/hanchond/cmd/playground/common"
 	"github.com/hanchon/hanchond/lib/utils"
-	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
 )
 
@@ -17,17 +20,29 @@ var balanceCmd = &cobra.Command{
 	Short: "Get the wallet balance",
 	Run: func(cmd *cobra.Command, args []string) {
 		queries := sql.InitDBFromCmd(cmd)
+
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
-		wallet := args[0]
+		idNumber, err := strconv.ParseInt(nodeID, 10, 64)
+		if err != nil {
+			utils.ExitError(fmt.Errorf("failed to parse node id: %w", err))
+		}
 
-		// TODO: this should also check the node type of the running node and then use the correct
-		// daemon
-		e := evmos.NewEvmosFromDB(queries, nodeID)
-		balance, err := e.CheckBalance(wallet)
+		node, err := queries.GetChainNode(context.Background(), idNumber)
+		if err != nil {
+			utils.ExitError(fmt.Errorf("failed to get chain node: %w", err))
+		}
+
+		ports := node.GetPorts()
+		d, err := commoncmd.GetDaemonForNode(node.GetDaemonInfo(), &ports)
+		if err != nil {
+			utils.ExitError(fmt.Errorf("failed to get node daemon: %w", err))
+		}
+
+		balance, err := d.Balance(args[0])
 		if err != nil {
 			utils.ExitError(fmt.Errorf("could not get the balance: %w", err))
 		}

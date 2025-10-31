@@ -6,6 +6,7 @@ import (
 	"github.com/hanchon/hanchond/lib/converter"
 	"github.com/hanchon/hanchond/lib/requester"
 	"github.com/hanchon/hanchond/lib/txbuilder"
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/types"
 )
@@ -13,8 +14,10 @@ import (
 // IDaemon defines the interface that all Cosmos SDK-based binaries
 // that are configured in this tool should fulfill.
 type IDaemon interface {
+	Balance(address string) (string, error)
 	Start(options StartOptions) (pid int, err error)
 	SendIBC(port, channel, recipient string, amount types.Coin, memo string) (string, error)
+	Tx(hash string) (string, error)
 }
 
 type Daemon struct {
@@ -109,6 +112,18 @@ func (d *Daemon) ExecuteCustomConfig() error {
 func (d *Daemon) SetValidatorWallet(mnemonic, wallet string) {
 	d.ValMnemonic = mnemonic
 	d.ValWallet = wallet
+}
+
+func (d *Daemon) Tx(hash string) (string, error) {
+	return utils.ExecCommand(
+		d.GetVersionedBinaryPath(),
+		"q",
+		"tx",
+		"--type=hash",
+		hash,
+		"--node",
+		fmt.Sprintf("http://localhost:%d", d.Ports.P26657),
+	)
 }
 
 func (d *Daemon) NewRequester() *requester.Client {

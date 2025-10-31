@@ -1,12 +1,15 @@
 package query
 
 import (
+	"context"
+	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/spf13/cobra"
 
+	commoncmd "github.com/hanchon/hanchond/cmd/playground/common"
 	"github.com/hanchon/hanchond/lib/utils"
-	"github.com/hanchon/hanchond/playground/evmos"
 	"github.com/hanchon/hanchond/playground/sql"
 )
 
@@ -19,13 +22,26 @@ var txCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node flag not set"))
 		}
 
-		txhash := args[0]
+		idNumber, err := strconv.ParseInt(nodeID, 10, 64)
+		if err != nil {
+			utils.ExitError(fmt.Errorf("failed to parse node id: %w", err))
+		}
 
-		e := evmos.NewEvmosFromDB(queries, nodeID)
-		resp, err := e.GetTransaction(txhash)
+		node, err := queries.GetChainNode(context.Background(), idNumber)
+		if err != nil {
+			utils.ExitError(fmt.Errorf("failed to get chain node: %w", err))
+		}
+
+		ports := node.GetPorts()
+		d, err := commoncmd.GetDaemonForNode(node.GetDaemonInfo(), &ports)
+		if err != nil {
+			utils.ExitError(fmt.Errorf("failed to get daemon: %w", err))
+		}
+
+		resp, err := d.Tx(args[0])
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error sending the request: %w", err))
 		}

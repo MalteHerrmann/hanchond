@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/hanchon/hanchond/lib/utils"
 	"github.com/hanchon/hanchond/playground/filesmanager"
 	"github.com/hanchon/hanchond/playground/types"
 )
@@ -39,6 +40,20 @@ func (d *Daemon) AddGenesisAccount(validatorAddr string) error {
 	}
 
 	return err
+}
+
+func (d *Daemon) Balance(wallet string) (string, error) {
+	return utils.ExecCommand(
+		d.GetVersionedBinaryPath(),
+		"q",
+		"bank",
+		"balances",
+		wallet,
+		"--home",
+		d.HomeDir,
+		"--node",
+		fmt.Sprintf("http://localhost:%d", d.Ports.P26657),
+	)
 }
 
 func (d *Daemon) ValidatorGenTx() error {

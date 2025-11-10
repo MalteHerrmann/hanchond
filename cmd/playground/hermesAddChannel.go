@@ -15,7 +15,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// hermesAddChannelCmd represents the hermesAddChannel command
+// hermesAddChannelCmd represents the hermesAddChannel command.
 var hermesAddChannelCmd = &cobra.Command{
 	Use:   "hermes-add-channel [chain_id] [chain_id]",
 	Args:  cobra.ExactArgs(2),
@@ -27,12 +27,12 @@ var hermesAddChannelCmd = &cobra.Command{
 		chainOne := args[0]
 		chainOneID, err := strconv.Atoi(chainOne)
 		if err != nil {
-			utils.ExitError(fmt.Errorf("invalid chain id"))
+			utils.ExitError(errors.New("invalid chain id"))
 		}
 		chainTwo := args[1]
 		chainTwoID, err := strconv.Atoi(chainTwo)
 		if err != nil {
-			utils.ExitError(fmt.Errorf("invalid chain id"))
+			utils.ExitError(errors.New("invalid chain id"))
 		}
 
 		chains := make([]database.GetAllChainNodesRow, 2)

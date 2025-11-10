@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// numberCmd represents the number command
+// numberCmd represents the number command.
 var numberCmd = &cobra.Command{
 	Use:   "number",
 	Args:  cobra.ExactArgs(1),

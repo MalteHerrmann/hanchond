@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// listBinariesCmd represents the list-binaries command
+// listBinariesCmd represents the list-binaries command.
 var listBinariesCmd = &cobra.Command{
 	Use:   "list-binaries",
 	Short: "List of all the binaries that are available",

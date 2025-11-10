@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// stopHermesCmd represents the stop-hermes command
+// stopHermesCmd represents the stop-hermes command.
 var stopHermesCmd = &cobra.Command{
 	Use:   "stop-hermes",
 	Short: "Stop the relayer",
@@ -26,12 +26,12 @@ var stopHermesCmd = &cobra.Command{
 
 		// TODO: check if the process is running checking the PID
 		if relayer.IsRunning != 1 {
-			utils.ExitError(fmt.Errorf("relayer is not running"))
+			utils.ExitError(errors.New("relayer is not running"))
 		}
 
 		command := exec.Command( //nolint:gosec
 			"kill",
-			fmt.Sprintf("%d", relayer.ProcessID),
+			strconv.FormatInt(relayer.ProcessID, 10),
 		)
 
 		out, err := command.CombinedOutput()

@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// strV1ProposalCmd represents the str-v1-proposal command
+// strV1ProposalCmd represents the str-v1-proposal command.
 var strV1ProposalCmd = &cobra.Command{
 	Use:     "str-v1-proposal [denom]",
 	Aliases: []string{"strv1"},
@@ -20,29 +20,29 @@ var strV1ProposalCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		denom := args[0]
 
 		exponent, err := cmd.Flags().GetInt("exponent")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("exponent not set"))
+			utils.ExitError(errors.New("exponent not set"))
 		}
 
 		alias, err := cmd.Flags().GetString("alias")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("alias not set"))
+			utils.ExitError(errors.New("alias not set"))
 		}
 
 		name, err := cmd.Flags().GetString("name")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("name not set"))
+			utils.ExitError(errors.New("name not set"))
 		}
 
 		symbol, err := cmd.Flags().GetString("symbol")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("symbol not set"))
+			utils.ExitError(errors.New("symbol not set"))
 		}
 
 		e := evmos.NewEvmosFromDB(queries, nodeID)

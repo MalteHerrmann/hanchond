@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// compileContractCmd represents the compile command
+// compileContractCmd represents the compile command.
 var compileContractCmd = &cobra.Command{
 	Use:     "compile-contract [path_to_solidity_file]",
 	Args:    cobra.ExactArgs(1),
@@ -22,7 +22,7 @@ var compileContractCmd = &cobra.Command{
 
 		outputFolder, err := cmd.Flags().GetString("output-folder")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("incorrect output folder"))
+			utils.ExitError(errors.New("incorrect output folder"))
 		}
 		if outputFolder[len(outputFolder)-1] != '/' {
 			outputFolder += "/"
@@ -31,7 +31,7 @@ var compileContractCmd = &cobra.Command{
 		// TODO: read from pragma the correct version and use it automatically
 		solcVersion, err := cmd.Flags().GetString("solc-version")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("incorrect solc version"))
+			utils.ExitError(errors.New("incorrect solc version"))
 		}
 
 		pathToSolidityCode := args[0]
@@ -78,6 +78,7 @@ func moveFiles(in, out, extension string) error {
 	if err != nil {
 		return err
 	}
+
 	if len(files) == 0 {
 		return err
 	}

@@ -48,11 +48,14 @@ func (d *Daemon) SaveAppFile(appFile []byte) error {
 
 func (d *Daemon) backupConfigFiles() error {
 	cmd := exec.Command("cp", d.getAppPath(), d.getAppPath()+".bkup") //nolint:gosec
+
 	_, err := cmd.CombinedOutput()
 	if err != nil {
 		return err
 	}
+
 	cmd = exec.Command("cp", d.getConfigPath(), d.getConfigPath()+".bkup") //nolint:gosec
+
 	_, err = cmd.CombinedOutput()
 	if err != nil {
 		return err

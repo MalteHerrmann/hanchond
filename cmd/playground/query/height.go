@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// heightCmd represents the query height command
+// heightCmd represents the query height command.
 var heightCmd = &cobra.Command{
 	Use:   "height",
 	Short: "Get the current networkt height",
@@ -18,7 +18,7 @@ var heightCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		e := evmos.NewEvmosFromDB(queries, nodeID)

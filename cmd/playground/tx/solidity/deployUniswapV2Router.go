@@ -14,7 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// deployUniswapV2RouteryCmd represents the deploy command
+// deployUniswapV2RouteryCmd represents the deploy command.
 var deployUniswapV2RouteryCmd = &cobra.Command{
 	Use:   "deploy-uniswap-v2-router [factory_address] [wrapped_coin_address]",
 	Args:  cobra.ExactArgs(2),
@@ -23,12 +23,12 @@ var deployUniswapV2RouteryCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		gasLimit, err := cmd.Flags().GetInt("gas-limit")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("incorrect gas limit"))
+			utils.ExitError(errors.New("incorrect gas limit"))
 		}
 
 		factoryAddress := args[0]
@@ -100,8 +100,8 @@ var deployUniswapV2RouteryCmd = &cobra.Command{
 		// Get Params
 		callArgs, err := smartcontract.StringsToABIArguments(
 			[]string{
-				fmt.Sprintf("a:%s", factoryAddress),
-				fmt.Sprintf("a:%s", wrappedCoinAddress),
+				"a:" + factoryAddress,
+				"a:" + wrappedCoinAddress,
 			},
 		)
 		if err != nil {

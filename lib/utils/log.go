@@ -13,6 +13,7 @@ func Log(message string, args ...any) {
 		if !strings.HasSuffix(message, "\n") {
 			message += "\n"
 		}
+
 		fmt.Printf(message, args...)
 	} else {
 		fmt.Println(message)

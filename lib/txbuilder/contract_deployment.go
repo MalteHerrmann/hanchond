@@ -10,6 +10,7 @@ func (t *TxBuilder) DeployContract(
 	gasLimit uint64,
 ) (string, error) {
 	value := big.NewInt(0)
+
 	wallet, account, err := WalletFromMnemonicWithAccountID(t.mnemonic, accountID)
 	if err != nil {
 		return "", err

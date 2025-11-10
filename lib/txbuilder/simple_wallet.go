@@ -18,6 +18,7 @@ func NewSimpleWeb3WalletFromMnemonic(mnemonic string, web3Endpoint string) *Simp
 	if err != nil {
 		panic(err)
 	}
+
 	privKey, err := w.PrivateKey(a)
 	if err != nil {
 		panic(err)
@@ -36,5 +37,6 @@ func NewSimpleWeb3Wallet(web3Endpoint string) *SimpleWeb3Wallet {
 	if err != nil {
 		panic(err)
 	}
+
 	return NewSimpleWeb3WalletFromMnemonic(mnemonic, web3Endpoint)
 }

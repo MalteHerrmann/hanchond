@@ -44,6 +44,7 @@ func NewDameon(
 ) *Daemon {
 	mnemonic, _ := txbuilder.NewMnemonic()
 	wallet := ""
+
 	if chainInfo.IsEVMChain() {
 		_, temp, _ := txbuilder.WalletFromMnemonic(mnemonic)
 		wallet, _ = converter.HexToBech32(temp.Address.Hex(), chainInfo.GetAccountPrefix())
@@ -81,7 +82,7 @@ func (d *Daemon) GetVersionedBinaryPath() string {
 	return filesmanager.GetDaemondPathWithVersion(d.chainInfo, d.Version)
 }
 
-// This is used to change the config files that are specific to a client
+// This is used to change the config files that are specific to a client.
 func (d *Daemon) SetCustomConfig(configurator func() error) {
 	d.CustomConfig = configurator
 }
@@ -90,6 +91,7 @@ func (d *Daemon) ExecuteCustomConfig() error {
 	if d.CustomConfig == nil {
 		return nil
 	}
+
 	return d.CustomConfig()
 }
 

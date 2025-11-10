@@ -15,6 +15,7 @@ func LocalEndpoint(port int64) string {
 func (h *Hermes) GetConfigFile() string {
 	// If the dir already existed it will return error, but that is fine
 	_ = filesmanager.CreateHermesFolder()
+
 	return filesmanager.GetHermesPath() + "/config.toml"
 }
 
@@ -30,6 +31,7 @@ func (h *Hermes) AddCosmosChain(chainInfo types.ChainInfo, chainID, p26657, p909
 	// TODO: Check if ports need updating
 	if !strings.Contains(configFileString, chainID) {
 		configFileString += getCosmosChainConfig(chainInfo, chainID, p26657, p9090, keyname)
+
 		err = filesmanager.SaveFile([]byte(configFileString), h.GetConfigFile())
 		if err != nil {
 			panic(err)
@@ -42,6 +44,7 @@ func (h *Hermes) AddCosmosChain(chainInfo types.ChainInfo, chainID, p26657, p909
 	if err != nil {
 		// NOTE: if we had a problem adding the relayer key we are overwriting the changes made to the relayer config
 		_ = filesmanager.SaveFile(configFile, h.GetConfigFile())
+
 		panic(err)
 	}
 
@@ -61,6 +64,7 @@ func (h *Hermes) AddEVMChain(chainInfo types.ChainInfo, chainID, p26657, p9090, 
 	// TODO: Maybe check if updates to ports are required? currently it's only either add fully or nothing at all
 	if !strings.Contains(configFileString, chainID) {
 		configFileString += getEVMChainConfig(chainInfo, chainID, p26657, p9090, keyname)
+
 		err = filesmanager.SaveFile([]byte(configFileString), h.GetConfigFile())
 		if err != nil {
 			panic(err)
@@ -71,8 +75,10 @@ func (h *Hermes) AddEVMChain(chainInfo types.ChainInfo, chainID, p26657, p9090, 
 	if err != nil {
 		// NOTE: if we had a problem adding the relayer key we are overwriting the changes made to the relayer config
 		_ = filesmanager.SaveFile(configFile, h.GetConfigFile())
+
 		panic(err)
 	}
+
 	return nil
 }
 
@@ -114,6 +120,7 @@ enabled = false
 host = '127.0.0.1'
 port = 3001
 `
+
 	err := filesmanager.SaveFile([]byte(basicConfig), h.GetConfigFile())
 	if err != nil {
 		panic(err)
@@ -141,7 +148,7 @@ max_tx_size = 209715
 clock_drift = '20s'
 max_block_time = '10s'
 trust_threshold = { numerator = '1', denominator = '3' }
-`, chainID, p26657, p9090, chainInfo.GetAccountPrefix(), filesmanager.GetHermesPath()+"/keyring"+chainID, keyname, chainInfo.GetDenom())
+`, chainID, p26657, p9090, chainInfo.GetAccountPrefix(), filesmanager.GetHermesPath()+"/keyring"+chainID, keyname, chainInfo.GetDenom()) //nolint:lll
 }
 
 func getEVMChainConfig(chainInfo types.ChainInfo, chainID, p26657, p9090, keyname string) string {
@@ -164,5 +171,5 @@ trust_threshold = { numerator = '1', denominator = '3' }
 account_prefix = '%s'
 gas_price = { price = 800000000, denom = '%s' }
 address_type = { derivation = 'ethermint', proto_type = { pk_type = '/ethermint.crypto.v1.ethsecp256k1.PubKey' } }
-`, chainID, p26657, p9090, keyname, filesmanager.GetHermesPath()+"/keyring"+chainID, chainInfo.GetAccountPrefix(), chainInfo.GetDenom())
+`, chainID, p26657, p9090, keyname, filesmanager.GetHermesPath()+"/keyring"+chainID, chainInfo.GetAccountPrefix(), chainInfo.GetDenom()) //nolint:lll
 }

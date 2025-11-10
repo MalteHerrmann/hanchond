@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// ibcTransferCmd represents the ibc-transfer command
+// ibcTransferCmd represents the ibc-transfer command.
 var ibcTransferCmd = &cobra.Command{
 	Use:     "ibc-transfer wallet amount",
 	Args:    cobra.ExactArgs(2),
@@ -21,12 +21,12 @@ var ibcTransferCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		channel, err := cmd.Flags().GetString("channel")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("ibc channel not set"))
+			utils.ExitError(errors.New("ibc channel not set"))
 		}
 
 		dstWallet := args[0]
@@ -35,7 +35,7 @@ var ibcTransferCmd = &cobra.Command{
 		e := evmos.NewEvmosFromDB(queries, nodeID)
 		denom, err := cmd.Flags().GetString("denom")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("denom not set"))
+			utils.ExitError(errors.New("denom not set"))
 		}
 
 		if denom == "" {
@@ -63,5 +63,5 @@ var ibcTransferCmd = &cobra.Command{
 func init() {
 	TxCmd.AddCommand(ibcTransferCmd)
 	ibcTransferCmd.Flags().StringP("channel", "c", "channel-0", "IBC channel")
-	ibcTransferCmd.Flags().StringP("denom", "d", "", "Denom that you are sending, it defaults to the base denom of the chain")
+	ibcTransferCmd.Flags().StringP("denom", "d", "", "Denom that you are sending, it defaults to the base denom of the chain") //nolint:lll
 }

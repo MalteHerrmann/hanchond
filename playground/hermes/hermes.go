@@ -18,6 +18,8 @@ func NewHermes() *Hermes {
 	}
 
 	_ = filesmanager.CreateHermesFolder()
+
 	h.initHermesConfig()
+
 	return h
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// AddrCmd represents the addr command
+// AddrCmd represents the addr command.
 var AddrCmd = &cobra.Command{
 	Use:   "addr",
 	Args:  cobra.ExactArgs(1),

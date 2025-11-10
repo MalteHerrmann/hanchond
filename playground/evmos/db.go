@@ -19,6 +19,7 @@ func GetNodeFromDB(queries *database.Queries, nodeID string) *NodeFromDB {
 	if err != nil {
 		log.Panic(err)
 	}
+
 	validatorNode, err := queries.GetNode(context.Background(), validatorID)
 	if err != nil {
 		log.Panic(err)
@@ -28,6 +29,7 @@ func GetNodeFromDB(queries *database.Queries, nodeID string) *NodeFromDB {
 	if err != nil {
 		log.Panic(err)
 	}
+
 	chain, err := queries.GetChain(context.Background(), validatorNode.ChainID)
 	if err != nil {
 		log.Panic(err)
@@ -42,8 +44,15 @@ func GetNodeFromDB(queries *database.Queries, nodeID string) *NodeFromDB {
 
 func NewEvmosFromDB(queries *database.Queries, nodeID string) *Evmos {
 	data := GetNodeFromDB(queries, nodeID)
-	e := NewEvmos(data.Node.Moniker, data.Node.Version, data.Node.ConfigFolder, data.Chain.ChainID, data.Node.ValidatorKeyName)
+	e := NewEvmos(
+		data.Node.Moniker,
+		data.Node.Version,
+		data.Node.ConfigFolder,
+		data.Chain.ChainID,
+		data.Node.ValidatorKeyName,
+	)
 	e.RestorePortsFromDB(data.Ports)
 	e.SetValidatorWallet(data.Node.ValidatorKey, data.Node.ValidatorWallet)
+
 	return e
 }

@@ -21,8 +21,13 @@ generate-explorer:
 install-deps:
 	@go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
-lint:
-	@golangci-lint run --fix --out-format=line-number --issues-exit-code=0 --config .golangci.yml --color always ./...
+
+lint: lint-go
+
+GOLANGCI_LINT_IMAGE=golangci/golangci-lint:v2.1.6
+lint-go:
+	@echo "Running golangci-lint..." && \
+	docker run -t --rm -v $(CURDIR):/app -w /app $(GOLANGCI_LINT_IMAGE) golangci-lint run
 
 release-dry:
 	@goreleaser release --snapshot --clean

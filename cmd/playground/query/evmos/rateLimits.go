@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// rateLimitsCmd represents the ibc-rate-limits command
+// rateLimitsCmd represents the ibc-rate-limits command.
 var rateLimitsCmd = &cobra.Command{
 	Use:   "ibc-rate-limits",
 	Short: "Get all active IBC rate limits",
@@ -19,7 +19,7 @@ var rateLimitsCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		e := evmos.NewEvmosFromDB(queries, nodeID)

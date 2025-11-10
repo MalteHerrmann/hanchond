@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// tokenPairsCmd represents the tokenPairs command
+// tokenPairsCmd represents the tokenPairs command.
 var tokenPairsCmd = &cobra.Command{
 	Use:   "token-pairs",
 	Short: "Get the network registered token-pairs",
@@ -19,7 +19,7 @@ var tokenPairsCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		e := evmos.NewEvmosFromDB(queries, nodeID)

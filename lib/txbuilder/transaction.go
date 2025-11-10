@@ -2,7 +2,7 @@ package txbuilder
 
 import (
 	"crypto/ecdsa"
-	"fmt"
+	"errors"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -12,17 +12,20 @@ import (
 
 func (t *TxBuilder) SendTxToContract(contractName string, address common.Address, privateKey *ecdsa.PrivateKey, value *big.Int, message string, args ...interface{}) (string, error) {
 	var contractABI abi.ABI
+
 	var contractAddress common.Address
+
 	var err error
 
 	if v, ok := t.contracts[contractName]; ok {
 		contractABI = v.ABI
 		contractAddress = v.address
 	} else {
-		return "", fmt.Errorf("invalid contract name")
+		return "", errors.New("invalid contract name")
 	}
 
 	var data []byte
+
 	data, err = contractABI.Pack(message, args...)
 	if err != nil {
 		return "", err
@@ -38,6 +41,7 @@ func (t *TxBuilder) SendTx(from common.Address, to *common.Address, value *big.I
 
 	v, ok := t.currentNonce[from.Hex()]
 	nonce := uint64(0)
+
 	if ok {
 		nonce = v
 	} else if nonce, err = t.requester.GetNonce(from.Hex()); err != nil {

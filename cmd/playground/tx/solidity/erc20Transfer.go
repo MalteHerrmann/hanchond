@@ -16,7 +16,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// erc20TransferCmd represents the erc20Transfer command
+// erc20TransferCmd represents the erc20Transfer command.
 var erc20TransferCmd = &cobra.Command{
 	Use:   "erc20-transfer [contract] [wallet] [amount]",
 	Args:  cobra.ExactArgs(3),
@@ -36,7 +36,7 @@ var erc20TransferCmd = &cobra.Command{
 
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		endpoint, err := cosmosdaemon.GetWeb3Endpoint(queries, cmd)

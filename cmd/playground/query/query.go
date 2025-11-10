@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// QueryCmd represents the query command
+// QueryCmd represents the query command.
 var QueryCmd = &cobra.Command{
 	Use:     "query",
 	Aliases: []string{"q"},

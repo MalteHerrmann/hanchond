@@ -14,10 +14,12 @@ func (d *Daemon) ConfigKeyring() error {
 		"--home",
 		d.HomeDir,
 	)
+
 	out, err := command.CombinedOutput()
 	if err != nil {
 		err = fmt.Errorf("error %s: %s", err.Error(), string(out))
 	}
+
 	return err
 }
 
@@ -30,10 +32,12 @@ func (d *Daemon) ConfigChainID() error {
 		"--home",
 		d.HomeDir,
 	)
+
 	out, err := command.CombinedOutput()
 	if err != nil {
 		err = fmt.Errorf("error %s: %s", err.Error(), string(out))
 	}
+
 	return err
 }
 
@@ -47,9 +51,11 @@ func (d *Daemon) NodeInit() error {
 		"--home",
 		d.HomeDir,
 	)
+
 	out, err := command.CombinedOutput()
 	if err != nil {
 		err = fmt.Errorf("error %s: %s", err.Error(), string(out))
 	}
+
 	return err
 }

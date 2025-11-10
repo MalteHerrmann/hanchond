@@ -35,6 +35,7 @@ func (ci ChainInfo) GetPrefixedDaemonName(version string) string {
 	if !strings.Contains(version, ci.BinaryName) {
 		daemonName = ci.BinaryName + version
 	}
+
 	return daemonName
 }
 
@@ -47,11 +48,13 @@ func (ci ChainInfo) MustMarshal() []byte {
 	if err != nil {
 		panic(err)
 	}
+
 	return bz
 }
 
 func ParseChainInfo(input string) (ci ChainInfo, err error) {
 	err = json.Unmarshal([]byte(input), &ci)
+
 	return
 }
 
@@ -60,6 +63,7 @@ func MustParseChainInfo(input string) ChainInfo {
 	if err != nil {
 		panic("could not parse chain info: " + err.Error())
 	}
+
 	return ci
 }
 

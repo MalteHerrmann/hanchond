@@ -25,12 +25,14 @@ func DownloadSolcBinary(isDarwin bool, version string) error {
 	if !isDarwin {
 		baseURL = strings.Replace(baseURL, "macosx", "linux", 1)
 	}
+
 	list, err := http.Get(baseURL + "list.json")
 	if err != nil {
 		return err
 	}
-	if list.StatusCode != 200 {
-		return fmt.Errorf("status code not 200")
+
+	if list.StatusCode != http.StatusOK {
+		return errors.New("status code not 200")
 	}
 
 	listContent, err := io.ReadAll(list.Body)
@@ -45,17 +47,21 @@ func DownloadSolcBinary(isDarwin bool, version string) error {
 	}
 
 	binaryURL := ""
+
 	for _, v := range v.Builds {
 		if v.Version == version {
 			binaryURL = (baseURL + v.Path)
+
 			break
 		}
 	}
+
 	if binaryURL == "" {
-		return fmt.Errorf("solidity version not found")
+		return errors.New("solidity version not found")
 	}
 
 	filePathInDisk := filesmanager.GetSolcPath(version)
+
 	file, err := os.Create(filePathInDisk)
 	if err != nil {
 		return fmt.Errorf("could ot create file:%s", err.Error())

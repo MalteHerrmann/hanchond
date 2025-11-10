@@ -12,21 +12,32 @@ import (
 	"golang.org/x/text/language"
 )
 
-const erc20TransferABI = `[{ "constant": false, "inputs": [ { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" } ], "name": "transfer", "outputs": [ { "name": "", "type": "bool" } ], "payable": false, "stateMutability": "nonpayable", "type": "function" }]`
+const erc20TransferABI = `[{ "constant": false, "inputs": [ { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" } ], "name": "transfer", "outputs": [ { "name": "", "type": "bool" } ], "payable": false, "stateMutability": "nonpayable", "type": "function" }]` //nolint:lll
 
 func ERC20TransferCallData(address string, amount string) ([]byte, error) {
 	params := []string{"a:" + address, "n:" + amount}
+
 	callArgs, err := smartcontract.StringsToABIArguments(params)
 	if err != nil {
 		return []byte{}, err
 	}
+
 	return smartcontract.ABIPackRaw([]byte(erc20TransferABI), "transfer", callArgs...)
 }
 
-// BuildAndDeployERC20Contract will save the temp usings using the filesmanager. Init the home folder before running the function
-func BuildAndDeployERC20Contract(name, symbol, initialAmount string, isWrapped bool, builder *txbuilder.TxBuilder, gasLimit uint64) (string, error) {
+// BuildAndDeployERC20Contract will save the temp usings using the filesmanager. Init the home folder before running the function.
+func BuildAndDeployERC20Contract(
+	name, symbol, initialAmount string,
+	isWrapped bool,
+	builder *txbuilder.TxBuilder,
+	gasLimit uint64,
+) (string, error) {
 	// Clone openzeppelin if needed
-	path, err := DownloadDep("https://github.com/OpenZeppelin/openzeppelin-contracts", "v5.0.2", "openzeppelin")
+	path, err := DownloadDep(
+		"https://github.com/OpenZeppelin/openzeppelin-contracts",
+		"v5.0.2",
+		"openzeppelin",
+	)
 	if err != nil {
 		return "", err
 	}
@@ -43,6 +54,7 @@ func BuildAndDeployERC20Contract(name, symbol, initialAmount string, isWrapped b
 
 	contract := ""
 	solcVersion := "0.8.25"
+
 	switch isWrapped {
 	case false:
 		// Normal ERC20
@@ -64,7 +76,12 @@ func BuildAndDeployERC20Contract(name, symbol, initialAmount string, isWrapped b
 		return "", fmt.Errorf("could not compile the erc20 contract:%s", err.Error())
 	}
 
-	bytecode, err := filesmanager.ReadFile(filesmanager.GetBranchFolder(folderName) + "/" + StringToTitle(name) + ".bin")
+	bytecode, err := filesmanager.ReadFile(
+		filesmanager.GetBranchFolder(folderName) +
+			"/" +
+			StringToTitle(name) +
+			".bin",
+	)
 	if err != nil {
 		return "", fmt.Errorf("error reading the bytecode file:%s", err.Error())
 	}
@@ -78,6 +95,7 @@ func BuildAndDeployERC20Contract(name, symbol, initialAmount string, isWrapped b
 	if err != nil {
 		return "", fmt.Errorf("error sending the transaction:%s", err.Error())
 	}
+
 	return txHash, nil
 }
 
@@ -88,6 +106,7 @@ func StringToTitle(in string) string {
 func GenerateERC20Contract(openzeppelinPath, name, symbol, initialAmount string) string {
 	name = StringToTitle(name)
 	symbol = strings.ToUpper(symbol)
+
 	return fmt.Sprintf(`// SPDX-License-Identifier: MIT
 // Compatible with OpenZeppelin Contracts ^5.0.0
 pragma solidity ^0.8.20;
@@ -106,6 +125,7 @@ contract %s is ERC20, ERC20Permit {
 func GenerateWrappedCoinContract(name, symbol, decimals string) string {
 	name = StringToTitle(name)
 	symbol = strings.ToUpper(symbol)
+
 	return fmt.Sprintf(`pragma solidity ^0.4.18;
 contract %s {
     string public name = "%s";

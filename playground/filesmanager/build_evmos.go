@@ -11,7 +11,7 @@ import (
 
 // BuildEVMChainVersion builds the downloaded binary of a Cosmos EVM based chain.
 //
-// NOTE: This requires that the version was already cloned
+// NOTE: This requires that the version was already cloned.
 func BuildEVMChainVersion(version string) error {
 	return BuildEVMBinary(GetBranchFolder(version))
 }
@@ -37,6 +37,7 @@ func BuildEVMBinary(path string) error {
 
 func SaveBuiltVersion(chainInfo types.ChainInfo, version string) error {
 	_ = CreateBuildsDir() // Make sure that the build dir exists
+
 	return MoveFile(
 		fmt.Sprintf("%s/build/%s", GetBranchFolder(version), chainInfo.GetBinaryName()),
 		GetDaemondPathWithVersion(chainInfo, version),
@@ -59,12 +60,13 @@ func MoveFile(origin string, destination string) error {
 
 func CopyFile(origin string, destination string) error {
 	_, err := utils.ExecCommand("cp", origin, destination)
+
 	return err
 }
 
 // NOTE: This requires that the version was already cloned
 //
-// TODO: avoid building from source and rather download from release page instead; depending on operating system get the correct binary
+// TODO: avoid building from source and rather download from release page instead; depending on operating system get the correct binary.
 func BuildHermes(version string) error {
 	// Change directory to the cloned repository
 	if err := os.Chdir(GetBranchFolder(version)); err != nil {
@@ -73,6 +75,7 @@ func BuildHermes(version string) error {
 
 	cmd := "CARGO_NET_GIT_FETCH_WITH_CLI=true cargo build"
 	_, err := utils.ExecCommand("bash", "-c", cmd)
+
 	return err
 }
 
@@ -80,6 +83,7 @@ func SaveHermesBuiltVersion(version string) error {
 	buildTarget := GetBranchFolder(version) + "/target/debug/hermes"
 
 	_ = CreateBuildsDir() // Make sure that the build dir exists
+
 	if err := MoveFile(buildTarget, GetHermesBinary()); err != nil {
 		return fmt.Errorf("error moving hermes binary: %w", err)
 	}

@@ -11,11 +11,14 @@ func readJSONFile(path string) (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	var data map[string]interface{}
+
 	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
 	}
+
 	return data, nil
 }
 

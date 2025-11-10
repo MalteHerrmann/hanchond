@@ -26,6 +26,7 @@ func BotContainer(width int, list1, list2 string, infoText string, activeFrame i
 	blocks := blocksFrame.Width(20)
 	transactions := txFrame.Width((width-20)/2 - 2)
 	info := infoFrame.Width((width-20)/2 - 4)
+
 	switch activeFrame {
 	case 0:
 		blocks = blocks.BorderForeground(ColorHighPink)

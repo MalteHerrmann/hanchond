@@ -7,7 +7,7 @@ import (
 
 func (d *Daemon) GetGenesisSubcommand(args []string) ([]string, error) {
 	if len(args) < 2 {
-		return nil, fmt.Errorf("not enough arguments to get genesis subcommand")
+		return nil, errors.New("not enough arguments to get genesis subcommand")
 	}
 
 	subcommand := args[0]
@@ -33,6 +33,7 @@ func (d *Daemon) GetGenesisSubcommand(args []string) ([]string, error) {
 
 	if err := command.Run(); err == nil {
 		args = append([]string{"genesis"}, args...)
+
 		return args, nil
 	}
 
@@ -191,7 +192,6 @@ func (d *Daemon) setFeeMarket(genesis map[string]interface{}) {
 						appState["feemarket"].(map[string]interface{})["params"].(map[string]interface{})["base_fee_change_denominator"] = 1
 						appState["feemarket"].(map[string]interface{})["params"].(map[string]interface{})["elasticity_multiplier"] = 1
 						appState["feemarket"].(map[string]interface{})["params"].(map[string]interface{})["min_gas_multiplier"] = "0.0"
-
 					}
 					// SDK FeeMarket
 					if _, ok := v["fee_denom"]; ok {
@@ -249,7 +249,6 @@ func (d *Daemon) setGovernance(genesis map[string]interface{}, fastProposals boo
 							}
 						}
 					}
-
 				}
 			}
 		}
@@ -261,6 +260,7 @@ func (d *Daemon) setBank() error {
 	if err != nil {
 		return err
 	}
+
 	appState := genesis["app_state"].(map[string]interface{})
 	appState["bank"].(map[string]interface{})["supply"].([]interface{})[0].(map[string]interface{})["amount"] = d.ValidatorInitialSupply
 

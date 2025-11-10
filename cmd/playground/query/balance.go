@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// represents the query command
+// represents the query command.
 var balanceCmd = &cobra.Command{
 	Use:   "balance [wallet]",
 	Args:  cobra.ExactArgs(1),
@@ -18,7 +18,7 @@ var balanceCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		wallet := args[0]

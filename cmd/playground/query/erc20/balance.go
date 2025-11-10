@@ -14,7 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// balanceCmd represents the balance command
+// balanceCmd represents the balance command.
 var balanceCmd = &cobra.Command{
 	Use:   "balance [contract] [wallet]",
 	Args:  cobra.ExactArgs(2),

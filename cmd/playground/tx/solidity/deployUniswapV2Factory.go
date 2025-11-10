@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// deployUniswapV2FactoryCmd represents the deploy command
+// deployUniswapV2FactoryCmd represents the deploy command.
 var deployUniswapV2FactoryCmd = &cobra.Command{
 	Use:   "deploy-uniswap-v2-factory [fee_wallet]",
 	Args:  cobra.ExactArgs(1),
@@ -22,12 +22,12 @@ var deployUniswapV2FactoryCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		gasLimit, err := cmd.Flags().GetInt("gas-limit")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("incorrect gas limit"))
+			utils.ExitError(errors.New("incorrect gas limit"))
 		}
 
 		feeWallet := args[0]
@@ -77,7 +77,7 @@ var deployUniswapV2FactoryCmd = &cobra.Command{
 		}
 
 		// Get Params
-		callArgs, err := smartcontract.StringsToABIArguments([]string{fmt.Sprintf("a:%s", feeWallet)})
+		callArgs, err := smartcontract.StringsToABIArguments([]string{"a:" + feeWallet})
 		if err != nil {
 			utils.ExitError(fmt.Errorf("error converting arguments: %w", err))
 		}

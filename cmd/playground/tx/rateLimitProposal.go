@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// rateLimitProposalCmd represents the rateLimit-proposal command
+// rateLimitProposalCmd represents the rateLimit-proposal command.
 var rateLimitProposalCmd = &cobra.Command{
 	Use:   "rate-limit-proposal [denom]",
 	Args:  cobra.ExactArgs(1),
@@ -19,27 +19,27 @@ var rateLimitProposalCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		channel, err := cmd.Flags().GetString("channel")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("channel not set"))
+			utils.ExitError(errors.New("channel not set"))
 		}
 
 		duration, err := cmd.Flags().GetString("duration")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("duration not set"))
+			utils.ExitError(errors.New("duration not set"))
 		}
 
 		maxSend, err := cmd.Flags().GetString("max-send")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("max-send not set"))
+			utils.ExitError(errors.New("max-send not set"))
 		}
 
 		maxRecv, err := cmd.Flags().GetString("max-recv")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("max-recv not set"))
+			utils.ExitError(errors.New("max-recv not set"))
 		}
 
 		e := evmos.NewEvmosFromDB(queries, nodeID)

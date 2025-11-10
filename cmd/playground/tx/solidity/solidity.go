@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// SolidityCmd represents the solidity command
+// SolidityCmd represents the solidity command.
 var SolidityCmd = &cobra.Command{
 	Use:     "solidity",
 	Aliases: []string{"s"},

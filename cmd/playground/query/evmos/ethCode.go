@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// ethCodeCmd represents the ethCode command
+// ethCodeCmd represents the ethCode command.
 var ethCodeCmd = &cobra.Command{
 	Use:   "eth-code [address]",
 	Args:  cobra.ExactArgs(1),

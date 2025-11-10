@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// startHermesCmd represents the start-hermes command
+// startHermesCmd represents the start-hermes command.
 var startHermesCmd = &cobra.Command{
 	Use:   "start-hermes",
 	Short: "Starts the relayer",
@@ -29,7 +29,7 @@ var startHermesCmd = &cobra.Command{
 
 		// TODO: check if the process is running checking the PID
 		if relayer.IsRunning == 1 {
-			utils.ExitError(fmt.Errorf("the relayer is already running"))
+			utils.ExitError(errors.New("the relayer is already running"))
 		}
 
 		pid, err := hermes.NewHermes().Start()

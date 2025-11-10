@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// supplyCmd represents the supply command
+// supplyCmd represents the supply command.
 var supplyCmd = &cobra.Command{
 	Use:   "supply [contract]",
 	Args:  cobra.ExactArgs(1),

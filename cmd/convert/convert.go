@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// ConvertCmd represents the converter command
+// ConvertCmd represents the converter command.
 var ConvertCmd = &cobra.Command{
 	Use:     "convert",
 	Aliases: []string{"c"},

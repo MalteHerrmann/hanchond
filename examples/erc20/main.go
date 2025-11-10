@@ -24,6 +24,7 @@ func randString(n int) string {
 	for i := range b {
 		b[i] = letters[rand.Intn(len(letters))]
 	}
+
 	return string(b)
 }
 
@@ -38,13 +39,15 @@ func sendRandomTransaction(erc20Address []string, wallets []*txbuilder.SimpleWeb
 	}
 
 	to := common.HexToAddress(erc20)
+
 	return from.TxBuilder.SendTx(from.Address, &to, big.NewInt(0), 200_000, callData, from.PrivKey)
 }
 
 func main() {
 	if len(os.Args) < 4 {
-		utils.ExitError(fmt.Errorf("usage [mnemonic] [web3_endpoint] [home_dir]"))
+		utils.ExitError(errors.New("usage [mnemonic] [web3_endpoint] [home_dir]"))
 	}
+
 	mnemonic := os.Args[1]
 	web3Endpoint := os.Args[2]
 	homeDir := os.Args[3]
@@ -56,23 +59,37 @@ func main() {
 
 	erc20sAddress := []string{}
 
-	// Create some erc20s. Every deployment will wait until the tx is included in a block to ensure the correct deployment of the contract
+	// Create some ERC-20s.
+	//
+	// Every deployment will wait until the tx is included in a block
+	// to ensure the correct deployment of the contract.
 	for range 15 {
 		initialAmount := "1000000"
-		txHash, err := solidity.BuildAndDeployERC20Contract(randString(7), randString(3), initialAmount, false, valWallet.TxBuilder, 1_000_000)
+
+		txHash, err := solidity.BuildAndDeployERC20Contract(
+			randString(7),
+			randString(3),
+			initialAmount,
+			false,
+			valWallet.TxBuilder,
+			1_000_000,
+		)
 		if err != nil {
 			utils.ExitError(err)
 		}
+
 		address, err := client.GetContractAddress(txHash)
 		if err == nil {
 			erc20sAddress = append(erc20sAddress, address)
 		}
+
 		utils.Log("contract deployed: %s", address)
 	}
 
 	// Create the wallets and send coins
 	totalWallets := 100
 	wallets := []*txbuilder.SimpleWeb3Wallet{}
+
 	for range totalWallets {
 		w := txbuilder.NewSimpleWeb3Wallet(web3Endpoint)
 		wallets = append(wallets, w)
@@ -91,11 +108,19 @@ func main() {
 			}
 
 			to := common.HexToAddress(erc20Wallet)
-			if _, err := valWallet.TxBuilder.SendTx(valWallet.Address, &to, big.NewInt(0), 200_000, callData, valWallet.PrivKey); err != nil {
+			if _, err := valWallet.TxBuilder.SendTx(
+				valWallet.Address,
+				&to,
+				big.NewInt(0),
+				200_000,
+				callData,
+				valWallet.PrivKey,
+			); err != nil {
 				utils.ExitError(err)
 			}
 		}
 	}
+
 	utils.Log("finished initializing %d wallets", totalWallets)
 
 	startingHeight, err := client.GetBlockNumber()
@@ -104,13 +129,16 @@ func main() {
 	}
 
 	utils.Log("starting height: %d", startingHeight)
+
 	heigth := startingHeight
 	for heigth < startingHeight+100 {
 		_, _ = sendRandomTransaction(erc20sAddress, wallets)
+
 		heigth, err = client.GetBlockNumber()
 		if err != nil {
 			utils.ExitError(fmt.Errorf("could not get the current height: %w", err))
 		}
 	}
+
 	utils.Log("stop height: %d", heigth)
 }

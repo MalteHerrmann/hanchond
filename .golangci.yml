@@ -1,56 +1,24 @@
-run:
-  go: "1.22.2"
-  tests: true
-  timeout: 5m
-  concurrency: 4
-
+version: "2"
 linters:
+  default: all
+  disable:
+    - depguard
+    - err113
+    - exhaustruct # requires every field to be instantiated in e.g. struct creation
+    - gochecknoglobals
+    - godox
+    - gomoddirectives
+    - mnd
+    - varnamelen
+    - wrapcheck
+  settings:
+    tagliatelle:
+      case:
+        rules:
+          json: camel
+          yaml: camel
+formatters:
   enable:
-    - dogsled
-    - errcheck
-    - goconst
-    - gocritic
     - gofumpt
-    - revive
-    - gosec
-    - gosimple
-    - govet
-    - ineffassign
-    - misspell
-    - nakedret
-    - prealloc
-    - copyloopvar
-    - staticcheck
-    - stylecheck
-    - typecheck
-    - unconvert
-    - unparam
-    - unused
-    - nolintlint
-    - asciicheck
-    - gofumpt
-    - gomodguard
-
-linters-settings:
-  dogsled:
-    max-blank-identifiers: 3
-  golint:
-    min-confidence: 0
-  maligned:
-    suggest-new: true
-  misspell:
-    locale: US
-  nolintlint:
-    allow-unused: false
-    allow-leading-space: true
-    require-explanation: false
-    require-specific: false
-  gomodguard:
-    blocked:
-      versions: # List of blocked module version constraints
-        - https://github.com/etcd-io/etcd: # Blocked module with version constraint
-            version: ">= 3.4.10 || ~3.3.23" # Version constraint, see https://github.com/Masterminds/semver#basic-comparisons
-            reason: "CVE-2020-15114; CVE-2020-15136; CVE-2020-15115" # Reason why the version constraint exists. (Optional)
-        - https://github.com/dgrijalva/jwt-go: # Blocked module with version constraint
-            version: ">= 4.0.0-preview1" # Version constraint, see https://github.com/Masterminds/semver#basic-comparisons
-            reason: "CVE-2020-26160" # Reason why the version constraint exists. (Optional)
+run:
+  go: "1.23"

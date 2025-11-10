@@ -6,12 +6,14 @@ import (
 
 func (e *Evmos) UpdateAppFile() error {
 	//  Pruning
-	appFile, err := e.Daemon.OpenAppFile()
+	appFile, err := e.OpenAppFile()
 	if err != nil {
 		return err
 	}
+
 	appFile = e.enableWeb3API(appFile)
-	return e.Daemon.SaveAppFile(appFile)
+
+	return e.SaveAppFile(appFile)
 }
 
 func (e *Evmos) enableWeb3API(config []byte) []byte {
@@ -23,5 +25,6 @@ enable = false`,
 		"enable = true",
 		1,
 	)
+
 	return []byte(configValues)
 }

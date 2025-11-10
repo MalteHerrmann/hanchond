@@ -18,5 +18,6 @@ func (e *Evmos) GetTransaction(txhash string) (string, error) {
 		fmt.Sprintf("http://localhost:%d", e.Ports.P26657),
 	)
 	out, err := command.CombinedOutput()
+
 	return string(out), err
 }

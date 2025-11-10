@@ -9,11 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// buildGaiadCmd represents the buildGaiad command
+// buildGaiadCmd represents the buildGaiad command.
 var buildGaiadCmd = &cobra.Command{
 	Use:   "build-gaiad",
 	Short: "Get the Gaiad binary from the github releases",
-	Long:  `It downloads the already built gaiad binary from github, it accepts a version flag to specify any tag. It defaults to: v1.9.0.`,
+	Long:  `It downloads the already built gaiad binary from github, it accepts a version flag to specify any tag. It defaults to: v1.9.0.`, //nolint:lll
 	Run: func(cmd *cobra.Command, _ []string) {
 		_ = filesmanager.SetHomeFolderFromCobraFlags(cmd)
 		version, err := cmd.Flags().GetString("version")

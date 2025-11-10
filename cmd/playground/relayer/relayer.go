@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// RelayerCmd represents the relayer command
+// RelayerCmd represents the relayer command.
 var RelayerCmd = &cobra.Command{
 	Use:     "relayer",
 	Aliases: []string{"r"},

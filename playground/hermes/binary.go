@@ -30,6 +30,7 @@ func (h *Hermes) AddRelayerKeyIfMissing(chainID, mnemonic string, hd types.HDPat
 		logsFile,
 	)
 	command := exec.Command("bash", "-c", cmd)
+
 	_, err := command.CombinedOutput()
 	if err != nil && !strings.Contains(err.Error(), "already exists") {
 		return fmt.Errorf("%w: logs written to %s; error from logs: %s", err, logsFile, getErrorFromHermesLogs(logsFile))
@@ -41,7 +42,7 @@ func (h *Hermes) AddRelayerKeyIfMissing(chainID, mnemonic string, hd types.HDPat
 func (h *Hermes) CreateChannel(firstChainID, secondChainID string) error {
 	logsFile := fmt.Sprintf("%s/logs_channel_%s_%s", filesmanager.GetHermesPath(), firstChainID, secondChainID)
 	cmd := fmt.Sprintf(
-		"%s --config %s create channel --a-chain %s --b-chain %s --a-port transfer --b-port transfer --new-client-connection --yes >> %s 2>&1",
+		"%s --config %s create channel --a-chain %s --b-chain %s --a-port transfer --b-port transfer --new-client-connection --yes >> %s 2>&1", //nolint:lll
 		h.GetHermesBinary(),
 		h.GetConfigFile(),
 		firstChainID,
@@ -49,11 +50,13 @@ func (h *Hermes) CreateChannel(firstChainID, secondChainID string) error {
 		logsFile,
 	)
 	command := exec.Command("bash", "-c", cmd)
+
 	out, err := command.CombinedOutput()
 	if err != nil {
 		errorFromLogs := getErrorFromHermesLogs(logsFile)
-		err = fmt.Errorf("error %s: %s; logs written to %s; error from logs: %s", err.Error(), string(out), logsFile, errorFromLogs)
+		err = fmt.Errorf("error %s: %s; logs written to %s; error from logs: %s", err.Error(), string(out), logsFile, errorFromLogs) //nolint:lll
 	}
+
 	return err
 }
 

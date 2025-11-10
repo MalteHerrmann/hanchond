@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// TxCmd represents the tx command
+// TxCmd represents the tx command.
 var TxCmd = &cobra.Command{
 	Use:     "tx",
 	Aliases: []string{"t"},

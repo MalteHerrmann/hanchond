@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// upgradeProposalCmd represents the upgrade-proposal command
+// upgradeProposalCmd represents the upgrade-proposal command.
 var upgradeProposalCmd = &cobra.Command{
 	Use:   "upgrade-proposal [version]",
 	Args:  cobra.ExactArgs(1),
@@ -21,7 +21,7 @@ var upgradeProposalCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 		version := strings.TrimSpace(args[0])
 
@@ -36,7 +36,11 @@ var upgradeProposalCmd = &cobra.Command{
 			if err != nil {
 				utils.ExitError(fmt.Errorf("could not convert diff to int: %w", err))
 			}
-			currentHeight, err := requester.NewClient().WithUnsecureTendermintEndpoint(fmt.Sprintf("http://localhost:%d", e.Ports.P26657)).GetCurrentHeight()
+			currentHeight, err := requester.
+				NewClient().
+				WithUnsecureTendermintEndpoint(
+					fmt.Sprintf("http://localhost:%d", e.Ports.P26657),
+				).GetCurrentHeight()
 			if err != nil {
 				utils.ExitError(fmt.Errorf("could not get current height: %w", err))
 			}
@@ -44,7 +48,7 @@ var upgradeProposalCmd = &cobra.Command{
 			if err != nil {
 				utils.ExitError(fmt.Errorf("could convert height response to int: %w", err))
 			}
-			height = fmt.Sprintf("%d", currentHeightInt+diffInt)
+			height = strconv.Itoa(currentHeightInt + diffInt)
 		}
 
 		txhash, err := e.CreateUpgradeProposal(version, height)
@@ -59,5 +63,5 @@ var upgradeProposalCmd = &cobra.Command{
 func init() {
 	TxCmd.AddCommand(upgradeProposalCmd)
 	upgradeProposalCmd.Flags().String("height", "", "Upgrade height.")
-	upgradeProposalCmd.Flags().String("height-diff", "20", "Blocks in the future when the upgrade is going to be executed.")
+	upgradeProposalCmd.Flags().String("height-diff", "20", "Blocks in the future when the upgrade is going to be executed.") //nolint:lll
 }

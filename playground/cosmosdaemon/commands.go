@@ -35,6 +35,7 @@ func (d *Daemon) AddGenesisAccount(validatorAddr string) error {
 	if err != nil {
 		err = fmt.Errorf("error %s: %s", err.Error(), string(out))
 	}
+
 	return err
 }
 
@@ -62,10 +63,12 @@ func (d *Daemon) ValidatorGenTx() error {
 		d.GetVersionedBinaryPath(),
 		genesisSubcommand...,
 	)
+
 	out, err := command.CombinedOutput()
 	if err != nil {
 		err = fmt.Errorf("error %s: %s", err.Error(), string(out))
 	}
+
 	return err
 }
 
@@ -85,10 +88,12 @@ func (d *Daemon) CollectGenTxs() error {
 		d.GetVersionedBinaryPath(),
 		genesisSubcommand...,
 	)
+
 	out, err := command.CombinedOutput()
 	if err != nil {
 		err = fmt.Errorf("error %s: %s", err.Error(), string(out))
 	}
+
 	return err
 }
 
@@ -108,14 +113,16 @@ func (d *Daemon) ValidateGenesis() error {
 		d.GetVersionedBinaryPath(),
 		genesisSubcommand...,
 	)
+
 	out, err := command.CombinedOutput()
 	if err != nil {
 		err = fmt.Errorf("error %s: %s", err.Error(), string(out))
 	}
+
 	return err
 }
 
-// Returns bech32 encoded validator addresss
+// Returns bech32 encoded validator addresss.
 func (d *Daemon) GetValidatorAddress() (string, error) {
 	command := exec.Command( //nolint:gosec
 		d.GetVersionedBinaryPath(),
@@ -128,29 +135,37 @@ func (d *Daemon) GetValidatorAddress() (string, error) {
 		"--home",
 		d.HomeDir,
 	)
+
 	o, err := command.CombinedOutput()
 	if err != nil {
 		err = fmt.Errorf("error %s: %s", err.Error(), string(o))
+
 		return "", err
 	}
+
 	return strings.TrimSpace(string(o)), nil
 }
 
 func (d *Daemon) Start(startCmd string) (int, error) {
 	command := exec.Command("bash", "-c", startCmd)
+
 	// Deattach the program
 	command.SysProcAttr = &syscall.SysProcAttr{
 		Setpgid: true,
 	}
+
 	err := command.Start()
 	if err != nil {
 		return 0, err
 	}
+
 	time.Sleep(2 * time.Second)
+
 	id, err := filesmanager.GetChildPID(command.Process.Pid)
 	if err != nil {
 		return 0, err
 	}
+
 	return id, nil
 }
 
@@ -162,10 +177,13 @@ func (d *Daemon) GetNodeID() (string, error) {
 		"--home",
 		d.HomeDir,
 	)
+
 	o, err := command.CombinedOutput()
 	if err != nil {
 		err = fmt.Errorf("error %s: %s", err.Error(), string(o))
+
 		return "", err
 	}
+
 	return strings.TrimSpace(string(o)), nil
 }

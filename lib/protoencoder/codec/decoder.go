@@ -2,6 +2,7 @@ package codec
 
 import (
 	"encoding/base64"
+	"errors"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -33,6 +34,7 @@ func BytesToTx(txBytes []byte) (*protocoltypes.CosmosTx, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	return &protocoltypes.CosmosTx{
 		Body:     body,
 		AuthInfo: authInfo,
@@ -44,6 +46,7 @@ func Base64ToTx(txInBase64 string) (*protocoltypes.CosmosTx, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error decoding the tx base64: %s", err.Error())
 	}
+
 	return BytesToTx(txBytes)
 }
 
@@ -52,23 +55,28 @@ func ConvertEvmosTxToEthTx(txBase64 string) (*ethtypes.Transaction, *sdk.AccAddr
 	if err != nil {
 		return nil, nil, err
 	}
+
 	if len(tx.Body.Messages) == 0 {
-		return nil, nil, fmt.Errorf("the transaction has no messages")
+		return nil, nil, errors.New("the transaction has no messages")
 	}
 
 	if tx.Body.Messages[0].TypeUrl != "/ethermint.evm.v1.MsgEthereumTx" {
-		return nil, nil, fmt.Errorf("the message is not a eth tx")
+		return nil, nil, errors.New("the message is not a eth tx")
 	}
 
 	var m evmtypes.MsgEthereumTx
+
 	err = Encoder.Unmarshal(tx.Body.Messages[0].Value, &m)
 	if err != nil {
 		return nil, nil, err
 	}
+
 	signers := m.GetSigners()
 	if len(signers) == 0 {
-		return nil, nil, fmt.Errorf("the transaction has not signers")
+		return nil, nil, errors.New("the transaction has not signers")
 	}
+
 	from := m.GetSigners()[0]
+
 	return m.AsTransaction(), &from, nil
 }

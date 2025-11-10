@@ -12,13 +12,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// CLI flags
+// CLI flags.
 var (
 	getBinary, getChainID, getHome, getVal bool
 	retrievedPort                          uint16
 )
 
-// getNodeCmd represents the getNode command
+// getNodeCmd represents the getNode command.
 var getNodeCmd = &cobra.Command{
 	Use:   "get-node [id]",
 	Args:  cobra.ExactArgs(1),

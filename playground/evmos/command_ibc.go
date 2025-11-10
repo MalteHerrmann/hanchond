@@ -24,10 +24,11 @@ func (e *Evmos) SendIBC(port, channel, receiver, amount string) (string, error) 
 		"--from",
 		e.ValKeyName,
 		"--fees",
-		fmt.Sprintf("10000000000000000%s", e.BaseDenom),
+		"10000000000000000"+e.BaseDenom,
 		"-y",
 	)
 
 	out, err := command.CombinedOutput()
+
 	return string(out), err
 }

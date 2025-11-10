@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// BumpModuleVersionCmd represents the query command
+// BumpModuleVersionCmd represents the query command.
 var BumpModuleVersionCmd = &cobra.Command{
 	Use:   "bump-module-version [path] [version]",
 	Args:  cobra.ExactArgs(2),
@@ -25,11 +25,11 @@ var BumpModuleVersionCmd = &cobra.Command{
 		version := args[1]
 		// If the version arg is missing the `v` prefix, we add it
 		if !strings.HasPrefix(version, "v") {
-			version = fmt.Sprintf("v%s", version)
+			version = "v" + version
 		}
 
 		// Find the current version
-		goModPath := fmt.Sprintf("%s/go.mod", path)
+		goModPath := path + "/go.mod"
 		utils.Log("using go.mod path as: %s", goModPath)
 		goModFile, err := filesmanager.ReadFile(goModPath)
 		if err != nil {
@@ -40,7 +40,7 @@ var BumpModuleVersionCmd = &cobra.Command{
 		re := regexp.MustCompile(`(?m)^module\s+(\S+)$`)
 		modules := re.FindAllStringSubmatch(string(goModFile), -1)
 		if len(modules) == 0 {
-			utils.ExitError(fmt.Errorf("the go.mod file does not define the module name"))
+			utils.ExitError(errors.New("the go.mod file does not define the module name"))
 		}
 		currentVersion := modules[0][1]
 		utils.Log("the current version is: %s", currentVersion)
@@ -51,6 +51,7 @@ var BumpModuleVersionCmd = &cobra.Command{
 		for k, v := range parts {
 			if k == len(parts)-1 {
 				newVersion += version
+
 				break
 			}
 			newVersion += v + "/"

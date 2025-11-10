@@ -21,6 +21,7 @@ func SetHomeFolderFromCobraFlags(cmd *cobra.Command) string {
 	if err != nil {
 		utils.ExitError(err)
 	}
+
 	home, _ = strings.CutSuffix(home, "/")
 	SetBaseDir(home)
 	// Ensure that the folder exists
@@ -30,15 +31,16 @@ func SetHomeFolderFromCobraFlags(cmd *cobra.Command) string {
 			panic(err)
 		}
 	}
+
 	return home
 }
 
 func GetDatabaseFile() string {
-	return fmt.Sprintf("%s/playground.db", GetBaseDir())
+	return GetBaseDir() + "/playground.db"
 }
 
 func GetDataFolder() string {
-	return fmt.Sprintf("%s/data", GetBaseDir())
+	return GetBaseDir() + "/data"
 }
 
 func getNodeHomePath(chainID int64, nodeID int64) string {
@@ -52,6 +54,7 @@ func GetNodeHomeFolder(chainID, nodeID int64) string {
 			panic(err)
 		}
 	}
+
 	return getNodeHomePath(chainID, nodeID)
 }
 
@@ -83,7 +86,7 @@ func GetDaemondPathWithVersion(ci types.ChainInfo, version string) string {
 	return fmt.Sprintf("%s/%s", GetBuildsDir(), ci.GetVersionedBinaryName(version))
 }
 
-// TODO: also remove and turn ChainInfo into BinaryInfo to also support hermes here
+// TODO: also remove and turn ChainInfo into BinaryInfo to also support hermes here.
 func GetHermesBinary() string {
 	return GetBuildsDir() + "/hermes"
 }
@@ -96,6 +99,7 @@ func CreateBuildsDir() error {
 	if _, err := os.Stat(GetBuildsDir()); os.IsNotExist(err) {
 		return os.Mkdir(GetBuildsDir(), os.ModePerm)
 	}
+
 	return nil
 }
 
@@ -117,6 +121,7 @@ func CleanUpTempFolder() error {
 
 func CleanUpData() error {
 	_ = os.RemoveAll(GetDatabaseFile())
+
 	return os.RemoveAll(GetDataFolder())
 }
 

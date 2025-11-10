@@ -32,6 +32,7 @@ func (d *Daemon) UpdateAppFile() error {
 	// No pruning to use archive queries
 	appFile = d.SetPruningInAppFile(false, appFile)
 	appFile = d.SetMinGasPricesInAppFile(appFile)
+
 	return d.SaveAppFile(appFile)
 }
 
@@ -40,12 +41,15 @@ func (d *Daemon) CreateGenTx() error {
 	if err != nil {
 		return err
 	}
+
 	if err := d.AddGenesisAccount(validatorAddr); err != nil {
 		return err
 	}
+
 	if err := d.ValidatorGenTx(); err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -80,6 +84,7 @@ func (d *Daemon) allowDuplicateIP(configFile []byte) []byte {
 		"allow_duplicate_ip = true",
 		1,
 	)
+
 	return []byte(configValues)
 }
 
@@ -134,6 +139,7 @@ func (d *Daemon) enableSlowBlocks(configFile []byte) []byte {
 		"timeout_broadcast_tx_commit = \"15s\"",
 		1,
 	)
+
 	return []byte(configValues)
 }
 
@@ -146,6 +152,7 @@ enable = false`,
 		"enable = true",
 		1,
 	)
+
 	return []byte(configValues)
 }
 
@@ -157,6 +164,7 @@ func (d *Daemon) SetMinGasPricesInAppFile(config []byte) []byte {
 		"minimum-gas-prices = \"0.00001"+d.BaseDenom+"\"",
 		1,
 	)
+
 	return []byte(configValues)
 }
 
@@ -181,6 +189,7 @@ func (d *Daemon) SetPruningInAppFile(pruningEnabled bool, config []byte) []byte 
 			"pruning-interval = \"10\"",
 			1,
 		)
+
 		return []byte(configValues)
 	}
 
@@ -203,6 +212,7 @@ func (d *Daemon) SetPruningInAppFile(pruningEnabled bool, config []byte) []byte 
 		"pruning = \"nothing\"",
 		1,
 	)
+
 	return []byte(configValues)
 }
 
@@ -217,9 +227,10 @@ func (d *Daemon) GetPeerInfo() (string, error) {
 
 func (d *Daemon) AddPersistenPeers(peers []string) error {
 	filtered := []string{}
+
 	for k := range peers {
 		// Exclude ourself from the list
-		if !strings.Contains(peers[k], fmt.Sprintf("%d", d.Ports.P26656)) {
+		if !strings.Contains(peers[k], strconv.Itoa(d.Ports.P26656)) {
 			filtered = append(filtered, peers[k])
 		}
 	}
@@ -228,6 +239,7 @@ func (d *Daemon) AddPersistenPeers(peers []string) error {
 	if err != nil {
 		return err
 	}
+
 	regex := regexp.MustCompile(`persistent_peers\s*=\s*".*"`)
 	configFile = regex.ReplaceAll(
 		configFile,
@@ -251,14 +263,16 @@ func (d *Daemon) UpdateConfigPorts() error {
 	if err != nil {
 		return err
 	}
+
 	app := string(appFile)
-	app = strings.Replace(app, "1317", fmt.Sprint(d.Ports.P1317), 1)
-	app = strings.Replace(app, "8080", fmt.Sprint(d.Ports.P8080), 1)
-	app = strings.Replace(app, "9090", fmt.Sprint(d.Ports.P9090), 1)
-	app = strings.Replace(app, "9091", fmt.Sprint(d.Ports.P9091), 1)
-	app = strings.Replace(app, "8545", fmt.Sprint(d.Ports.P8545), 1)
-	app = strings.Replace(app, "8546", fmt.Sprint(d.Ports.P8546), 1)
-	app = strings.Replace(app, "6065", fmt.Sprint(d.Ports.P6065), 1)
+	app = strings.Replace(app, "1317", strconv.Itoa(d.Ports.P1317), 1)
+	app = strings.Replace(app, "8080", strconv.Itoa(d.Ports.P8080), 1)
+	app = strings.Replace(app, "9090", strconv.Itoa(d.Ports.P9090), 1)
+	app = strings.Replace(app, "9091", strconv.Itoa(d.Ports.P9091), 1)
+	app = strings.Replace(app, "8545", strconv.Itoa(d.Ports.P8545), 1)
+	app = strings.Replace(app, "8546", strconv.Itoa(d.Ports.P8546), 1)
+	app = strings.Replace(app, "6065", strconv.Itoa(d.Ports.P6065), 1)
+
 	if err := d.SaveAppFile([]byte(app)); err != nil {
 		return err
 	}
@@ -269,11 +283,12 @@ func (d *Daemon) UpdateConfigPorts() error {
 	}
 
 	config := string(configFile)
-	config = strings.Replace(config, "26656", fmt.Sprint(d.Ports.P26656), 1)
-	config = strings.Replace(config, "26657", fmt.Sprint(d.Ports.P26657), 1)
-	config = strings.Replace(config, "26658", fmt.Sprint(d.Ports.P26658), 1)
-	config = strings.Replace(config, "26660", fmt.Sprint(d.Ports.P26660), 1)
-	config = strings.Replace(config, "6060", fmt.Sprint(d.Ports.P6060), 1)
+	config = strings.Replace(config, "26656", strconv.Itoa(d.Ports.P26656), 1)
+	config = strings.Replace(config, "26657", strconv.Itoa(d.Ports.P26657), 1)
+	config = strings.Replace(config, "26658", strconv.Itoa(d.Ports.P26658), 1)
+	config = strings.Replace(config, "26660", strconv.Itoa(d.Ports.P26660), 1)
+	config = strings.Replace(config, "6060", strconv.Itoa(d.Ports.P6060), 1)
+
 	if err := d.saveConfigFile([]byte(config)); err != nil {
 		return err
 	}

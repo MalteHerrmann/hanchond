@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// ethReceiptCmd represents the ethReceipt command
+// ethReceiptCmd represents the ethReceipt command.
 var ethReceiptCmd = &cobra.Command{
 	Use:   "eth-receipt [tx_hash]",
 	Args:  cobra.ExactArgs(1),

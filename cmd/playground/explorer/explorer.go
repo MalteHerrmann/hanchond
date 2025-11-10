@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// ExplorerCmd represents the explorer command
+// ExplorerCmd represents the explorer command.
 var ExplorerCmd = &cobra.Command{
 	Use:     "explorer",
 	Aliases: []string{"e"},

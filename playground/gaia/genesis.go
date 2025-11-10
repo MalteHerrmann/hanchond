@@ -2,7 +2,7 @@ package gaia
 
 func (g *Gaia) UpdateGenesisFile() error {
 	// Gaia extra config
-	genesis, err := g.Daemon.OpenGenesisFile()
+	genesis, err := g.OpenGenesisFile()
 	if err != nil {
 		return err
 	}
@@ -10,7 +10,7 @@ func (g *Gaia) UpdateGenesisFile() error {
 	g.setUnbondingTime(genesis)
 	// Maybe we need to update the `genesis_time` but I am not sure why
 
-	return g.Daemon.SaveGenesisFile(genesis)
+	return g.SaveGenesisFile(genesis)
 }
 
 func (g *Gaia) setUnbondingTime(genesis map[string]interface{}) {

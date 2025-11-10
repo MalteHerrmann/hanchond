@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// stopNodeCmd represents the stopNode command
+// stopNodeCmd represents the stopNode command.
 var stopNodeCmd = &cobra.Command{
 	Use:   "stop-node id",
 	Args:  cobra.ExactArgs(1),
@@ -33,11 +33,11 @@ var stopNodeCmd = &cobra.Command{
 		}
 
 		if node.IsRunning != 1 {
-			utils.ExitError(fmt.Errorf("the node is not running"))
+			utils.ExitError(errors.New("the node is not running"))
 		}
 		command := exec.Command( //nolint:gosec
 			"kill",
-			fmt.Sprintf("%d", node.ProcessID),
+			strconv.FormatInt(node.ProcessID, 10),
 		)
 
 		out, err := command.CombinedOutput()

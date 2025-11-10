@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// deployContractCmd represents the deploy command
+// deployContractCmd represents the deploy command.
 var deployContractCmd = &cobra.Command{
 	Use:     "deploy-contract [path_to_bin_file]",
 	Args:    cobra.ExactArgs(1),
@@ -23,7 +23,7 @@ var deployContractCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		gasLimit, err := cmd.Flags().GetInt("gas-limit")
@@ -90,5 +90,5 @@ func init() {
 	SolidityCmd.AddCommand(deployContractCmd)
 	deployContractCmd.Flags().Int("gas-limit", 2_000_000, "GasLimit to be used to deploy the transaction")
 	deployContractCmd.Flags().String("abi", "", "ABI file if the contract has a contronstructor that needs params")
-	deployContractCmd.Flags().StringSliceVarP(&params, "params", "p", []string{}, "A list of params. If the param is an address, prefix with `a:0x123...`")
+	deployContractCmd.Flags().StringSliceVarP(&params, "params", "p", []string{}, "A list of params. If the param is an address, prefix with `a:0x123...`") //nolint:lll
 }

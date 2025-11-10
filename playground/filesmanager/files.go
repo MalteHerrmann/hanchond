@@ -12,7 +12,9 @@ func ReadFile(path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	defer file.Close()
+
 	return io.ReadAll(file)
 }
 
@@ -28,5 +30,6 @@ func DoesFileExist(path string) bool {
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
 		return false
 	}
+
 	return true
 }

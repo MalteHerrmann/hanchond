@@ -9,7 +9,7 @@ import (
 
 func (d *Daemon) SaveChainToDB(queries *database.Queries) (database.Chain, error) {
 	return queries.InsertChain(context.Background(), database.InsertChainParams{
-		Name:      fmt.Sprintf("chain-%s", d.ChainID),
+		Name:      "chain-" + d.ChainID,
 		ChainID:   d.ChainID,
 		ChainInfo: string(d.chainInfo.MustMarshal()),
 	})

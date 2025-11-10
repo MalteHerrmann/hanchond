@@ -53,11 +53,13 @@ func (m explorerModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tickMsg:
 		// If it is already running it will return a no-op
 		go m.client.ProcessMissingBlocks(m.startingHeight) //nolint: errcheck
+
 		b, t, err := m.client.DB.GetDisplayInfo(50)
 		if err == nil {
 			m.lists[0].SetItems(BDBlockToItem(b))
 			m.lists[1].SetItems(BDTxToItem(t))
 		}
+
 		return m, indexerTickerCmd()
 	case tea.WindowSizeMsg:
 		m.height = v.Height
@@ -72,21 +74,26 @@ func (m explorerModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		} else {
 			m.resolutionError = false
 		}
+
 		return m, indexerTickerCmd()
 	case tea.KeyMsg:
 		key := v.String()
 		if key == "ctrl+c" || key == "q" {
 			return m, tea.Quit
 		}
+
 		if key == "tab" {
 			m.activeList = (m.activeList + 1) % 3
+
 			return m, nil
 		}
 
 		if key == "shift+tab" {
 			m.activeList = (m.activeList - 1) % 3
+
 			return m, nil
 		}
+
 		if key == "enter" {
 			switch m.activeList {
 			case 0:
@@ -94,26 +101,33 @@ func (m explorerModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				info, _ := mdRendered.Render(RenderBlock(selectedItem, m.client))
 				m.viewport.SetContent(info)
 				_ = m.viewport.GotoTop()
+
 				return m, nil
 			case 1:
 				selectedItem := m.lists[1].SelectedItem().(Txn)
 				info, _ := mdRendered.Render(RenderTx(selectedItem, m.client))
 				m.viewport.SetContent(info)
 				_ = m.viewport.GotoTop()
+
 				return m, nil
 			}
 		}
 	}
+
 	var cmd tea.Cmd
+
 	switch m.activeList {
 	case 0:
 		m.lists[0], cmd = m.lists[0].Update(msg)
+
 		return m, cmd
 	case 1:
 		m.lists[1], cmd = m.lists[1].Update(msg)
+
 		return m, cmd
 	case 2:
 		m.viewport, cmd = m.viewport.Update(msg)
+
 		return m, cmd
 	}
 

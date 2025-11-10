@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// deployUniswapV2MulticallyCmd represents the deploy command
+// deployUniswapV2MulticallyCmd represents the deploy command.
 var deployUniswapV2MulticallyCmd = &cobra.Command{
 	Use:   "deploy-uniswap-v2-multicall",
 	Args:  cobra.ExactArgs(0),
@@ -21,12 +21,12 @@ var deployUniswapV2MulticallyCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		gasLimit, err := cmd.Flags().GetInt("gas-limit")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("incorrect gas limit"))
+			utils.ExitError(errors.New("incorrect gas limit"))
 		}
 
 		// TODO: allow mainnet as a valid endpoint

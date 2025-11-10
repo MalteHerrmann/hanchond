@@ -2,6 +2,7 @@ package smartcontract
 
 import (
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"math/big"
 	"strings"
@@ -10,7 +11,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 )
 
-// ABIPackRaw returns []byte instead of string
+// ABIPackRaw returns []byte instead of string.
 func ABIPackRaw(abiBytes []byte, method string, args ...interface{}) ([]byte, error) {
 	parsedABI, err := abi.JSON(strings.NewReader(string(abiBytes)))
 	if err != nil {
@@ -30,11 +31,13 @@ func ABIPack(abiBytes []byte, method string, args ...interface{}) (string, error
 	if err != nil {
 		return "", err
 	}
+
 	return "0x" + hex.EncodeToString(callData), nil
 }
 
 func StringsToABIArguments(args []string) ([]interface{}, error) {
 	callArgs := []interface{}{}
+
 	for _, v := range args {
 		value := strings.Split(v, ":")
 		switch value[0] {
@@ -44,14 +47,17 @@ func StringsToABIArguments(args []string) ([]interface{}, error) {
 		case "n":
 			// Numbers
 			num := new(big.Int)
+
 			_, valid := num.SetString(value[1], 10)
 			if !valid {
-				return []interface{}{}, fmt.Errorf("error converting the number")
+				return []interface{}{}, errors.New("error converting the number")
 			}
+
 			callArgs = append(callArgs, num)
 		default:
-			return callArgs, fmt.Errorf("invalid param type")
+			return callArgs, errors.New("invalid param type")
 		}
 	}
+
 	return callArgs, nil
 }

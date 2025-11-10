@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// ui represents the query command
+// ui represents the query command.
 var uiCmd = &cobra.Command{
 	Use:   "ui",
 	Args:  cobra.ExactArgs(0),
@@ -20,12 +20,12 @@ var uiCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		startingHeight, err := cmd.Flags().GetInt("starting-height")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("starting height not set"))
+			utils.ExitError(errors.New("starting height not set"))
 		}
 
 		// TODO: move the newFromDB to cosmos daemon

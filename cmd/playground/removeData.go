@@ -12,11 +12,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// removeDataCmd represents the removeData command
+// removeDataCmd represents the removeData command.
 var removeDataCmd = &cobra.Command{
 	Use:   "remove-data",
 	Short: "Removes the data folder, deleting the configuration and data for all the networks and relayers",
-	Long:  `It is a command useful when restarting the process from scratch, it will delete all the data keeping just the built binaries. NOTE: it will also stop all running services`,
+	Long:  `It is a command useful when restarting the process from scratch, it will delete all the data keeping just the built binaries. NOTE: it will also stop all running services`, //nolint:lll
 	Run: func(cmd *cobra.Command, _ []string) {
 		queries := sql.InitDBFromCmd(cmd)
 
@@ -30,7 +30,7 @@ var removeDataCmd = &cobra.Command{
 					stopping = true
 					command := exec.Command( //nolint:gosec
 						"kill",
-						fmt.Sprintf("%d", node.ProcessID),
+						strconv.FormatInt(node.ProcessID, 10),
 					)
 					_, _ = command.CombinedOutput()
 				}
@@ -45,7 +45,7 @@ var removeDataCmd = &cobra.Command{
 				stopping = true
 				command := exec.Command( //nolint:gosec
 					"kill",
-					fmt.Sprintf("%d", relayer.ProcessID),
+					strconv.FormatInt(relayer.ProcessID, 10),
 				)
 				_, _ = command.CombinedOutput()
 			}

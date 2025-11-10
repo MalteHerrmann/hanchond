@@ -24,17 +24,18 @@ func BDBlockToItem(blocks []database.Block) []list.Item {
 	res := make([]list.Item, len(blocks))
 	for k := range res {
 		res[k] = Block{
-			text:   fmt.Sprintf("%d", blocks[k].Height),
+			text:   strconv.FormatInt(blocks[k].Height, 10),
 			desc:   fmt.Sprintf("%s...%s", blocks[k].Hash[0:4], blocks[k].Hash[len(blocks[k].Hash)-5:]),
 			height: blocks[k].Height,
 			hash:   blocks[k].Hash,
 		}
 	}
+
 	return res
 }
 
 func RenderBlock(b Block, client *explorer.Client) string {
-	blockData, err := client.Client.GetBlockCosmos(fmt.Sprintf("%d", b.height))
+	blockData, err := client.Client.GetBlockCosmos(strconv.FormatInt(b.height, 10))
 	if err != nil {
 		return "# Error getting block info\n\n" + err.Error()
 	}
@@ -46,7 +47,7 @@ func RenderBlock(b Block, client *explorer.Client) string {
 
 	cosmosBlock := fmt.Sprintf("# Block %d\n\n## Cosmos Block\n\n```json\n%s\n```", b.height, processJSON(string(data)))
 
-	ethBlock, err := client.Client.GetBlockByNumber(fmt.Sprintf("%d", b.height), true)
+	ethBlock, err := client.Client.GetBlockByNumber(strconv.FormatInt(b.height, 10), true)
 	if err != nil {
 		return "# Error getting eth block info\n\n" + err.Error()
 	}

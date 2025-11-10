@@ -12,12 +12,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// changeVersionCmd represents the changeVersion command
+// changeVersionCmd represents the changeVersion command.
 var changeVersionCmd = &cobra.Command{
 	Use:   "change-version [id] [version]",
 	Args:  cobra.ExactArgs(2),
 	Short: "Change the binary version of the given node",
-	Long:  `It will update the database entry for the node, you need to manually stop and re-start the node for it to take effect on the running chain.`,
+	Long:  `It will update the database entry for the node, you need to manually stop and re-start the node for it to take effect on the running chain.`, //nolint:lll
 	Run: func(cmd *cobra.Command, args []string) {
 		queries := sql.InitDBFromCmd(cmd)
 		isChainID, _ := cmd.Flags().GetBool("is-chain-id")
@@ -47,7 +47,7 @@ var changeVersionCmd = &cobra.Command{
 
 func init() {
 	PlaygroundCmd.AddCommand(changeVersionCmd)
-	changeVersionCmd.Flags().Bool("is-chain-id", false, "If the flag is yes, it will assume that the ID is the chain ID. If it is set as false, the ID will be used just for the node.")
+	changeVersionCmd.Flags().Bool("is-chain-id", false, "If the flag is yes, it will assume that the ID is the chain ID. If it is set as false, the ID will be used just for the node.") //nolint:lll
 }
 
 func updateNodeVersion(queries *database.Queries, nodeID int64, version string) {

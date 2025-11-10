@@ -14,13 +14,17 @@ func (c *Client) SendPostRequestEasyJSON(endpoint string, body []byte, res easyj
 	req.SetRequestURI(endpoint)
 	req.Header.SetMethod(fasthttp.MethodPost)
 	req.Header.SetContentTypeBytes([]byte("application/json"))
+
 	if auth != "" {
 		req.Header.Add("Authorization", auth)
 	}
+
 	req.SetBodyRaw(body)
+
 	resp := fasthttp.AcquireResponse()
 	err := c.Client.DoTimeout(req, resp, c.Client.ReadTimeout)
 	fasthttp.ReleaseRequest(req)
+
 	defer fasthttp.ReleaseResponse(resp)
 
 	if err != nil {
@@ -33,6 +37,7 @@ func (c *Client) SendPostRequestEasyJSON(endpoint string, body []byte, res easyj
 	}
 
 	respBody := resp.Body()
+
 	return easyjson.Unmarshal(respBody, res)
 }
 
@@ -41,15 +46,19 @@ func (c *Client) SendPostRequest(endpoint string, body []byte, auth string) ([]b
 	req.SetRequestURI(endpoint)
 	req.Header.SetMethod(fasthttp.MethodPost)
 	req.Header.SetContentTypeBytes([]byte("application/json"))
+
 	if auth != "" {
 		req.Header.Add("Authorization", auth)
 	}
+
 	req.SetBodyRaw(body)
 
 	resp := fasthttp.AcquireResponse()
 	err := c.Client.DoTimeout(req, resp, c.Client.ReadTimeout)
 	fasthttp.ReleaseRequest(req)
+
 	defer fasthttp.ReleaseResponse(resp)
+
 	if err != nil {
 		return []byte{}, err
 	}
@@ -60,5 +69,6 @@ func (c *Client) SendPostRequest(endpoint string, body []byte, auth string) ([]b
 
 	ret := make([]byte, len(resp.Body()))
 	copy(ret, resp.Body())
+
 	return ret, nil
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// vote represents the vote command
+// vote represents the vote command.
 var voteCmd = &cobra.Command{
 	Use:   "vote",
 	Short: "Vote on all the active proposals",
@@ -17,12 +17,12 @@ var voteCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		option, err := cmd.Flags().GetString("option")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("option not set"))
+			utils.ExitError(errors.New("option not set"))
 		}
 
 		e := evmos.NewEvmosFromDB(queries, nodeID)

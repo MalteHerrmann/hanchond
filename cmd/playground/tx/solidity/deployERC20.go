@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// deployERC20Cmd represents the deploy command
+// deployERC20Cmd represents the deploy command.
 var deployERC20Cmd = &cobra.Command{
 	Use:   "deploy-erc20 [name] [symbol]",
 	Args:  cobra.ExactArgs(2),
@@ -20,7 +20,7 @@ var deployERC20Cmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		gasLimit, err := cmd.Flags().GetUint64("gas-limit")
@@ -69,5 +69,5 @@ func init() {
 	SolidityCmd.AddCommand(deployERC20Cmd)
 	deployERC20Cmd.Flags().Uint64("gas-limit", 2_000_000, "GasLimit to be used to deploy the transaction")
 	deployERC20Cmd.Flags().String("initial-amount", "1000000", "Initial amout of coins sent to the deployer address")
-	deployERC20Cmd.Flags().Bool("is-wrapped-coin", false, "Flag used to indenfity if the contract is representing the base denom. It uses WETH9 instead of OpenZeppelin contracts")
+	deployERC20Cmd.Flags().Bool("is-wrapped-coin", false, "Flag used to indenfity if the contract is representing the base denom. It uses WETH9 instead of OpenZeppelin contracts") //nolint:lll
 }

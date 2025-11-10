@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// buildSolcCmd represents the buildSolc command
+// buildSolcCmd represents the buildSolc command.
 var buildSolcCmd = &cobra.Command{
 	Use:   "build-solc",
 	Short: "Build an specific version of Solc",

@@ -20,9 +20,11 @@ func (d *Daemon) KeyAdd(name string, mnemonic string) error {
 		d.chainInfo.GetKeyAlgo(),
 	)
 	command := exec.Command("bash", "-c", cmd)
+
 	o, err := command.CombinedOutput()
 	if strings.Contains(string(o), "duplicated") {
-		return fmt.Errorf("duplicated address")
+		return errors.New("duplicated address")
 	}
+
 	return err
 }

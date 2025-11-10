@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	_ "embed"
 
-	// blank import to support sqlite3
+	// blank import to support sqlite3.
 	_ "modernc.org/sqlite"
 )
 

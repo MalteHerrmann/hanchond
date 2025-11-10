@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// represents the createChannelCmd command
+// represents the createChannelCmd command.
 var createChannelCmd = &cobra.Command{
 	Use:   "create-channel [chain_id] [chain_id]",
 	Args:  cobra.ExactArgs(2),

@@ -7,11 +7,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// buildEvmosCmd represents the buildEvmos command
+// buildEvmosCmd represents the buildEvmos command.
 var buildEvmosCmd = &cobra.Command{
 	Use:   "build-evmos",
-	Short: "Build an specific version of Evmos (hanchond playground build-evmos v18.0.0), it also supports local repositories (hanchond playground build-evmos --path /home/hanchon/evmos)",
-	Long:  `It downloads, builds and clean up temp files for any Evmos tag. Using the --path flag will build you local repo`,
+	Short: "Build an specific version of Evmos (hanchond playground build-evmos v18.0.0), it also supports local repositories (hanchond playground build-evmos --path /home/hanchon/evmos)", //nolint:lll
+	Long:  `It downloads, builds and clean up temp files for any Evmos tag. Using the --path flag will build you local repo`,                                                                //nolint:lll
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Clone from github
 		if len(args) == 0 {

@@ -14,12 +14,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// startNodeCmd represents the startNode command
+// startNodeCmd represents the startNode command.
 var startNodeCmd = &cobra.Command{
 	Use:   "start-node [node_id]",
 	Args:  cobra.ExactArgs(1),
 	Short: "Starts a node with the given ID",
-	Long:  `It will run the node in a subprocess, saving the pid in the database in case it needs to be stopped in the future`,
+	Long:  `It will run the node in a subprocess, saving the pid in the database in case it needs to be stopped in the future`, //nolint:lll
 	Run: func(cmd *cobra.Command, args []string) {
 		queries := sql.InitDBFromCmd(cmd)
 

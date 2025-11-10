@@ -25,42 +25,42 @@ var addChainConfigCmd = &cobra.Command{
 
 		chainID, err := cmd.Flags().GetString("chainid")
 		if err != nil || chainID == "" {
-			utils.ExitError(fmt.Errorf("missing chainid value"))
+			utils.ExitError(errors.New("missing chainid value"))
 		}
 
 		p26657, err := cmd.Flags().GetString("p26657")
 		if err != nil || chainID == "" {
-			utils.ExitError(fmt.Errorf("missing p26657 value"))
+			utils.ExitError(errors.New("missing p26657 value"))
 		}
 
 		p9090, err := cmd.Flags().GetString("p9090")
 		if err != nil || chainID == "" {
-			utils.ExitError(fmt.Errorf("missing p9090 value"))
+			utils.ExitError(errors.New("missing p9090 value"))
 		}
 
 		keyname, err := cmd.Flags().GetString("keyname")
 		if err != nil || chainID == "" {
-			utils.ExitError(fmt.Errorf("missing keyname value"))
+			utils.ExitError(errors.New("missing keyname value"))
 		}
 
 		keymnemonic, err := cmd.Flags().GetString("keymnemonic")
 		if err != nil || chainID == "" {
-			utils.ExitError(fmt.Errorf("missing keymnemonic value"))
+			utils.ExitError(errors.New("missing keymnemonic value"))
 		}
 
 		prefix, err := cmd.Flags().GetString("prefix")
 		if err != nil || chainID == "" {
-			utils.ExitError(fmt.Errorf("missing prefix value"))
+			utils.ExitError(errors.New("missing prefix value"))
 		}
 
 		denom, err := cmd.Flags().GetString("denom")
 		if err != nil || chainID == "" {
-			utils.ExitError(fmt.Errorf("missing denom value"))
+			utils.ExitError(errors.New("missing denom value"))
 		}
 
 		isEvm, err := cmd.Flags().GetBool("is-evm")
 		if err != nil || chainID == "" {
-			utils.ExitError(fmt.Errorf("missing is-evm value"))
+			utils.ExitError(errors.New("missing is-evm value"))
 		}
 
 		hdPath := types.CosmosHDPath
@@ -115,11 +115,11 @@ var addChainConfigCmd = &cobra.Command{
 func init() {
 	RelayerCmd.AddCommand(addChainConfigCmd)
 	addChainConfigCmd.Flags().String("chainid", "", "Chain-id, i.e., evmos_9001-2")
-	addChainConfigCmd.Flags().String("p26657", "", "Endpoint where the port 26657 is exposed, i.e., http://localhost:26657")
+	addChainConfigCmd.Flags().String("p26657", "", "Endpoint where the port 26657 is exposed, i.e., http://localhost:26657") //nolint:lll
 	addChainConfigCmd.Flags().String("p9090", "", "Endpoint where the port 9090 is exposed, i.e., http://localhost:9090")
-	addChainConfigCmd.Flags().String("keyname", "", "Key name, it's used to identify the files inside hermes, i.e., relayerkey")
+	addChainConfigCmd.Flags().String("keyname", "", "Key name, it's used to identify the files inside hermes, i.e., relayerkey") //nolint:lll
 	addChainConfigCmd.Flags().String("keymnemonic", "", "Key mnemonic, mnemonic for the wallet")
 	addChainConfigCmd.Flags().String("prefix", "", "Prefix for the bech32 address, i.e, osmo")
 	addChainConfigCmd.Flags().String("denom", "", "Denom of the base token, i.e, aevmos")
-	addChainConfigCmd.Flags().Bool("is-evm", false, "If the chain is evm compatible, this is used to determinate the type of wallet.")
+	addChainConfigCmd.Flags().Bool("is-evm", false, "If the chain is evm compatible, this is used to determinate the type of wallet.") //nolint:lll
 }

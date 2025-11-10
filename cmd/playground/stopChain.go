@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// stopChainCmd represents the stopChain command
+// stopChainCmd represents the stopChain command.
 var stopChainCmd = &cobra.Command{
 	Use:   "stop-chain [chain_id]",
 	Args:  cobra.ExactArgs(1),
@@ -34,12 +34,13 @@ var stopChainCmd = &cobra.Command{
 		for _, v := range nodes {
 			if v.IsRunning != 1 {
 				utils.Log("The node %d is not running", v.ID)
+
 				continue
 			}
 
 			command := exec.Command( //nolint:gosec
 				"kill",
-				fmt.Sprintf("%d", v.ProcessID),
+				strconv.FormatInt(v.ProcessID, 10),
 			)
 			out, err := command.CombinedOutput()
 

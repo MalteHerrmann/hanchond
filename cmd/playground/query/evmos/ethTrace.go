@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// ethTraceCmd represents the ethTrace command
+// ethTraceCmd represents the ethTrace command.
 var ethTraceCmd = &cobra.Command{
 	Use:   "eth-trace [tx_hash]",
 	Args:  cobra.ExactArgs(1),

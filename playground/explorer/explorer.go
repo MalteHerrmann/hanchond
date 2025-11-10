@@ -2,6 +2,7 @@ package explorer
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"sync"
@@ -49,12 +50,13 @@ func NewLocalExplorerClient(web3Port, cosmosPort int, homeFolder string) *Client
 	return c
 }
 
-// ProcessMissingBlocks process up to 500 blocks at the time
+// ProcessMissingBlocks process up to 500 blocks at the time.
 func (c *Client) ProcessMissingBlocks(startBlock int64) error {
 	if !c.mutex.TryLock() {
 		return nil
 	}
 	defer c.mutex.Unlock()
+
 	blocksData := []Block{}
 	nextBlockToIndex := startBlock
 
@@ -88,6 +90,7 @@ func (c *Client) ProcessMissingBlocks(startBlock int64) error {
 		if err != nil {
 			return fmt.Errorf("error getting cosmos block: %s", err.Error())
 		}
+
 		blockHash, err := converter.Base64ToHexString(blockData.BlockID.Hash)
 		if err != nil {
 			return fmt.Errorf("error getting cosmos block hash: %s", err.Error())
@@ -102,10 +105,11 @@ func (c *Client) ProcessMissingBlocks(startBlock int64) error {
 			}
 
 			if len(tx.Body.Messages) == 0 {
-				return fmt.Errorf("error decoding cosmos tx, no messages")
+				return errors.New("error decoding cosmos tx, no messages")
 			}
 
 			typeURL := tx.Body.Messages[0].TypeUrl
+
 			cosmosTxHash, err := converter.GenerateCosmosTxHashWithBase64(txBase64)
 			if err != nil {
 				return fmt.Errorf("error generating cosmos tx hash: %s", err.Error())
@@ -114,6 +118,7 @@ func (c *Client) ProcessMissingBlocks(startBlock int64) error {
 			sender := ""
 			ethTxHash := ""
 			ethTx, from, err := codec.ConvertEvmosTxToEthTx(txBase64)
+
 			if err == nil {
 				// Eth Transaction
 				ethTxHash = ethTx.Hash().Hex()
@@ -127,9 +132,12 @@ func (c *Client) ProcessMissingBlocks(startBlock int64) error {
 			if err != nil {
 				return fmt.Errorf("error converting sender address: %s", err.Error())
 			}
+
 			data.AddTransaction(i, cosmosTxHash, ethTxHash, typeURL, sender)
 		}
+
 		nextBlockToIndex++
+
 		blocksData = append(blocksData, *data)
 	}
 
@@ -140,5 +148,6 @@ func (c *Client) ProcessMissingBlocks(startBlock int64) error {
 	}
 
 	c.DBHeight = int(nextBlockToIndex)
+
 	return nil
 }

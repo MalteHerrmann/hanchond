@@ -13,13 +13,17 @@ func (c *Client) SendGetRequestEasyJSON(endpoint string, url string, res easyjso
 	req := fasthttp.AcquireRequest()
 	req.SetRequestURI(endpoint + url)
 	req.Header.SetMethod(fasthttp.MethodGet)
+
 	if auth != "" {
 		req.Header.Add("Authorization", auth)
 	}
+
 	resp := fasthttp.AcquireResponse()
 	err := c.Client.Do(req, resp)
 	fasthttp.ReleaseRequest(req)
+
 	defer fasthttp.ReleaseResponse(resp)
+
 	if err != nil {
 		return err
 	}
@@ -35,13 +39,17 @@ func (c *Client) SendGetRequest(endpoint string, url string, auth string) ([]byt
 	req := fasthttp.AcquireRequest()
 	req.SetRequestURI(endpoint + url)
 	req.Header.SetMethod(fasthttp.MethodGet)
+
 	if auth != "" {
 		req.Header.Add("Authorization", auth)
 	}
+
 	resp := fasthttp.AcquireResponse()
 	err := c.Client.Do(req, resp)
 	fasthttp.ReleaseRequest(req)
+
 	defer fasthttp.ReleaseResponse(resp)
+
 	if err != nil {
 		return []byte{}, err
 	}
@@ -52,5 +60,6 @@ func (c *Client) SendGetRequest(endpoint string, url string, auth string) ([]byt
 
 	ret := make([]byte, len(resp.Body()))
 	copy(ret, resp.Body())
+
 	return ret, nil
 }

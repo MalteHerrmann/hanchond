@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// txCmd represents the query tx command
+// txCmd represents the query tx command.
 var txCmd = &cobra.Command{
 	Use:   "tx [txhash]",
 	Args:  cobra.ExactArgs(1),
@@ -18,7 +18,7 @@ var txCmd = &cobra.Command{
 		queries := sql.InitDBFromCmd(cmd)
 		nodeID, err := cmd.Flags().GetString("node")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("node not set"))
+			utils.ExitError(errors.New("node not set"))
 		}
 
 		txhash := args[0]

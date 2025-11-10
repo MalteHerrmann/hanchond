@@ -57,6 +57,7 @@ func (e *Evmos) CreateSTRv1Proposal(params STRv1) (string, error) {
 
 	path := "/tmp/metadata.json"
 	filesmanager.DoesFileExist(path)
+
 	if err := filesmanager.SaveFile([]byte(metadata), path); err != nil {
 		return "", fmt.Errorf("could not save the proposal to disk:%s", err.Error())
 	}
@@ -76,7 +77,7 @@ func (e *Evmos) CreateSTRv1Proposal(params STRv1) (string, error) {
 		"--from",
 		e.ValKeyName,
 		"--gas-prices",
-		fmt.Sprintf("100000000000000%s", e.BaseDenom),
+		"100000000000000"+e.BaseDenom,
 		"--gas-adjustment",
 		"4",
 		"--gas",
@@ -85,6 +86,7 @@ func (e *Evmos) CreateSTRv1Proposal(params STRv1) (string, error) {
 	)
 
 	out, err := command.CombinedOutput()
+
 	return string(out), err
 }
 
@@ -105,7 +107,7 @@ func (e *Evmos) VoteOnProposal(proposalID string, option string) (string, error)
 		"--from",
 		e.ValKeyName,
 		"--gas-prices",
-		fmt.Sprintf("100000000000000%s", e.BaseDenom),
+		"100000000000000"+e.BaseDenom,
 		"--gas-adjustment",
 		"4",
 		"-y",
@@ -115,14 +117,16 @@ func (e *Evmos) VoteOnProposal(proposalID string, option string) (string, error)
 	if !strings.Contains(string(out), "code: 0") {
 		return string(out), fmt.Errorf("transaction failed with code different than 0:%s", string(out))
 	}
+
 	hash := strings.Split(string(out), "txhash: ")
 	if len(hash) > 1 {
 		hash[1] = strings.TrimSpace(hash[1])
 	}
+
 	return hash[1], err
 }
 
-// VoteOnAllTheProposals returns a list of transactions hashes
+// VoteOnAllTheProposals returns a list of transactions hashes.
 func (e *Evmos) VoteOnAllTheProposals(option string) ([]string, error) {
 	type ProposalsResponse struct {
 		Proposals []struct {
@@ -130,14 +134,17 @@ func (e *Evmos) VoteOnAllTheProposals(option string) ([]string, error) {
 			Status     string `json:"status"`
 		} `json:"proposals"`
 	}
+
 	// Query
 	query := "cosmos/gov/v1beta1/proposals?pagination.limit=10&pagination.reverse=true"
+
 	resp, err := http.Get(fmt.Sprintf("http://localhost:%d/%s", e.Ports.P1317, query))
 	if err != nil {
 		return []string{}, err
 	}
+
 	if resp.StatusCode != http.StatusOK {
-		return []string{}, fmt.Errorf("response not 200")
+		return []string{}, errors.New("response not 200")
 	}
 
 	respbytes, err := io.ReadAll(resp.Body)
@@ -145,11 +152,14 @@ func (e *Evmos) VoteOnAllTheProposals(option string) ([]string, error) {
 		return []string{}, err
 	}
 	defer resp.Body.Close()
+
 	var data ProposalsResponse
 	if err := json.Unmarshal(respbytes, &data); err != nil {
 		return []string{}, err
 	}
+
 	res := []string{}
+
 	for _, v := range data.Proposals {
 		if v.Status == "PROPOSAL_STATUS_VOTING_PERIOD" {
 			// Vote
@@ -157,9 +167,11 @@ func (e *Evmos) VoteOnAllTheProposals(option string) ([]string, error) {
 			if err != nil {
 				return []string{}, err
 			}
+
 			res = append(res, out)
 		}
 	}
+
 	return res, nil
 }
 
@@ -189,7 +201,7 @@ func (e *Evmos) CreateUpgradeProposal(versionName string, upgradeHeight string) 
 		"--from",
 		e.ValKeyName,
 		"--gas-prices",
-		fmt.Sprintf("100000000000000%s", e.BaseDenom),
+		"100000000000000"+e.BaseDenom,
 		"--gas-adjustment",
 		"4",
 		"--gas",
@@ -206,10 +218,12 @@ func (e *Evmos) CreateUpgradeProposal(versionName string, upgradeHeight string) 
 	if !strings.Contains(resp, "code: 0") {
 		return "", fmt.Errorf("transaction failed:%s", resp)
 	}
+
 	hash := strings.Split(resp, "txhash: ")
 	if len(hash) > 1 {
 		hash[1] = strings.TrimSpace(hash[1])
 	}
+
 	return hash[1], nil
 }
 
@@ -264,7 +278,7 @@ func (e *Evmos) CreateRateLimitProposal(params RateLimitParams) (string, error) 
 		"--from",
 		e.ValKeyName,
 		"--gas-prices",
-		fmt.Sprintf("200000000%s", e.BaseDenom),
+		"200000000"+e.BaseDenom,
 		"--gas",
 		"2000000",
 		"-y",
@@ -279,9 +293,11 @@ func (e *Evmos) CreateRateLimitProposal(params RateLimitParams) (string, error) 
 	if !strings.Contains(resp, "code: 0") {
 		return "", fmt.Errorf("transaction failed:%s", resp)
 	}
+
 	hash := strings.Split(resp, "txhash: ")
 	if len(hash) > 1 {
 		hash[1] = strings.TrimSpace(hash[1])
 	}
+
 	return hash[1], nil
 }

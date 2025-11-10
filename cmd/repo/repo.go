@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// RepoCmd represents the repo command
+// RepoCmd represents the repo command.
 var RepoCmd = &cobra.Command{
 	Use:     "repo",
 	Aliases: []string{"r"},

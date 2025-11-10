@@ -20,7 +20,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// initChainCmd represents the initChainCmd
+// initChainCmd represents the initChainCmd.
 var initChainCmd = &cobra.Command{
 	Use:   "init-chain [amount_of_validators]",
 	Args:  cobra.ExactArgs(1),
@@ -29,20 +29,20 @@ var initChainCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		client, err := cmd.Flags().GetString("client")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("client flag was not set"))
+			utils.ExitError(errors.New("client flag was not set"))
 		}
 		version, err := cmd.Flags().GetString("version")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("version flag was not set"))
+			utils.ExitError(errors.New("version flag was not set"))
 		}
 		chainID, err := cmd.Flags().GetString("chainid")
 		if err != nil {
-			utils.ExitError(fmt.Errorf("chainid flag was not set"))
+			utils.ExitError(errors.New("chainid flag was not set"))
 		}
 
 		amountOfValidators, err := strconv.ParseInt(args[0], 10, 64)
 		if err != nil {
-			utils.ExitError(fmt.Errorf("invalid amount of validators"))
+			utils.ExitError(errors.New("invalid amount of validators"))
 		}
 
 		queries := sql.InitDBFromCmd(cmd)
@@ -126,6 +126,6 @@ var initChainCmd = &cobra.Command{
 func init() {
 	PlaygroundCmd.AddCommand(initChainCmd)
 	initChainCmd.Flags().String("client", "evmos", "Client that you want to use. Options: evmos, gaia")
-	initChainCmd.Flags().StringP("version", "v", "local", "Version of the Evmos node that you want to use, defaults to local. Tag names are supported. If selected node is gaia, the flag is ignored.")
-	initChainCmd.Flags().StringP("chainid", "c", "", "Chain-ID to be used when creating the genesis file, it defaults to `evmos_9001-X` or `cosmoshub-X`, depending on the client.")
+	initChainCmd.Flags().StringP("version", "v", "local", "Version of the Evmos node that you want to use, defaults to local. Tag names are supported. If selected node is gaia, the flag is ignored.") //nolint:lll
+	initChainCmd.Flags().StringP("chainid", "c", "", "Chain-ID to be used when creating the genesis file, it defaults to `evmos_9001-X` or `cosmoshub-X`, depending on the client.")                    //nolint:lll
 }

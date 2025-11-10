@@ -47,6 +47,7 @@ func (d *Database) GetDisplayInfo(limit int) ([]database.Block, []database.Trans
 	if err != nil {
 		return []database.Block{}, []database.Transaction{}, err
 	}
+
 	txns, err := d.queries.GetLimitedTransactions(d.ctx, int64(limit))
 	if err != nil {
 		return []database.Block{}, []database.Transaction{}, err
@@ -62,6 +63,7 @@ func (d *Database) GetDisplayInfo(limit int) ([]database.Block, []database.Trans
 func (d *Database) GetLatestBlock() (database.Block, error) {
 	d.mutex.Lock()
 	defer d.mutex.Unlock()
+
 	return d.queries.GetLatestBlock(d.ctx)
 }
 
@@ -71,6 +73,7 @@ func (d *Database) AddBlocks(blocks []Block) error {
 			return err
 		}
 	}
+
 	return nil
 }
 

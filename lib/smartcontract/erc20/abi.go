@@ -44,6 +44,7 @@ var contract abi.ABI
 
 func init() {
 	var err error
+
 	contract, err = abi.JSON(bytes.NewReader([]byte(erc20MinimalAbiJSON)))
 	if err != nil {
 		panic(err)

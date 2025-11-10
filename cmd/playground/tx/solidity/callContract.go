@@ -15,7 +15,7 @@ import (
 
 var params []string
 
-// callContractViewCmd represents the callContractView command
+// callContractViewCmd represents the callContractView command.
 var callContractViewCmd = &cobra.Command{
 	Use:   "call-contract-view [contract] [abi_path] [method]",
 	Args:  cobra.ExactArgs(3),
@@ -66,5 +66,5 @@ var callContractViewCmd = &cobra.Command{
 func init() {
 	SolidityCmd.AddCommand(callContractViewCmd)
 	callContractViewCmd.Flags().String("height", "latest", "Query at the given height.")
-	callContractViewCmd.Flags().StringSliceVarP(&params, "params", "p", []string{}, "A list of params. If the param is an address, prefix with `a:0x123...`")
+	callContractViewCmd.Flags().StringSliceVarP(&params, "params", "p", []string{}, "A list of params. If the param is an address, prefix with `a:0x123...`") //nolint:lll
 }

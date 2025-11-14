@@ -1,4 +1,4 @@
-.phony: build format install docs-dev docs-build generate generate-explorer lint
+.phony: build format install docs-dev docs-build generate generate-explorer lint tools
 
 export VERSION := $(shell echo $(shell git describe --tags --always --match "v*") | sed 's/^v//')
 
@@ -27,3 +27,6 @@ generate-explorer:
 
 lint:
 	@nix develop -c golangci-lint run -c .golangci.yml
+
+tools:
+	@mise install
